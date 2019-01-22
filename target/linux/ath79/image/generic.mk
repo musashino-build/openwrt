@@ -1,4 +1,5 @@
 include ./common-buffalo.mk
+include ./common-nec.mk
 include ./common-netgear.mk
 include ./common-senao.mk
 include ./common-tp-link.mk
@@ -1470,6 +1471,14 @@ define Device/nec_wg800hp
   DEVICE_PACKAGES := kmod-ath10k-ct-smallbuffers ath10k-firmware-qca9887-ct-full-htt
 endef
 TARGET_DEVICES += nec_wg800hp
+
+define Device/nec_wr8750n
+  $(Device/nec-netbsd-aterm)
+  SOC := ar9344
+  DEVICE_MODEL := Aterm WR8750N
+  IMAGE_SIZE := 7936k
+endef
+TARGET_DEVICES += nec_wr8750n
 
 define Device/netgear_ex6400_ex7300
   $(Device/netgear_generic)

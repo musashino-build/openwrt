@@ -1,0 +1,255 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "ar9344.dtsi"
+
+/ {
+	chosen {
+		bootargs = "console=ttyS0,9600";
+	};
+
+	aliases {
+		led-boot = &led_power_green;
+		led-failsafe = &led_power_red;
+		led-running = &led_power_green;
+		led-upgrade = &led_power_green;
+	};
+
+	keys: keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&jtag_disable_pins>;
+
+		eco {
+			label = "eco";
+			gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_0>;
+			debounce-interval = <60>;
+		};
+
+		ap {
+			label = "ap";
+			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_1>;
+			linux,input-type = <EV_SW>;
+			debounce-interval = <60>;
+		};
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+			debounce-interval = <60>;
+		};
+	};
+
+	ath9k_leds: ath9k-leds {
+		/* all LEDs are connected to ath9k chip (AR9382) */
+		compatible = "gpio-leds";
+
+		led_power_green: power_green {
+			label = "green:power";
+			gpios = <&ath9k 0 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		led_power_red: power_red {
+			label = "red:power";
+			gpios = <&ath9k 1 GPIO_ACTIVE_LOW>;
+		};
+
+		active_green {
+			label = "green:active";
+			gpios = <&ath9k 2 GPIO_ACTIVE_LOW>;
+		};
+
+		active_red {
+			label = "red:active";
+			gpios = <&ath9k 3 GPIO_ACTIVE_LOW>;
+		};
+
+		air1_green {
+			label = "green:air1";
+			gpios = <&ath9k 4 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy0tpt";
+		};
+
+		air1_red {
+			label = "red:air1";
+			gpios = <&ath9k 5 GPIO_ACTIVE_LOW>;
+		};
+
+		air2_green {
+			label = "green:air2";
+			gpios = <&ath9k 6 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy1tpt";
+		};
+
+		air2_red {
+			label = "red:air2";
+			gpios = <&ath9k 7 GPIO_ACTIVE_LOW>;
+		};
+
+		tv_green {
+			label = "green:tv";
+			gpios = <&ath9k 12 GPIO_ACTIVE_LOW>;
+		};
+
+		tv_red {
+			label = "red:tv";
+			gpios = <&ath9k 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	reg_usb_vbus: regulator {
+		compatible = "regulator-fixed";
+
+		regulator-name = "usb-vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+
+		gpio = <&gpio 20 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		regulator-always-on;
+	};
+};
+
+&ref {
+	clock-frequency = <40000000>;
+};
+
+&spi {
+	num-cs = <1>;
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions: partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/*
+			 * OEM bootloader cannot boot OpenWrt from the flash,
+			 * need to replace the bootloader to u-boot at first
+			 */
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x020000>;
+			};
+
+			/* no compatibility with u-boot */
+			config: partition@20000 {
+				label = "config";
+				reg = <0x020000 0x010000>;
+				read-only;
+			};
+
+			art: partition@30000 {
+				label = "art";
+				reg = <0x030000 0x010000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&mdio0 {
+	status = "okay";
+
+	phy0: ethernet-phy@0 {
+		reg = <0>;
+
+		qca,ar8327-initvals = <
+			0x04 0x07a00000 /* PORT0 PAD MODE CTRL */
+			0x50 0xcf37cf37 /* LED_CTRL0 */
+			0x54 0x00000000 /* LED_CTRL1 */
+			0x58 0x00000000 /* LED_CTRL2 */
+			0x5c 0x03ffff00 /* LED_CTRL3 */
+			0x7c 0x0000007e /* PORT0_STATUS */
+		>;
+	};
+};
+
+&eth0 {
+	status = "okay";
+
+	pll-data = <0x06000000 0x00000101 0x00001616>;
+
+	phy-mode = "rgmii";
+	phy-handle = <&phy0>;
+
+	mtd-mac-address = <&config 0x6>;
+
+	gmac-config {
+		device = <&gmac>;
+
+		rgmii-gmac0 = <1>;
+	};
+};
+
+&gpio {
+	eth-phy-reset {
+		gpio-hog;
+		gpios = <13 GPIO_ACTIVE_HIGH>;
+		output-high;
+	};
+};
+
+&pcie {
+	status = "okay";
+
+	ath9k: wifi@0,0 {
+		compatible = "pci168c,0030";
+		reg = <0x0000 0 0 0 0>;
+		qca,no-eeprom;
+		#gpio-cells = <2>;
+		gpio-controller;
+
+		usb-hub-reset {
+			gpio-hog;
+			gpios = <10 GPIO_ACTIVE_HIGH>;
+			output-high;
+		};
+	};
+};
+
+&uart {
+	status = "okay";
+};
+
+&usb_phy {
+	status = "okay";
+};
+
+&usb {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	dr_mode = "host";
+	vbus-supply = <&reg_usb_vbus>;
+
+	hub@1 {
+		compatible = "usb0409,005a";
+		reg = <1>;
+	};
+};
+
+&wmac {
+	status = "okay";
+	mtd-cal-data = <&art 0x1000>;
+};

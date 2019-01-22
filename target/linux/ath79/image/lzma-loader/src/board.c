@@ -50,7 +50,25 @@ static void tlwr1043nd_init(void)
 static inline void tlwr1043nd_init(void) {}
 #endif
 
+#ifdef CONFIG_BOARD_WR8750N
+static void nec_init(void)
+{
+	unsigned int reg = KSEG1ADDR(AR71XX_RESET_BASE);
+	unsigned int t;
+
+	/*
+	 * set maximum watchdog count to avoid resetting
+	 * while booting
+	 */
+	t = 0xfffffffful;
+	WRITEREG(reg + AR71XX_RESET_REG_WDOG, t);
+}
+#else
+static inline void nec_init(void) {}
+#endif
+
 void board_init(void)
 {
 	tlwr1043nd_init();
+	nec_init();
 }
