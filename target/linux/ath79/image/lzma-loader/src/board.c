@@ -50,7 +50,8 @@ static void tlwr1043nd_init(void)
 static inline void tlwr1043nd_init(void) {}
 #endif
 
-#ifdef CONFIG_BOARD_WR8750N
+#if defined(CONFIG_BOARD_WR8750N) || \
+    defined(CONFIG_BOARD_WR9500N)
 static void nec_init(void)
 {
 	unsigned int reg = KSEG1ADDR(AR71XX_RESET_BASE);

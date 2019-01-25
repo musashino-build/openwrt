@@ -136,7 +136,8 @@ ath79_setup_interfaces()
 		;;
 	buffalo,bhr-4grv|\
 	buffalo,wzr-hp-g450h|\
-	nec,wr8750n)
+	nec,wr8750n|\
+	nec,wr9500n)
 		ucidef_add_switch "switch0" \
 			"0@eth0" "2:lan" "3:lan" "4:lan" "5:lan" "1:wan"
 		;;
@@ -622,7 +623,8 @@ ath79_setup_macs()
 		wan_mac=$(mtd_get_mac_text board_data 0x480)
 		label_mac=$wan_mac
 		;;
-	nec,wr8750n)
+	nec,wr8750n|\
+	nec,wr9500n)
 		wan_mac=$(mtd_get_mac_binary config 0xc)
 		;;
 	netgear,wndr3700|\
