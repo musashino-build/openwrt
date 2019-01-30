@@ -40,6 +40,7 @@ case "$FIRMWARE" in
 		caldata_extract "factory" 0x0 0x200
 		caldata_patch_mac $wifi_mac 0x4
 		;;
+	elecom,wrc-1167ghbk2-i|\
 	elecom,wrc-733ghbk)
 		wifi_mac=$(mtd_get_mac_ascii hwconfig HW.LAN.2G.0.MAC.Address)
 		caldata_extract "factory" 0x0 0x200

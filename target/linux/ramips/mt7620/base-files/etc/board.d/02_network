@@ -133,6 +133,7 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch1" \
 			"1:lan" "2:lan" "3:lan" "4:lan" "0:wan" "6@eth0"
 		;;
+	elecom,wrc-1167ghbk2-i|\
 	elecom,wrc-733ghbk|\
 	iodata,wn-ac1167gr|\
 	iodata,wn-ac733gr3|\
@@ -311,6 +312,7 @@ ramips_setup_macs()
 	edimax,br-6478ac-v2)
 		wan_mac=$(macaddr_add "$(mtd_get_mac_binary factory 0x4)" 2)
 		;;
+	elecom,wrc-1167ghbk2-i|\
 	elecom,wrc-733ghbk)
 		lan_mac=$(mtd_get_mac_ascii hwconfig HW.LAN.MAC.Address)
 		wan_mac=$(mtd_get_mac_ascii hwconfig HW.WAN.MAC.Address)

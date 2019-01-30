@@ -373,6 +373,18 @@ define Device/edimax_ew-7478apc
 endef
 TARGET_DEVICES += edimax_ew-7478apc
 
+define Device/elecom_wrc-1167ghbk2-i
+  SOC := mt7620a
+  DEVICE_VENDOR := ELECOM
+  DEVICE_MODEL := WRC-1167GHBK2-I
+  IMAGE_SIZE := 7680k
+  IMAGE/sysupgrade.bin := append-kernel | append-rootfs | \
+    edimax-header -s CSYS -m RN68 -f 0x70000 -S 0x01100000 | pad-rootfs | \
+    append-metadata | check-size
+  DEVICE_PACKAGES := kmod-mt76x2
+endef
+TARGET_DEVICES += elecom_wrc-1167ghbk2-i
+
 define Device/elecom_wrc-733ghbk
   SOC := mt7620a
   DEVICE_VENDOR := ELECOM
