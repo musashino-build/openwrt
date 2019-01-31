@@ -1459,6 +1459,14 @@ define Device/nec_wg1200cr
 endef
 TARGET_DEVICES += nec_wg1200cr
 
+define Device/nec_wg600hp
+  $(Device/nec-netbsd-aterm)
+  SOC := ar9344
+  DEVICE_MODEL := Aterm WG600HP
+  IMAGE_SIZE := 7936k
+endef
+TARGET_DEVICES += nec_wg600hp
+
 define Device/nec_wg800hp
   SOC := qca9563
   DEVICE_VENDOR := NEC

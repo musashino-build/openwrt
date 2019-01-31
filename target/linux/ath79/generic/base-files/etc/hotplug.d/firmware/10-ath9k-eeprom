@@ -91,6 +91,7 @@ case "$FIRMWARE" in
 	engenius,eap600|\
 	engenius,ecb600|\
 	mercury,mw4530r-v1|\
+	nec,wg600hp|\
 	nec,wr8750n|\
 	nec,wr9500n|\
 	ocedo,raccoon|\
