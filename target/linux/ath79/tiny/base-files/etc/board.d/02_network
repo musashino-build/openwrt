@@ -57,6 +57,10 @@ ath79_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0@eth1" "4:lan:1"
 		;;
+	nec,wg300hp)
+		ucidef_add_switch "switch0" \
+			"0@eth0" "2:lan" "3:lan" "4:lan" "5:lan" "1:wan"
+		;;
 	nec,wr8175n|\
 	tplink,tl-mr3220-v1|\
 	tplink,tl-mr3420-v1|\
@@ -108,6 +112,9 @@ ath79_setup_macs()
 		;;
 	engenius,enh202-v1)
 		label_mac=$(cat /sys/class/ieee80211/phy0/macaddress)
+		;;
+	nec,wg300hp)
+		wan_mac=$(mtd_get_mac_binary config 0xc)
 		;;
 	tplink,tl-wr941-v2|\
 	tplink,tl-wr941n-v7-cn)

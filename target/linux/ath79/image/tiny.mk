@@ -70,6 +70,14 @@ define Device/engenius_enh202-v1
 endef
 TARGET_DEVICES += engenius_enh202-v1
 
+define Device/nec_wg300hp
+  $(Device/nec-netbsd-aterm)
+  SOC := ar9342
+  DEVICE_MODEL := Aterm WG300HP
+  IMAGE_SIZE := 3840k
+endef
+TARGET_DEVICES += nec_wg300hp
+
 define Device/nec_wr8175n
   $(Device/nec-netbsd-aterm)
   SOC := ar9341
