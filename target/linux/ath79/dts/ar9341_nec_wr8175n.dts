@@ -1,0 +1,202 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "ar9341.dtsi"
+
+/ {
+	compatible = "nec,wr8175n", "qca,ar9341";
+	model = "NEC Aterm WR8175N";
+
+	chosen {
+		bootargs = "console=ttyS0,9600";
+	};
+
+	aliases {
+		led-boot = &led_power_green;
+		led-failsafe = &led_power_red;
+		led-running = &led_power_green;
+		led-upgrade = &led_power_green;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_power_green: power_green {
+			label = "green:power";
+			gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		led_power_red: power_red {
+			label = "red:power";
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+		};
+
+		active_green {
+			label = "green:active";
+			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
+		};
+
+		active_red {
+			label = "red:active";
+			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+		};
+
+		air {
+			label = "green:air";
+			gpios = <&gpio 21 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy0tpt";
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&jtag_disable_pins>;
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+			debounce-interval = <60>;
+		};
+
+		eco {
+			label = "eco";
+			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_1>;
+			debounce-interval = <60>;
+		};
+	};
+
+	reg_usb_vbus: regulator {
+		compatible = "regulator-fixed";
+
+		regulator-name = "usb-vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+
+		gpio = <&gpio 20 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+
+		regulator-always-on;
+	};
+};
+
+&ref {
+	clock-frequency = <40000000>;
+};
+
+&spi {
+	num-cs = <1>;
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			/*
+			 * OEM bootloader cannot boot OpenWrt from the flash,
+			 * need to replace the bootloader to u-boot at the first
+			 */
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x020000>;
+			};
+
+			/* no compatibility with u-boot */
+			config: partition@20000 {
+				label = "config";
+				reg = <0x020000 0x010000>;
+				read-only;
+			};
+
+			art: partition@30000 {
+				label = "art";
+				reg = <0x030000 0x010000>;
+				read-only;
+			};
+
+			partition@40000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x040000 0x3c0000>;
+			};
+		};
+	};
+};
+
+&eth0 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&swled_enable_pins2>;
+
+	phy-handle = <&swphy4>;
+
+	mtd-mac-address = <&config 0xc>;
+};
+
+&eth1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&swled_enable_pins0 &swled_enable_pins1>;
+
+	mtd-mac-address = <&config 0x6>;
+};
+
+&pinmux {
+	swled_enable_pins0: pinmux_swled_enable_pins0 {
+		pinctrl-single,bits = <0x0 0x2a2b2c00 0xffffff00>;
+	};
+
+	swled_enable_pins1: pinmux_swled_enable_pins1 {
+		pinctrl-single,bits = <0x4 0x29 0xff>;
+	};
+
+	swled_enable_pins2: pinmux_swled_enable_pins2 {
+		pinctrl-single,bits = <0x14 0x2d0000 0xff0000>;
+	};
+};
+
+&uart {
+	status = "okay";
+};
+
+&usb_phy {
+	status = "okay";
+};
+
+&usb {
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	dr_mode = "host";
+	vbus-supply = <&reg_usb_vbus>;
+
+	hub@1 {
+		compatible = "usb0409,005a";
+		reg = <1>;
+	};
+};
+
+&wmac {
+	status = "okay";
+
+	mtd-cal-data = <&art 0x1000>;
+};

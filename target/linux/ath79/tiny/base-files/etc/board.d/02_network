@@ -57,6 +57,7 @@ ath79_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0@eth1" "4:lan:1"
 		;;
+	nec,wr8175n|\
 	tplink,tl-mr3220-v1|\
 	tplink,tl-mr3420-v1|\
 	tplink,tl-mr3420-v3|\

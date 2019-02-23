@@ -1,4 +1,5 @@
 include ./common-buffalo.mk
+include ./common-nec.mk
 include ./common-senao.mk
 
 define Device/buffalo_whr-g301n
@@ -68,6 +69,14 @@ define Device/engenius_enh202-v1
   SENAO_IMGNAME := senao-enh202
 endef
 TARGET_DEVICES += engenius_enh202-v1
+
+define Device/nec_wr8175n
+  $(Device/nec-netbsd-aterm)
+  SOC := ar9341
+  DEVICE_MODEL := Aterm WR8175N
+  IMAGE_SIZE := 3840k
+endef
+TARGET_DEVICES += nec_wr8175n
 
 define Device/pqi_air-pen
   SOC := ar9330
