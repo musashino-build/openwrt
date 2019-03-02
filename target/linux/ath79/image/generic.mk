@@ -1459,6 +1459,16 @@ define Device/nec_wg1200cr
 endef
 TARGET_DEVICES += nec_wg1200cr
 
+define Device/nec_wg1400hp
+  $(Device/nec-netbsd-aterm)
+  SOC := qca9558
+  DEVICE_MODEL := Aterm WG1400HP
+  IMAGE_SIZE := 16128k
+  DEVICE_PACKAGES += kmod-i2c-gpio kmod-gpio-pca953x kmod-ath10k-ct \
+	ath10k-firmware-qca988x-ct
+endef
+TARGET_DEVICES += nec_wg1400hp
+
 define Device/nec_wg600hp
   $(Device/nec-netbsd-aterm)
   SOC := ar9344
