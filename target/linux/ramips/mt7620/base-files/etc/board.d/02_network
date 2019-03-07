@@ -15,6 +15,7 @@ ramips_setup_interfaces()
 	dlink,dwr-921-c1|\
 	dlink,dwr-922-e2|\
 	dovado,tiny-ac|\
+	iodata,wn-g300r3|\
 	ohyeah,oy-0001|\
 	phicomm,psg1208|\
 	planex,db-wrt01|\
@@ -339,6 +340,9 @@ ramips_setup_macs()
 	iodata,wn-ac1167gr|\
 	iodata,wn-ac733gr3)
 		wan_mac=$(mtd_get_mac_ascii u-boot-env wanaddr)
+		;;
+	iodata,wn-g300r3)
+		wan_mac=$(macaddr_add "$(mtd_get_mac_binary factory 0x4)" 1)
 		;;
 	iptime,a1004ns)
 		wan_mac=$(mtd_get_mac_binary u-boot 0x1fc40)

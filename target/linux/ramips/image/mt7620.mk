@@ -564,6 +564,17 @@ define Device/iodata_wn-ac733gr3
 endef
 TARGET_DEVICES += iodata_wn-ac733gr3
 
+define Device/iodata_wn-g300r3
+  SOC := mt7620n
+  DEVICE_VENDOR := I-O DATA
+  DEVICE_MODEL := WN-G300R3
+  IMAGE_SIZE := 3648k
+  IMAGES += factory.bin
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | \
+	senao-header -r 0x30a -p 0x65 -t 2
+endef
+TARGET_DEVICES += iodata_wn-g300r3
+
 define Device/iptime_a1004ns
   SOC := mt7620a
   IMAGE_SIZE := 16192k
