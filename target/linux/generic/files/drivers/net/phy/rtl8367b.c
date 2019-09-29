@@ -1566,12 +1566,21 @@ static int rtl8367b_detect(struct rtl8366_smi *smi)
 		return ret;
 	}
 
+	dev_info(smi->parent,
+		"found chip num:%04x ver:%04x, mode:%04x\n",
+		chip_num, chip_ver, chip_mode);
+
+	/* rtl8367s: known chip num:6367 ver:00a0, mode:00a0 */
+
 	switch (chip_ver) {
 	case 0x1000:
 		chip_name = "8367RB";
 		break;
 	case 0x1010:
 		chip_name = "8367R-VB";
+		break;
+	case 0x00a0:
+		chip_name = "8367S";
 		break;
 	default:
 		dev_err(smi->parent,
