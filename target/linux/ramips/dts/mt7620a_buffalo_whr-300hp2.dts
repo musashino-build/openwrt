@@ -130,7 +130,7 @@
 
 &state_default {
 	gpio {
-		groups = "i2c", "uartf", "rgmii1", "rgmii2", "wled", "nd_sd";
+		groups = "i2c", "uartf", "rgmii1", "rgmii2", "wled", "nd_sd", "ephy";
 		function = "gpio";
 	};
 };
