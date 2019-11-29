@@ -136,8 +136,8 @@
 };
 
 &ethernet {
-	pinctrl-names = "default";
-	pinctrl-0 = <&ephy_pins>;
+/*	pinctrl-names = "default";
+	pinctrl-0 = <&ephy_pins>;*/
 
 	mtd-mac-address = <&factory 0x4>;
 
