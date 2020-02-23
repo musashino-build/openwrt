@@ -392,6 +392,10 @@ ath79_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0@eth0" "1:lan:1" "2:lan:3" "3:lan:2"
 		;;
+	tplink,tl-r600vpn-v4)
+		ucidef_add_switch "switch0" \
+			"1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "0:wan" "6@eth0"
+		;;
 	tplink,tl-wpa8630-v1|\
 	tplink,tl-wpa8630p-v2-int|\
 	tplink,tl-wpa8630p-v2.0-eu|\
@@ -649,6 +653,11 @@ ath79_setup_macs()
 	tplink,tl-wr1043n-v5)
 		base_mac=$(mtd_get_mac_binary info 0x8)
 		wan_mac=$(macaddr_add "$base_mac" 1)
+		;;
+	tplink,tl-r600vpn-v4)
+		local mtd=$(find_mtd_index "tddp")
+		lan_mac=$(grep "option macaddr" /dev/mtd${mtd} | cut -d"'" -f2)
+		wan_mac=$(macaddr_add "$lan_mac" 1)
 		;;
 	trendnet,tew-823dru)
 		lan_mac=$(mtd_get_mac_text mac 0x4)

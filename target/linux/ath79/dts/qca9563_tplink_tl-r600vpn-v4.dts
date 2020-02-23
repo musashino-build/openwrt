@@ -1,0 +1,174 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "qca956x.dtsi"
+
+/ {
+	model = "TP-Link TL-R600VPN v4";
+	compatible = "tplink,tl-r600vpn-v4", "qca,qca9563";
+
+	chosen {
+		bootargs = "console=ttyS0,115200n8";
+	};
+
+	aliases {
+		led-boot = &led_system;
+		led-failsafe = &led_system;
+		led-upgrade = &led_system;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		power {
+			label = "tl-r600vpn-v4:green:power";
+			gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		led_system: system {
+			label = "tl-r600vpn-v4:green:system";
+			gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+	};
+
+	rtl8367s {
+		compatible = "realtek,rtl8367b";
+		/* default phy address on RTL8367S is "29"? */
+		phy_id = <29>;
+		/* default cpu port on RTL8367S is "6" */
+		cpu_port = <6>;
+		/*
+		 * stock fw:
+		 *   0x1307 (ext1_rgmxf) -> 0x4
+		 *   0x1305 (dis_sel) -> 0c090, 0x13c3 (dis_sel_1) -> 0x0
+		 *   0x1311 (ext1_force) -> 0x1076
+		 *
+		 *   txdelay = 0
+		 *   rxdelay = 4
+		 *   mode = SGMII (9)
+		 *   force = true
+		 *   (nway = false)
+		 *   tx_pause = true
+		 *   rx_pause = true
+		 *   link = true
+		 *   duplex = full (1)
+		 *   speed = 1000M (2)
+		 */
+		realtek,extif1 = <0 4 9 1 1 1 1 1 2>;
+		mii-bus = <&mdio0>;
+	};
+};
+
+&spi {
+	status = "okay";
+	num-cs = <1>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x030000>;
+				read-only;
+			};
+
+			partition@30000 {
+				label = "partition-table";
+				reg = <0x030000 0x010000>;
+				read-only;
+			};
+
+			partition@40000 {
+				label = "kernel";
+				reg = <0x040000 0x150000>;
+			};
+
+			partition@190000 {
+				label = "rootfs";
+				reg = <0x190000 0xba0000>;
+			};
+
+			partition@d30000 {
+				label = "device-info";
+				reg = <0xd30000 0x010000>;
+				read-only;
+			};
+
+			partition@d40000 {
+				label = "support-list";
+				reg = <0xd40000 0x010000>;
+				read-only;
+			};
+
+			partition@d50000 {
+				label = "firmware-info";
+				reg = <0xd50000 0x010000>;
+				read-only;
+			};
+
+			partition@d60000 {
+				label = "tddp";
+				reg = <0xd60000 0x010000>;
+				read-only;
+			};
+
+			partition@d70000 {
+				label = "log";
+				reg = <0xd70000 0x020000>;
+				read-only;
+			};
+
+			partition@e00000 {
+				label = "user_data";
+				reg = <0xe00000 0x200000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&eth0 {
+	status = "okay";
+
+	pll-data = <0x03000101 0x00000101 0x00001919>;
+
+	phy-mode = "sgmii";
+//	mtd-mac-address = <&uboot 0x1fc00>;
+
+	fixed-link {
+		speed = <1000>;
+		full-duplex;
+	};
+};
+
+&mdio0 {
+	status = "okay";
+
+	phy-mask = <0x21>;
+};
+
+&uart {
+	status = "okay";
+};
