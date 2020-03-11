@@ -1,0 +1,10 @@
+--- a/arch/arm/boot/dts/Makefile	2020-03-12 02:19:04.267000000 +0900
++++ b/arch/arm/boot/dts/Makefile	2020-03-12 02:21:18.544959900 +0900
+@@ -829,6 +829,7 @@
+ 	ox810se-wd-mbwe.dtb \
+ 	ox820-cloudengines-pogoplug-series-3.dtb
+ dtb-$(CONFIG_ARCH_QCOM) += \
++	ipq8078-buffalo-wxr-5950ax12.dtb \
+ 	qcom-apq8060-dragonboard.dtb \
+ 	qcom-apq8064-cm-qs600.dtb \
+ 	qcom-apq8064-ifc6410.dtb \

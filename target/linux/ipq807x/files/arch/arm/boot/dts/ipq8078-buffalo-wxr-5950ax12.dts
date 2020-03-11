@@ -1,0 +1,463 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include "ipq8074.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/spmi/spmi.h>
+#include <dt-bindings/clock/qcom,gcc-ipq8074.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+
+/ {
+	#address-cells = <0x2>;
+	#size-cells = <0x2>;
+	model = "Buffalo WXR-5950AX12";
+	compatible = "buffalo,wxr-5950ax12", "qcom,ipq807x-hk01", "qcom,ipq8074";
+	interrupt-parent = <&intc>;
+
+	aliases {
+		serial0 = &blsp1_uart5;
+	};
+
+	chosen {
+		/* use "ubi_rootfs volume in "ubi" partition as rootfs */
+		bootargs = "ubi.block=0,1 root=/dev/ubiblock0_1 rootfstype=squashfs swiotlb=1";
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x40000000 0x0 0x40000000>;
+	};
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		nss@40000000 {
+			reg = <0x0 0x40000000 0x0 0x01000000>;
+			no-map;
+		};
+
+		tzapp@4a400000 {
+			reg = <0x0 0x4a400000 0x0 0x00200000>;
+			no-map;
+		};
+
+		uboot@4a600000 {
+			reg = <0x0 0x4a600000 0x0 0x00400000>;
+			no-map;
+		};
+
+		sbl@4aa00000 {
+			reg = <0x0 0x4aa00000 0x0 0x00100000>;
+			no-map;
+		};
+
+		smem_region: smem@4ab00000 {
+			reg = <0x0 0x4ab00000 0x0 0x00100000>;
+			no-map;
+		};
+
+		tz@4ac00000 {
+			reg = <0x0 0x4ac00000 0x0 0x00400000>;
+			no-map;
+		};
+
+		wcnss@4b000000 {
+			reg = <0x0 0x4b000000 0x0 0x05f00000>;
+			no-map;
+		};
+
+		q6_etr_dump@50f00000 {
+			reg = <0x0 0x50f00000 0x0 0x00100000>;
+			no-map;
+		};
+
+		wifi_dump@51000000 {
+			reg = <0x0 0x51000000 0x0 0x00600000>;
+			no-map;
+		};
+
+		wigig_dump@51200000 {
+			reg = <0x0 0x51200000 0x0 0x00400000>;
+			no-map;
+		};
+	};
+};
+
+&tlmm {
+	mdio_pins: mdio-pinmux {
+		mux {
+			pins = "gpio68", "gpio69";
+			drive-strength = <8>;
+			bias-pull-up;
+		};
+
+		mdc {
+			pins = "gpio68";
+			function = "mdc";
+		};
+
+		mdio {
+			pins = "gpio69";
+			function = "mdio";
+		};
+	};
+};
+
+&soc {
+	smp2p {
+		compatible = "qcom,smp2p";
+		qcom,smem = <435>, <428>;
+
+		interrupt-parent =<&intc>;
+		interrupts = <0 322 1>;
+
+		qcom,ipc = <&apcs 8 9>;
+		qcom,local-pid = <0>;
+		qcom,remote-pid = <1>;
+
+		wcss_smp2p_out: master-kernel {
+			qcom,entry-name = "master-kernel";
+			#qcom,smem-state-cells = <1>;
+		};
+
+		wcss_smp2p_in: slave-kernel {
+			qcom,entry-name = "slave-kernel";
+			interrupt-controller;
+			#interrupt-cells = <2>;
+		};
+	};
+
+	apcs: mailbox@b111000 {
+		compatible = "qcom,msm8996-apcs-hmss-global", "syscon";
+		reg = <0xb111000 0x1000>; /* stock dts has no reg */
+
+		#mbox-cells = <1>;
+	};
+
+	tcsr_global: syscon@1945000 {
+		compatible = "syscon";
+		reg = <0x1945000 0xe000>;
+	};
+
+	qcom_q6v5_wcss@cd00000 {
+		compatible = "qcom,ipq8074-wcss-pil";
+		reg = <0xcd00000 0x4040>,
+			  <0x4ab000 0x20>;
+		reg-names = "qdsp6", "rmb";
+		interrupts-extended = <&intc 0 325 1>,
+				      <&wcss_smp2p_in 0 0>,
+				      <&wcss_smp2p_in 1 0>,
+				      <&wcss_smp2p_in 2 0>,
+				      <&wcss_smp2p_in 3 0>;
+		interrupt-names = "wdog",
+				  "fatal",
+				  "ready",
+				  "handover",
+				  "stop-ack";
+		resets = <&gcc GCC_UBI0_AXI_ARES>,
+			 <&gcc GCC_WCSS_BCR>,
+			 <&gcc GCC_WCSS_Q6_BCR>;
+		reset-names = "wcss_aon_reset", "wcss_reset", "wcss_q6_reset";
+		qcom,halt-regs = <&tcsr_global 0xa000 0xd000 0x0>;
+
+		qcom,smem-states = <&wcss_smp2p_out 0>,
+				   <&wcss_smp2p_out 1>;
+		qcom,smem-state-names = "shutdown", "stop";
+
+		glink-edge {
+			interrupts = <GIC_SPI 321 1>;
+			qcom,remote-pid = <1>;
+			mboxes = <&apcs 8>;
+
+			rpm_requests {
+				qcom,glink-channels = "IPCRTR";
+			};
+		};
+	};
+
+	mdio@90000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		compatible = "qcom,ipq40xx-mdio";
+		reg = <0x90000 0x64>;
+		reset-gpios = <&tlmm 37 GPIO_ACTIVE_HIGH>;
+
+		pinctrl-0 = <&mdio_pins>;
+		pinctrl-names = "default";
+	};
+
+	smem@4ab00000 {
+		compatible = "qcom,smem";
+		memory-region = <&smem_region>;
+		hwlocks = <&tcsr_mutex 0>;
+	};
+
+	tcsr_mutex_block: syscon@1905000 {
+		compatible = "syscon";
+		reg = <0x1905000 0x8000>;
+	};
+
+	tcsr_mutex: hwlock@1905000 {
+		compatible = "qcom,tcsr-mutex";
+		syscon = <&tcsr_mutex_block 0 0x80>;
+
+		#hwlock-cells = <1>;
+	};
+
+	spmi {
+		compatible = "qcom,spmi-pmic-arb";
+		reg = <0x200f000 0x1000>,
+			  <0x2400000 0x800000>,
+			  <0x2c00000 0x800000>,
+			  <0x3800000 0x200000>,
+			  <0x200a000 0x700>;
+		reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
+
+		interrupt-names = "periph_irq";
+		interrupts = <0x0 0xbe 0x0>;
+
+		qcom,ee = <0>;
+		qcom,channel = <0>;
+
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		interrupt-controller;
+		#interrupt-cells = <4>;
+
+		pmic@0 {
+			compatible = "qcom,spmi-pmic";
+			reg = <0x0 SPMI_USID>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		pmic@1 {
+			compatible = "qcom,spmi-pmic";
+			reg = <0x1 SPMI_USID>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			regulator_s3 {
+				compatible = "qcom,regulator";
+				regulator-name = "pmd9655_s3";
+				regulator-min-microvolt = <592000>;
+				regulator-max-microvolt = <1064000>;
+				regulator-always-on;
+				regulator-boot-on;
+			};
+
+			regulator_s4 {
+				compatible = "qcom,regulator";
+				regulator-name = "pmd9655_s4";
+				regulator-min-microvolt = <712000>;
+				regulator-max-microvolt = <992000>;
+				regulator-always-on;
+				regulator-boot-on;
+			};
+
+			regulator_ldo11 {
+				compatible = "qcom,regulator";
+				regulator-name = "pmd9655_ldo11";
+				regulator-min-microvolt = <1104000>;
+				regulator-max-microvolt = <3300000>;
+			};
+		};
+	};
+
+	pmu {
+		compatible = "arm,cortex-a7-pmu";
+		interrupts = <GIC_PPI 7 (GIC_CPU_MASK_SIMPLE(4) |
+					IRQ_TYPE_LEVEL_HIGH)>;
+	};
+};
+
+&blsp1_uart5 {
+	status = "okay";
+};
+
+&qpic_bam {
+	status = "okay";
+};
+
+&qpic_nand {
+	status = "okay";
+
+	cs@0 {
+		reg = <0>;
+		compatible = "qcom,nandcs";
+
+		nand-ecc-strength = <4>;
+		nand-bus-width = <8>;
+		nand-ecc-step-size = <512>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "SBL1";
+				reg = <0x00000000 0x00100000>;
+				read-only;
+			};
+
+			partition@100000 {
+				label = "MIBIB";
+				reg = <0x00100000 0x00100000>;
+				read-only;
+			};
+
+			partition@200000 {
+				label = "BOOTCONFIG";
+				reg = <0x00200000 0x00080000>;
+				read-only;
+			};
+
+			partition@280000 {
+				label = "BOOTCONFIG1";
+				reg = <0x00280000 0x00080000>;
+				read-only;
+			};
+
+			partition@300000 {
+				label = "QSEE";
+				reg = <0x00300000 0x00300000>;
+				read-only;
+			};
+
+			partition@600000 {
+				label = "QSEE_1";
+				reg = <0x00600000 0x00300000>;
+				read-only;
+			};
+
+			partition@900000 {
+				label = "DEVCFG";
+				reg = <0x00900000 0x00080000>;
+				read-only;
+			};
+
+			partition@980000 {
+				label = "DEVCFG_1";
+				reg = <0x00980000 0x00080000>;
+				read-only;
+			};
+
+			partition@a00000 {
+				label = "APDP";
+				reg = <0x00a00000 0x00080000>;
+				read-only;
+			};
+
+			partition@a80000 {
+				label = "APDP_1";
+				reg = <0x00a80000 0x00080000>;
+				read-only;
+			};
+
+			partition@b00000 {
+				label = "RPM";
+				reg = <0x00b00000 0x00080000>;
+				read-only;
+			};
+
+			partition@b80000 {
+				label = "RPM_1";
+				reg = <0x00b80000 0x00080000>;
+				read-only;
+			};
+
+			partition@c00000 {
+				label = "CDT";
+				reg = <0x00c00000 0x00080000>;
+				read-only;
+			};
+
+			partition@c80000 {
+				label = "CDT_1";
+				reg = <0x00c80000 0x00080000>;
+				read-only;
+			};
+
+			partition@d00000 {
+				label = "APPSBLENV";
+				reg = <0x00d00000 0x00080000>;
+				read-only;
+			};
+
+			partition@d80000 {
+				label = "APPSBL";
+				reg = <0x00d80000 0x00100000>;
+				read-only;
+			};
+
+			partition@e80000 {
+				label = "APPSBL_1";
+				reg = <0x00e80000 0x00100000>;
+				read-only;
+			};
+
+			partition@f80000 {
+				label = "ART";
+				reg = <0x00f80000 0x00080000>;
+				read-only;
+			};
+
+			partition@1000000 {
+				label = "ART_1";
+				reg = <0x01000000 0x00080000>;
+				read-only;
+			};
+
+			partition@1080000 {
+				label = "ORGDATA";
+				reg = <0x01080000 0x00080000>;
+				read-only;
+			};
+
+			partition@1100000 {
+				label = "ORGDATA_1";
+				reg = <0x01100000 0x00080000>;
+				read-only;
+			};
+
+			partition@1180000 {
+				label = "ubi";
+				reg = <0x01180000 0x04000000>;
+			};
+
+			partition@5180000 {
+				label = "rootfs_recover";
+				reg = <0x05180000 0x04000000>;
+			};
+
+			partition@9180000 {
+				label = "user_property";
+				reg = <0x09180000 0x06e80000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&pcie_phy0 {
+	status = "okay";
+};
+
+&pcie0 {
+	status = "okay";
+};
+
+&pcie_phy1 {
+	status = "okay";
+};
+
+&pcie1 {
+	status = "okay";
+};
