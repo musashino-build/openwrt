@@ -10,11 +10,25 @@ define Device/Default
 	KERNEL_INITRAMFS_PREFIX := $$(IMG_PREFIX)-$(1)-initramfs
 	KERNEL_PREFIX := $$(IMAGE_PREFIX)
 	KERNEL_LOADADDR = $(IPQ807X_KERNEL_LOADADDR)
-	DEVICE_DTS_DIR := $(DTS_DIR)/qcom
+	DEVICE_DTS_DIR := $(DTS_DIR)
 	DEVICE_DTS = $$(SOC)-$(subst _,-,$(1))
 	SUPPORTED_DEVICES := $(subst _,$(comma),$(1))
 	IMAGE/sysupgrade.bin = sysupgrade-tar | append-metadata
 	IMAGE/sysupgrade.bin/squashfs :=
 endef
+
+define Device/FitImage
+	KERNEL_SUFFIX := -fit-uImage.itb
+	KERNEL = kernel-bin | gzip | fit gzip $$(DEVICE_DTS_DIR)/$$(DEVICE_DTS).dtb
+	KERNEL_NAME := Image
+endef
+
+ifeq ($(SUBTARGET),arm)
+include arm.mk
+endif
+
+ifeq ($(SUBTARGET),arm64)
+include arm64.mk
+endif
 
 $(eval $(call BuildImage))

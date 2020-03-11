@@ -1,11 +1,11 @@
 include $(TOPDIR)/rules.mk
 
-ARCH:=aarch64
+ARCH:=arm
 BOARD:=ipq807x
 BOARDNAME:=Qualcomm Atheros IPQ807x
 FEATURES:=squashfs ramdisk source-only
 KERNELNAME:=Image dtbs
-CPU_TYPE:=cortex-a53
+SUBTARGETS:=arm arm64
 
 KERNEL_PATCHVER:=5.4
 
