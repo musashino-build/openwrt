@@ -1135,19 +1135,23 @@ static int rtl8367_setup(struct rtl8366_smi *smi)
 
 	/* initialize external interfaces */
 	if (smi->parent->of_node) {
-		err = rtl8367_extif_init_of(smi, 0, "realtek,extif0");
+		err = rtl8367_extif_init_of(smi, RTL8367_EXTIF0,
+					    "realtek,extif0");
 		if (err)
 			return err;
 
-		err = rtl8367_extif_init_of(smi, 1, "realtek,extif1");
+		err = rtl8367_extif_init_of(smi, RTL8367_EXTIF1,
+					    "realtek,extif1");
 		if (err)
 			return err;
 	} else {
-		err = rtl8367_extif_init(smi, 0, pdata->extif0_cfg);
+		err = rtl8367_extif_init(smi, RTL8367_EXTIF0,
+					 pdata->extif0_cfg);
 		if (err)
 			return err;
 
-		err = rtl8367_extif_init(smi, 1, pdata->extif1_cfg);
+		err = rtl8367_extif_init(smi, RTL8367_EXTIF1,
+					 pdata->extif1_cfg);
 		if (err)
 			return err;
 	}

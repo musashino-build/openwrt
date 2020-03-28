@@ -784,7 +784,7 @@ static int rtl8367b_extif_set_mode(struct rtl8366_smi *smi, int id,
 		REG_RMW(smi, RTL8367B_CHIP_DEBUG0_REG,
 			RTL8367B_DEBUG0_SEL33(id),
 			RTL8367B_DEBUG0_SEL33(id));
-		if (id <= 1) {
+		if (id <= RTL8367_EXTIF1) {
 			REG_RMW(smi, RTL8367B_CHIP_DEBUG0_REG,
 				RTL8367B_DEBUG0_DRI(id) |
 					RTL8367B_DEBUG0_DRI_RG(id) |
@@ -835,7 +835,7 @@ static int rtl8367b_extif_set_mode(struct rtl8366_smi *smi, int id,
 		return -EINVAL;
 	}
 
-	if (id <= 1)
+	if (id <= RTL8367_EXTIF1)
 		REG_RMW(smi, RTL8367B_DIS_REG,
 			RTL8367B_DIS_RGMII_MASK << RTL8367B_DIS_RGMII_SHIFT(id),
 			mode << RTL8367B_DIS_RGMII_SHIFT(id));
@@ -979,23 +979,28 @@ static int rtl8367b_setup(struct rtl8366_smi *smi)
 
 	/* initialize external interfaces */
 	if (smi->parent->of_node) {
-		err = rtl8367b_extif_init_of(smi, 0, "realtek,extif0");
+		err = rtl8367b_extif_init_of(smi, RTL8367_EXTIF0,
+					     "realtek,extif0");
 		if (err)
 			return err;
 
-		err = rtl8367b_extif_init_of(smi, 1, "realtek,extif1");
+		err = rtl8367b_extif_init_of(smi, RTL8367_EXTIF1,
+					     "realtek,extif1");
 		if (err)
 			return err;
 
-		err = rtl8367b_extif_init_of(smi, 2, "realtek,extif2");
+		err = rtl8367b_extif_init_of(smi, RTL8367_EXTIF2,
+					     "realtek,extif2");
 		if (err)
 			return err;
 	} else {
-		err = rtl8367b_extif_init(smi, 0, pdata->extif0_cfg);
+		err = rtl8367b_extif_init(smi, RTL8367_EXTIF0,
+					  pdata->extif0_cfg);
 		if (err)
 			return err;
 
-		err = rtl8367b_extif_init(smi, 1, pdata->extif1_cfg);
+		err = rtl8367b_extif_init(smi, RTL8367_EXTIF1,
+					  pdata->extif1_cfg);
 		if (err)
 			return err;
 	}

@@ -30,6 +30,12 @@ struct rtl8367_port_ability {
 	enum rtl8367_port_speed speed;
 };
 
+enum rtl8367_extif {
+	RTL8367_EXTIF0 = 0,
+	RTL8367_EXTIF1,
+	RTL8367_EXTIF2,
+};
+
 enum rtl8367_extif_mode {
 	RTL8367_EXTIF_MODE_DISABLED = 0,
 	RTL8367_EXTIF_MODE_RGMII,
