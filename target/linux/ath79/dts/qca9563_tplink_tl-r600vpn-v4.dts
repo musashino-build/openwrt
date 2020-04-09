@@ -47,11 +47,7 @@
 	};
 
 	rtl8367s {
-		compatible = "realtek,rtl8367b";
-		/* default phy address on RTL8367S is "29"? */
-		phy_id = <29>;
-		/* default cpu port on RTL8367S is "6" */
-		cpu_port = <6>;
+		compatible = "realtek,rtl8367s";
 		/*
 		 * stock fw:
 		 *   0x1307 (ext1_rgmxf) -> 0x4
