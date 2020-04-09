@@ -94,6 +94,8 @@ speed_str(int speed)
 		return "100baseT";
 	case 1000:
 		return "1000baseT";
+	case 2500:
+		return "2500baseT";
 	default:
 		break;
 	}
