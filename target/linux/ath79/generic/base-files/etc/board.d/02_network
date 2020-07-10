@@ -245,6 +245,10 @@ ath79_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"0@eth0" "1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "5:wan"
 		;;
+	elecom,wrc-1750ghbk)
+		ucidef_add_switch "switch0" \
+			"0@eth1" "2:lan:4" "3:lan:3" "4:lan:2" "5:lan:1" "6@eth0" "1:wan"
+		;;
 	elecom,wrc-1750ghbk2-i|\
 	elecom,wrc-300ghbk2-i|\
 	sitecom,wlr-8100)
@@ -559,6 +563,11 @@ ath79_setup_macs()
 	wd,mynet-n750)
 		lan_mac=$(mtd_get_mac_ascii devdata "lanmac")
 		wan_mac=$(mtd_get_mac_ascii devdata "wanmac")
+		;;
+	elecom,wrc-1750ghbk)
+		lan_mac=$(mtd_get_mac_ascii hwconfig HW.LAN.MAC.Address)
+		wan_mac=$(mtd_get_mac_ascii hwconfig HW.WAN.MAC.Address)
+		label_mac=$wan_mac
 		;;
 	elecom,wrc-1750ghbk2-i|\
 	elecom,wrc-300ghbk2-i)

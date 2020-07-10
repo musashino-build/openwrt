@@ -987,6 +987,18 @@ define Device/dlink_dir-859-a1
 endef
 TARGET_DEVICES += dlink_dir-859-a1
 
+define Device/elecom_wrc-1750ghbk
+  SOC := qca9558
+  DEVICE_VENDOR := ELECOM
+  DEVICE_MODEL := WRC-1750GHBK
+  IMAGE_SIZE := 15808k
+  IMAGE/sysupgrade.bin := append-kernel | pad-offset $$$$(BLOCKSIZE) 20 | \
+	append-rootfs | edimax-header -b -s CSYS -m RN67 -f 0x70000 -S 0x01100000 | \
+	pad-rootfs | append-metadata | check-size $$$$(IMAGE_SIZE)
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
+endef
+TARGET_DEVICES += elecom_wrc-1750ghbk
+
 define Device/elecom_wrc-1750ghbk2-i
   SOC := qca9563
   DEVICE_VENDOR := ELECOM

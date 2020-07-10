@@ -1,0 +1,186 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+#include "qca955x.dtsi"
+
+/ {
+	compatible = "elecom,wrc-1750ghbk", "qca,qca9558";
+	model = "ELECOM WRC-1750GHBK";
+
+	aliases {
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+		led-running = &led_power;
+		led-upgrade = &led_power;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&jtag_disable_pins>;
+
+		info {
+			label = "red:info";
+			gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
+		};
+
+		wps {
+			label = "red:wps";
+			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+		};
+
+		led_power: power {
+			label = "blue:power";
+			gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+			default-state = "on";
+		};
+
+		wlan2g {
+			label = "blue:wlan2g";
+			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy1tpt";
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+		router {
+			label = "rt";
+			gpios = <&gpio 0 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_0>;
+			linux,input-type = <EV_SW>;
+			debounce-interval = <60>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+			debounce-interval = <60>;
+		};
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+			debounce-interval = <60>;
+		};
+	};
+};
+
+&spi {
+	status = "okay";
+
+	num-cs = <1>;
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <25000000>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x000000 0x040000>;
+				read-only;
+			};
+
+			partition@40000 {
+				label = "u-boot-env";
+				reg = <0x040000 0x010000>;
+				read-only;
+			};
+
+			partition@50000 {
+				label = "nvram";
+				reg = <0x050000 0x020000>;
+				read-only;
+			};
+
+			partition@70000 {
+/*				compatible = "openwrt,uimage", "denx,uimage";
+				openwrt,offset = <20>;
+				openwrt,partition-magic = <0x43535953>;*/
+				compatible = "edimax,uimage";
+				label = "firmware";
+				reg = <0x070000 0xf70000>;
+			};
+
+			partition@fe0000 {
+				label = "hwconfig";
+				reg = <0xfe0000 0x10000>;
+				read-only;
+			};
+
+			art: partition@ff0000 {
+				label = "art";
+				reg = <0xff0000 0x010000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&mdio0 {
+	status = "okay";
+
+	phy0: ethernet-phy@0 {
+		reg = <0>;
+
+		qca,ar8327-initvals = <
+			0x04 0x00000080 /* PORT0 PAD MODE CTRL */
+			0x0c 0x07600000 /* PORT6 PAD MODE CTRL */
+			0x50 0xcf37cf37 /* LED_CTRL0 */
+			0x54 0x00000000 /* LED_CTRL1 */
+			0x58 0x00000000 /* LED_CTRL2 */
+			0x5c 0x03ffff00 /* LED_CTRL3 */
+			0x7c 0x0000007e /* PORT0 STATUS */
+			0x94 0x0000007e /* PORT6 STATUS */
+		>;
+	};
+};
+
+&eth0 {
+	status = "okay";
+
+	pll-data = <0x5a000000 0x00000101 0x00001616>;
+	phy-handle = <&phy0>;
+};
+
+&eth1 {
+	status = "okay";
+
+	pll-data = <0x03000101 0x00000101 0x00001616>;
+
+	fixed-link {
+		speed = <1000>;
+		full-duplex;
+	};
+};
+
+&pcie0 {
+	status = "okay";
+
+	wifi@0,0 {
+		compatible = "qcom,ath10k";
+		reg = <0x0000 0 0 0 0>;
+	};
+};
+
+&uart {
+	status = "okay";
+};
+
+&wmac {
+	status = "okay";
+
+	qca,no-eeprom;
+};
