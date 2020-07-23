@@ -171,8 +171,8 @@
 &mdio1 {
 	status = "okay";
 
-	phy0: ethernet-phy@0 {
-		reg = <0>;
+	phy0: ethernet-phy@1 {
+		reg = <1>;
 //		at803x-override-sgmii-link-check;
 	};
 };
