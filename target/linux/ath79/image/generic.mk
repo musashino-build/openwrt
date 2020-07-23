@@ -987,6 +987,15 @@ define Device/dlink_dir-859-a1
 endef
 TARGET_DEVICES += dlink_dir-859-a1
 
+define Device/elecom_wab-i1750-ps
+  SOC := qca9558
+  DEVICE_VENDOR := ELECOM
+  DEVICE_MODEL := WAB-I1750-PS
+  IMAGE_SIZE := 14336k
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
+endef
+TARGET_DEVICES += elecom_wab-i1750-ps
+
 define Device/elecom_wrc-1750ghbk2-i
   SOC := qca9563
   DEVICE_VENDOR := ELECOM
