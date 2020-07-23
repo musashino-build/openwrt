@@ -69,6 +69,8 @@
 
 		clocks = <&pll ATH79_CLK_REF>;
 		clock-names = "uart";
+
+		status = "disabled";
 	};
 };
 
