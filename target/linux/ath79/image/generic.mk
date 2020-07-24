@@ -992,7 +992,7 @@ define Device/elecom_wab-i1750-ps
   DEVICE_VENDOR := ELECOM
   DEVICE_MODEL := WAB-I1750-PS
   IMAGE_SIZE := 14336k
-  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  DEVICE_PACKAGES := kmod-ath10k-ct ath10k-firmware-qca988x-ct kmod-usb2
 endef
 TARGET_DEVICES += elecom_wab-i1750-ps
 
