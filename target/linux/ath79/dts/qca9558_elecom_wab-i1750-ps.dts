@@ -191,23 +191,23 @@
 	pll-data = <0x00000101 0x00000101 0x00001616>;
 };
 
-/*&pcie0 {
+&pcie0 {
 	status = "okay";
 
 	wifi@0,0 {
 		compatible = "qcom,ath10k";
 		reg = <0x0000 0 0 0 0>;
 	};
-};*/
+};
 
 &uart {
 	status = "okay";
 };
 
-/*&usb_phy0 {
+&usb_phy0 {
 	status = "okay";
 };
 
 &usb0 {
 	status = "okay";
-};*/
+};
