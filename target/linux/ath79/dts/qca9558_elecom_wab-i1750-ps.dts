@@ -211,3 +211,7 @@
 &usb0 {
 	status = "okay";
 };
+
+&wdt {
+	status = "disabled";
+};
