@@ -86,14 +86,19 @@
 		always-running;
 	};
 
-	uart1: uart@18500000 {
-		compatible = "qca,ar9330-uart";
-		reg = <0x18500000 0x14>;
+	ahb {
+		apb {
+			uart1: uart@18500000 {
+				compatible = "qca,ar9330-uart";
+				reg = <0x18500000 0x14>;
 
-		interrupts = <3>;
+				interrupts = <6>;
+				interrupt-parent = <&miscintc>;
 
-		clocks = <&pll ATH79_CLK_REF>;
-		clock-names = "uart";
+				clocks = <&pll ATH79_CLK_UART1>;
+				clock-names = "uart";
+			};
+		};
 	};
 };
 
