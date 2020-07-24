@@ -10,37 +10,33 @@
 	compatible = "elecom,wab-i1750-ps", "qca,qca9557";
 	model = "ELECOM WAB-I1750-PS";
 
-/*	aliases {
-		led-boot = &led_power;
-		led-failsafe = &led_power;
-		led-running = &led_power;
-		led-upgrade = &led_power;
-	};*/
+	aliases {
+		led-boot = &led_status;
+		led-failsafe = &led_status;
+		led-upgrade = &led_status;
+	};
 
-/*	leds {
+	leds {
 		compatible = "gpio-leds";
 
-		led_power: power {
-			label = "wab-i1750-ps:green:power";
-			gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
-			default-state = "on";
+		wlan2g {
+			label = "wab-i1750-ps:green:wlan2g";
+			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "phy1tpt";
 		};
 
-		diag {
-			label = "wab-i1750-ps:orange:diag";
-			gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
+		led_status: status {
+			label = "wab-i1750-ps:red:status";
+			gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
 		};
 
-		vpn_orange {
-			label = "wab-i1750-ps:orange:vpn";
-			gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
+		usb {
+			label = "wab-i1750-ps:green:usb";
+			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
+			trigger-sources = <&hub_port>;
+			linux,default-trigger = "usbport";
 		};
-
-		vpn_green {
-			label = "wab-i1750-ps:green:vpn";
-			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
-		};
-	};*/
+	};
 
 	keys {
 		compatible = "gpio-keys";
@@ -216,6 +212,11 @@
 
 &usb0 {
 	status = "okay";
+
+	hub_port: port@1 {
+		reg = <1>;
+		#trigger-source-cells = <0>;
+	};
 };
 
 &wdt {
