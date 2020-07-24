@@ -63,6 +63,11 @@
 		};
 	};
 
+	beeper {
+		compatible = "gpio-beeper";
+		gpios = <&gpio 4 GPIO_ACTIVE_HIGH>;
+	};
+
 	watchdog {
 		compatible = "linux,wdt-gpio";
 		gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
