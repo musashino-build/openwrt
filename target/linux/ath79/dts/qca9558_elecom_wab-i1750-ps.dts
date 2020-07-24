@@ -11,6 +11,7 @@
 	model = "ELECOM WAB-I1750-PS";
 
 	aliases {
+		serial1 = &uart1;
 		led-boot = &led_status;
 		led-failsafe = &led_status;
 		led-upgrade = &led_status;
@@ -76,7 +77,7 @@
 		always-running;
 	};
 
-	uart@18500000 {
+	uart1: uart@18500000 {
 		compatible = "qca,ar9330-uart";
 		reg = <0x18500000 0x14>;
 
