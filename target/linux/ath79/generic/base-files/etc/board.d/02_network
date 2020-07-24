@@ -561,6 +561,11 @@ ath79_setup_macs()
 		lan_mac=$(mtd_get_mac_ascii devdata "lanmac")
 		wan_mac=$(mtd_get_mac_ascii devdata "wanmac")
 		;;
+	elecom,wab-i1750-ps)
+		lan_mac=$(mtd_get_mac_ascii u-boot-env "ethaddr")
+		wan_mac=$lan_mac
+		label_mac=$lan_mac
+		;;
 	elecom,wrc-1750ghbk2-i|\
 	elecom,wrc-300ghbk2-i)
 		wan_mac=$(macaddr_add "$(mtd_get_mac_binary art 0x1002)" -2)
