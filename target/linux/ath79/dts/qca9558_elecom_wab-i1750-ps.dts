@@ -61,6 +61,14 @@
 		};
 	};*/
 
+	watchdog {
+		compatible = "linux,wdt-gpio";
+		gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
+		hw_algo = "toggle";
+		hw_margin_ms = <300>;
+		always-running;
+	};
+
 	uart@18500000 {
 		compatible = "qca,ar9330-uart";
 		reg = <0x18500000 0x14>;
