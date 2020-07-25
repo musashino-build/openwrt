@@ -1,0 +1,15 @@
+Index: linux-5.4.52/arch/mips/ath79/clock.c
+===================================================================
+--- linux-5.4.52.orig/arch/mips/ath79/clock.c
++++ linux-5.4.52/arch/mips/ath79/clock.c
+@@ -515,6 +515,10 @@ static void __init qca955x_clocks_init(v
+ 	ath79_set_clk(ATH79_CLK_CPU, cpu_rate);
+ 	ath79_set_clk(ATH79_CLK_DDR, ddr_rate);
+ 	ath79_set_clk(ATH79_CLK_AHB, ahb_rate);
++
++	clk_ctrl = __raw_readl(pll_base + QCA955X_PLL_SWITCH_CLOCK_SPARE_REG);
++	if (clk_ctrl & AR934X_PLL_SWITCH_CLOCK_CONTROL_UART1_CLK_SEL)
++		ath79_set_clk(ATH79_CLK_UART1, 100 * 1000 * 1000);
+ }
+ 
+ static void __init qca956x_clocks_init(void __iomem *pll_base)

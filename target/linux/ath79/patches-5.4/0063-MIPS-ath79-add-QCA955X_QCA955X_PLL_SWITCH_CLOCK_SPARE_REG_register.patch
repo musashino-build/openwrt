@@ -1,0 +1,12 @@
+Index: linux-5.4.52/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+===================================================================
+--- linux-5.4.52.orig/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
++++ linux-5.4.52/arch/mips/include/asm/mach-ath79/ar71xx_regs.h
+@@ -392,6 +392,7 @@
+ #define QCA955X_PLL_DDR_CONFIG_REG		0x04
+ #define QCA955X_PLL_CLK_CTRL_REG		0x08
+ #define QCA955X_PLL_PCIE_CONFIG_REG		0x0c
++#define QCA955X_PLL_SWITCH_CLOCK_SPARE_REG	0x20
+ #define QCA955X_PLL_ETH_XMII_CONTROL_REG	0x28
+ #define QCA955X_PLL_ETH_SGMII_CONTROL_REG	0x48
+ #define QCA955X_PLL_ETH_SGMII_SERDES_REG	0x4c
