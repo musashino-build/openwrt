@@ -97,6 +97,9 @@
 				compatible = "qca,ar9330-uart";
 				reg = <0x18500000 0x14>;
 
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinmux_uart1>;
+
 				interrupts = <6>;
 				interrupt-parent = <&miscintc>;
 
@@ -224,6 +227,15 @@
 	wifi@0,0 {
 		compatible = "qcom,ath10k";
 		reg = <0x0000 0 0 0 0>;
+	};
+};
+
+&pinmux {
+	pinmux_uart1: uart1 {
+		// UART1_TD on GPIO 0, UART1_RD on GPIO 1,
+		// UART1_RTS on GPIO 2, UART1_CTS on GPIO 3
+		pinctrl-single,bits = <0x0 0x130012 0xff00ff>,
+				<0x3c 0x3010000 0xffff0000>;
 	};
 };
 
