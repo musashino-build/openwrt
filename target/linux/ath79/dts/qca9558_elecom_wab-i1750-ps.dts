@@ -98,7 +98,7 @@
 				reg = <0x18500000 0x14>;
 
 				pinctrl-names = "default";
-				pinctrl-0 = <&pinmux_uart1>;
+				pinctrl-0 = <&pinmux_uart1 &jtag_disable_pins>;
 
 				interrupts = <6>;
 				interrupt-parent = <&miscintc>;
