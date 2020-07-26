@@ -230,6 +230,28 @@
 	};
 };
 
+&gpio {
+	/*
+	 * U-Boot doesn't configure uart1, configuring GPIO_OE is needed for
+	 * four pins of uart1 (0-TD/2-RTS: OUT, 1-RD/3-CTS: IN)
+	 */
+	uart1_out {
+		gpio-hog;
+		gpios = <0 GPIO_ACTIVE_HIGH>,
+			<2 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "uart1-td-rts";
+	};
+
+	uart1_in {
+		gpio-hog;
+		gpios = <1 GPIO_ACTIVE_HIGH>,
+			<3 GPIO_ACTIVE_HIGH>;
+		input;
+		line-name = "uart1-rd-cts";
+	};
+};
+
 &pinmux {
 	pinmux_uart1: uart1 {
 		// UART1_TD on GPIO 0, UART1_RD on GPIO 1,
