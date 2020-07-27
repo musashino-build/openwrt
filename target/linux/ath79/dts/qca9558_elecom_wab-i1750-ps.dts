@@ -181,23 +181,22 @@
 
 	phy4: ethernet-phy@4 {
 		reg = <4>;
-//		eee-broken-100tx;
-//		eee-broken-1000t;
+		eee-broken-100tx;
+		eee-broken-1000t;
 	};
 };
 
 &eth0 {
 	status = "okay";
 
-//	mtd-mac-address = <&art 0x0>;
 	phy-handle = <&phy4>;
-	pll-data = <0xa6000000 0x00000101 0x00001616>;
+	pll-data = <0xa6000000 0x80000101 0x80001313>;
 
 	gmac_config: gmac-config {
 		device = <&gmac>;
 
-		rxdv-delay = <3>;
-		rxd-delay = <3>;
+		rxdv-delay = <0>;
+		rxd-delay = <0>;
 		txen-delay = <0>;
 		txd-delay = <0>;
 		rgmii-enabled = <1>;
@@ -209,16 +208,17 @@
 
 	phy0: ethernet-phy@1 {
 		reg = <1>;
-//		at803x-override-sgmii-link-check;
+		at803x-override-sgmii-link-check;
 	};
 };
 
 &eth1 {
 	status = "okay";
 
-//	mtd-mac-address = <&art 0x6>;
 	phy-handle = <&phy0>;
-	pll-data = <0x00000101 0x00000101 0x00001616>;
+	pll-data = <0x03000000 0x00000101 0x00001313>;
+
+	qca955x-sgmii-fixup;
 };
 
 &pcie0 {
