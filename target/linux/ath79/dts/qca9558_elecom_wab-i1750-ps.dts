@@ -168,7 +168,7 @@
 			};
 
 			partition@f80000 {
-				label = "manufacture";
+				label = "storage";
 				reg = <0xf80000 0x080000>;
 				read-only;
 			};
