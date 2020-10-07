@@ -23,13 +23,13 @@
 		compatible = "gpio-leds";
 
 		power {
-			label = "tl-r600vpn-v4:green:power";
+			label = "green:power";
 			gpios = <&gpio 5 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 		};
 
 		led_system: system {
-			label = "tl-r600vpn-v4:green:system";
+			label = "green:system";
 			gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
 		};
 	};
