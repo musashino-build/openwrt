@@ -516,7 +516,7 @@ define Device/tplink_tl-r600vpn-v4
   DEVICE_VENDOR := TP-Link
   DEVICE_MODEL := TL-R600VPN
   DEVICE_VARIANT := v4
-  DEVICE_PACKAGES := -iwinfo -kmod-ath9k -wpad-basic
+  DEVICE_PACKAGES := -iwinfo -kmod-ath9k -wpad-basic kmod-switch-rtl8367b
 endef
 TARGET_DEVICES += tplink_tl-r600vpn-v4
 
