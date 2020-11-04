@@ -95,7 +95,7 @@
 				read-only;
 			};
 
-			partition@40000 {
+/*			partition@40000 {
 				label = "kernel";
 				reg = <0x040000 0x150000>;
 			};
@@ -103,6 +103,12 @@
 			partition@190000 {
 				label = "rootfs";
 				reg = <0x190000 0xba0000>;
+			};*/
+
+			partition@40000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0x040000 0xcf0000>;
 			};
 
 			partition@d30000 {
