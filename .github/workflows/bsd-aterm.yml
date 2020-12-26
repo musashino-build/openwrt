@@ -1,0 +1,141 @@
+name: Build BSD-based Aterm devices
+
+on:
+  push:
+    branches:
+      - bsd-aterm_gha
+
+jobs:
+
+  # Build images for WG300HP
+  wg300hp_build:
+
+    strategy:
+      matrix:
+        device: [WG300HP]
+
+    runs-on: ubuntu-20.04  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      MAKE_J_FLAG: 2
+
+    steps:
+    - name: チェックアウト
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # ref for "Out-File": https://github.community/t/environmental-files-on-windows/137631
+    - name: Gitのコミットハッシュ（ショート）を取得
+      run: |
+        git_hash_short="${GITHUB_SHA:0:10}"
+        echo $git_hash_short
+        echo "GIT_HASH_SHORT=$git_hash_short" >> $GITHUB_ENV
+
+    - name: ホストパッケージのインストール
+      run: |
+        sudo apt update
+        sudo apt install build-essential ccache ecj fastjar file g++ gawk \
+          gettext java-propose-classpath libelf-dev libncurses5-dev \
+          libncursesw5-dev libssl-dev python3-distutils python3-setuptools \
+          rsync time xsltproc zlib1g-dev
+
+    - name: 各種configダウンロード
+      run: |
+        curl -LO https://github.com/musashino-build/openwrt_build-profiles/raw/master/feeds/feeds.conf
+        curl -LO https://github.com/musashino-build/openwrt_build-profiles/raw/master/ath79/wg300hp/diffconfig
+
+    - name: feedのアップデート/インストール
+      run: |
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: WG300HPのビルド
+      run: |
+        mv diffconfig .config
+        make defconfig
+        make -j${MAKE_J_FLAG} V=s
+
+    - name: ディスク使用量の確認
+      if: success()
+      run: |
+        mount
+        df -h
+
+    # Upload the release binaries: https://github.com/marketplace/actions/upload-artifact
+    - name: アーティファクトのアップロード
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: OpenWrt-master-${{ matrix.device }}_${{ env.GIT_HASH_SHORT }}
+        path: |
+          bin/targets/ath79/tiny/
+        retention-days: 90
+
+  # Build images for WR8750N/WR9500N/WG600HP
+  wg600hp_build:
+
+    strategy:
+      matrix:
+        device: [WR8750N-WR9500N-WG600HP]
+
+    runs-on: ubuntu-20.04  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      MAKE_J_FLAG: 2
+
+    steps:
+    - name: チェックアウト
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    # ref for "Out-File": https://github.community/t/environmental-files-on-windows/137631
+    - name: Gitのコミットハッシュ（ショート）を取得
+      run: |
+        git_hash_short="${GITHUB_SHA:0:10}"
+        echo $git_hash_short
+        echo "GIT_HASH_SHORT=$git_hash_short" >> $GITHUB_ENV
+
+    - name: ホストパッケージのインストール
+      run: |
+        sudo apt update
+        sudo apt install build-essential ccache ecj fastjar file g++ gawk \
+          gettext java-propose-classpath libelf-dev libncurses5-dev \
+          libncursesw5-dev libssl-dev \
+          python3-distutils python3-setuptools rsync time \
+          xsltproc zlib1g-dev
+
+    - name: 各種configダウンロード
+      run: |
+        curl -LO https://github.com/musashino-build/openwrt_build-profiles/raw/master/feeds/feeds.conf
+        curl -LO https://github.com/musashino-build/openwrt_build-profiles/raw/master/ath79/wr8750n/wg600hp/diffconfig
+
+    - name: feedのアップデート/インストール
+      run: |
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: WR8750N/WR9500N/WG600HPのビルド
+      run: |
+        mv diffconfig .config
+        make defconfig
+        make -j${MAKE_J_FLAG} V=s
+
+    - name: ディスク使用量の確認
+      if: success()
+      run: |
+        mount
+        df -h
+
+    # Upload the release binaries: https://github.com/marketplace/actions/upload-artifact
+    - name: アーティファクトのアップロード
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: OpenWrt-master-${{ matrix.device }}_${{ env.GIT_HASH_SHORT }}
+        path: |
+          bin/targets/ath79/generic/
+        retention-days: 90
