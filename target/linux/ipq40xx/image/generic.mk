@@ -780,6 +780,19 @@ define Device/qxwlan_e2600ac-c2
 endef
 TARGET_DEVICES += qxwlan_e2600ac-c2
 
+define Device/sony_ncp-hg100
+	$(call Device/FitImage)
+	DEVICE_VENDOR := Sony
+	DEVICE_MODEL := NCP-HG100
+	BOARD_NAME := ncp-hg100
+	DEVICE_DTS_CONFIG := config@ap.dk04.1-c4
+	SOC := qcom-ipq4019
+	KERNEL_SIZE := 8192k
+	IMAGE_SIZE := 128m
+	DEVICE_PACKAGES := ipq-wifi-sony_ncp-hg100 kmod-mcu-i2c qmi-utils e2fsprogs kmod-fs-ext4 kmod-fs-f2fs f2fs-tools
+endef
+TARGET_DEVICES += sony_ncp-hg100
+
 define Device/unielec_u4019-32m
 	$(call Device/FitImage)
 	DEVICE_VENDOR := Unielec

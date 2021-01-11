@@ -1,0 +1,620 @@
+// SPDX-License-Identifier: GPL-2.0-only OR MIT
+
+#include "qcom-ipq4019.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/soc/qcom,tcsr.h>
+
+/ {
+	model = "Sony NCP-HG100";
+	compatible = "sony,ncp-hg100", "qcom,ipq4019";
+
+	chosen {
+		bootargs-append = " root=/dev/mmcblk0p16 rootfstype=squashfs,f2fs clk_ignore_unused";
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x80000000 0x20000000>; /* 512MB */
+	};
+
+	soc {
+		mdio@90000 {
+			status = "okay";
+			pinctrl-0 = <&mdio_pins>;
+			pinctrl-names = "default";
+			phy-reset-gpio = <&tlmm 41 0>;
+			bias-disable;
+		};
+
+		tcsr@1949000 {
+			status = "okay";
+			compatible = "qcom,tcsr";
+			reg = <0x1949000 0x100>;
+			qcom,wifi_glb_cfg = <TCSR_WIFI_GLB_CFG>;
+		};
+
+		tcsr@194b000 {
+			status = "okay";
+			compatible = "qcom,tcsr";
+			reg = <0x194b000 0x100>;
+			qcom,usb-hsphy-mode-select = <TCSR_USB_HSPHY_HOST_MODE>;
+		};
+
+		ess_tcsr@1953000 {
+			status = "okay";
+			compatible = "qcom,tcsr";
+			reg = <0x1953000 0x1000>;
+			qcom,ess-interface-select = <TCSR_ESS_PSGMII>;
+		};
+
+		tcsr@1957000 {
+			status = "okay";
+			compatible = "qcom,tcsr";
+			reg = <0x1957000 0x100>;
+			qcom,wifi_noc_memtype_m0_m2 = <TCSR_WIFI_NOC_MEMTYPE_M0_M2>;
+		};
+
+		ess-psgmii@98000 {
+			status = "okay";
+		};
+
+		dma@7984000 {
+			status = "okay";
+		};
+
+		edma@c080000 {
+			status = "okay";
+		};
+
+		ess-switch@c000000 {
+			status = "okay";
+			switch_mac_mode = <0x0>; /* mac mode for RGMII RMII */
+			switch_initvlas = <0x0007c 0x54>; /* PORT0_STATUS */
+		};
+	};
+
+	gpio-keys {
+		compatible = "gpio_keys";
+		pinctrl-0 = <&gpiokey_pins>;
+		pinctrl-names = "default";
+		autorepeat;
+		volup {
+			label = "Volume Up";
+			linux,code = <KEY_VOLUMEUP>;
+			gpios = <&tlmm 39 GPIO_ACTIVE_HIGH>;
+			linux,input-type = <EV_KEY>;
+		};
+		voldown {
+			label = "Volume Down";
+			linux,code = <KEY_VOLUMEDOWN>;
+			gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
+			linux,input-type = <EV_KEY>;
+		};
+		alexatrigger {
+			label = "Alexa Trigger";
+			linux,code = <BTN_TRIGGER_HAPPY>;
+			gpios = <&tlmm 42 GPIO_ACTIVE_HIGH>;
+			linux,input-type = <EV_KEY>;
+		};
+		mute {
+			label = "Mute";
+			linux,code = <SW_MUTE_DEVICE>;
+			gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
+			linux,input-type = <EV_SW>;
+		};
+	};
+
+	keys {
+		compatible = "gpio-keys";
+		reset {
+			label = "reset";
+			gpios = <&tlmm 2 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+		wps {
+			label = "SETUP";
+			gpios = <&tlmm 18 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};
+
+};
+
+/*
+ TOP Level Mode. Multiplexer (TLMM)
+ //Right, I don't get it.
+*/
+&tlmm {
+	pinctrl-0 = <&bt_pins>, <&pcm_pins>;
+	pinctrl-names = "default";
+
+	helios_pins: helios_pinmux {
+		UART0_CTRL { //1 = UART0 as debug console ; 0 = UART0 as Zwave UART
+			pins = "gpio15";
+			function = "gpio";
+			output-high;
+		};
+	};
+
+	serial_pins: serial_pinmux {
+		mux {
+			pins = "gpio16", "gpio17";
+			function = "blsp_uart0";
+			bias-disable;
+		};
+	};
+
+	zwave_pins: zwave_pinmux {
+		mux { //Active low to reset the ZWAVE (at least 20ns)
+			pins = "gpio59";
+			function = "gpio";
+			output-high;
+		};
+	};
+
+	serial_1_pins: serial1_pinmux {
+		mux {
+			pins = "gpio8", "gpio9",
+				"gpio10", "gpio11";
+			function = "blsp_uart1";
+			bias-disable;
+		};
+	};
+
+	bt_pins: bt_pinmux {
+		RST { //Active low to reset the BT
+			pins = "gpio66";
+			function = "gpio";
+			output-high;
+		};
+		VREG_EN { //1 = BT power on ; 0 = BT power off
+			pins = "gpio68";
+			function = "gpio";
+			output-high;
+		};
+	};
+
+	mdio_pins: mdio_pinmux {
+		mux_1 {
+			pins = "gpio6";
+			function = "mdio";
+			bias-pull-up;
+		};
+		mux_2 {
+			pins = "gpio7";
+			function = "mdc";
+			bias-pull-up;
+		};
+	};
+
+	i2c_1_pins: i2c_1_pinmux {
+		mux {
+			pins = "gpio12", "gpio13";
+			function = "blsp_i2c1";
+			bias-disable;
+		};
+	};
+
+	gpiokey_pins: gpiokey_pinmux {
+		mux_1 {
+			pins = "gpio39", "gpio40", "gpio42", "gpio47";
+			function = "gpio";
+			bias-disable;
+		};
+		mux_2 {
+			pins = "gpio2";
+			function = "gpio";
+			input;
+		};
+	};
+
+	sd_pins: sd_pins {
+		pinmux {
+			function = "sdio";
+			pins = "gpio23", "gpio24", "gpio25", "gpio26",
+				"gpio28", "gpio29", "gpio30", "gpio31";
+			drive-strength = <4>;
+		};
+		pinmux_sd_clk {
+			function = "sdio";
+			pins = "gpio27";
+			drive-strength = <16>;
+		};
+		pinmux_sd7 {
+			function = "sdio";
+			pins = "gpio32";
+			drive-strength = <4>;
+			bias-disable;
+		};
+	};
+
+	pcm_pins: pcm_pinmux {
+		mux { //Audio PCM interface for BT
+			pins = "gpio48", "gpio49", "gpio50", "gpio51";
+			function = "aud_pin";
+		};
+	};
+
+	audio_gpio_pins: audio_gpio_pinmux {
+		mux_1 {
+			pins = "gpio53";
+			function = "gpio";
+			output-high;
+		};
+		mux_2 {
+			pins = "gpio57";
+			function = "gpio";
+			output-high;
+		};
+		mux_3 {
+			pins = "gpio54";
+			function = "gpio";
+			output-high;
+		};
+	};
+
+	audio_pins: audio_pinmux {
+		mux_1 {
+			pins = "gpio53";
+			function = "i2s_tx_bclk";
+		};
+		mux_2 {
+			pins = "gpio57";
+			function = "i2s_tx_fsync";
+		};
+		mux_3 {
+			pins = "gpio54";
+			function = "i2s_td1";
+		};
+	};
+
+	audio1_gpio_pins: audio1_gpio_pinmux {
+		mux_1 {
+			pins = "gpio60";
+			function = "gpio";
+			output-high;
+		};
+		mux_2 {
+			pins = "gpio61";
+			function = "gpio";
+			output-high;
+		};
+		mux_3 {
+			pins = "gpio63";
+			function = "gpio";
+			output-high;
+		};
+	};
+
+	audio1_pins: audio1_pinmux {
+		mux_1 {
+			pins = "gpio60";
+			function = "i2s_rx_bclk";
+		};
+		mux_2 {
+			pins = "gpio61";
+			function = "i2s_rx_fsync";
+		};
+		mux_3 {
+			pins = "gpio63";
+			function = "i2s_rxd";
+		};
+	};
+
+	alc1304_pins: alc1304_pinmux {
+		mux_1 {
+			pins = "gpio44";
+			function = "gpio";
+			bias-disable;
+		};
+		mux_2 {
+			pins = "gpio45";
+			function = "gpio";
+			bias-disable;
+		};
+	};
+
+	cx2902x_reset: cx2902x_pinmux {
+		mux_1 {
+			pins = "gpio64";
+			function = "gpio";
+			bias-disable;
+		};
+		mux_2 {
+			pins = "gpio65";
+			function = "gpio";
+			bias-disable;
+		};
+	};
+
+	usb2_pins: usb2_pinmux {
+		lte_en {
+			pins = "gpio20";
+			function = "gpio";
+			output-high;
+		};
+
+		lte_reset {
+			pins = "gpio35";
+			function = "gpio";
+			input;
+		};
+	};
+
+	usb3_pins: usb3_pinmux {
+		usb_en {
+			pins = "gpio36";
+			function = "gpio";
+			output-high;
+		};
+		usb_reset {
+			pins = "gpio4";
+			function = "gpio";
+			input;
+		};
+	};
+
+	mcu_pins: mcu_pinmux { // mcu-i2c.c
+		mcu_en {
+			pins = "gpio38";
+			function = "gpio";
+			output-low;
+		};
+		mcu_reset {
+			pins = "gpio5";
+			function = "gpio";
+			output-high;
+		};
+	};
+};
+
+&crypto {
+	status = "okay";
+};
+
+&prng {
+	status = "okay";
+};
+
+&watchdog {
+	status = "okay";
+};
+
+/* emmc */
+&vqmmc {
+	status = "okay";
+};
+
+&sdhci {
+	status = "okay";
+	pinctrl-0 = <&sd_pins>;
+	pinctrl-names = "default";
+	cd-gpios = <&tlmm 22 GPIO_ACTIVE_LOW>;
+	vqmmc-supply = <&vqmmc>;
+};
+
+/*
+ BAM(Boot Assist Module)
+ BLSP(BAM Low Speed Peripheral)
+*/
+&blsp_dma {
+	status = "okay";
+};
+
+&cryptobam {
+	status = "okay";
+};
+
+&blsp1_uart1 {
+	pinctrl-0 = <&serial_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&blsp1_uart2 {
+	pinctrl-0 = <&serial_1_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&blsp1_i2c4 { /* i2c1 */
+/*
+0x14 CY8C(CY8C4014LQ) front-touchkey
+0x15 mcu(MINI54FDE) thermal/fan controller
+0x18 DAC(ALC5629)
+0x31 LED(LP55231)
+0x32 LED
+  led1:WAN,  led2 LAN
+  led3:2.4G, led4 5G
+  led5:NET,  led6 CLOUD
+0x41 mic(CX20924)
+*/
+	pinctrl-0 = <&i2c_1_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	led-controller@32 {
+		compatible = "ti,lp55231";
+		reg = <0x32>;
+		clock-mode = /bits/ 8 <0>; /* LP55XX_CLOCK_AUTO */
+		enable-gpio = <&tlmm 1 GPIO_ACTIVE_HIGH>;
+
+		chan0 {
+			chan-name = "wan:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan1 {
+			chan-name = "wan:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan2 {
+			chan-name = "lan:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan3 {
+			chan-name = "lan:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan4 {
+			chan-name = "wlan0:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan5 {
+			chan-name = "wlan0:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan6 {
+			chan-name = "wan:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan7 {
+			chan-name = "lan:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan8 {
+			chan-name = "wlan0:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+	};
+
+	led-controller@33 {
+		compatible = "ti,lp55231";
+		reg = <0x33>;
+		clock-mode = /bits/ 8 <0>;
+
+		chan0 {
+			chan-name = "wlan1:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan1 {
+			chan-name = "wlan1:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan2 {
+			chan-name = "internet:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan3 {
+			chan-name = "internet:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan4 {
+			chan-name = "cloud:green";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan5 {
+			chan-name = "cloud:blue";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan6 {
+			chan-name = "wlan1:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan7 {
+			chan-name = "internet:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+
+		chan8 {
+			chan-name = "cloud:red";
+			led-cur = /bits/ 8 <50>;
+			max-cur = /bits/ 8 <100>;
+		};
+	};
+
+/* no kernel drivers */
+	rt5628@18 {
+		compatible = "rt5628";
+		reg = <0x18>;
+		status = "okay";
+		pinctrl-0 = <&alc1304_pins>;
+		pinctrl-names = "default";
+		shutdown-gpio = <&tlmm 44 GPIO_ACTIVE_LOW>;
+		mute-gpio = <&tlmm 45 GPIO_ACTIVE_HIGH>;
+	};
+
+	conexant@41 {
+		compatible = "conexant,cx2092x";
+		reg = <0x41>;
+		conexant,name = "cx2092x";
+		reset-gpio = <&tlmm 65 GPIO_ACTIVE_HIGH>;
+		pinctrl-0 = <&cx2902x_reset>;
+		pinctrl-names = "default";
+	};
+
+	mcu@15 {
+		compatible = "wistron,mcu";
+		reg = <0x15>;
+		pinctrl-0 = <&mcu_pins>;
+		pinctrl-names = "default";
+	};
+};
+
+&usb2 {
+	status = "okay";
+
+	pinctrl-0 = <&usb2_pins>;
+	pinctrl-names = "default";
+};
+
+&usb2_hs_phy {
+	status = "okay";
+};
+
+&usb3 {
+	status = "okay";
+
+	pinctrl-0 = <&usb3_pins>;
+	pinctrl-names = "default";
+};
+
+&usb3_hs_phy {
+	status = "okay";
+};
+
+&usb3_ss_phy {
+	status = "okay";
+};
+
+&wifi0 {
+	status = "okay";
+	qcom,ath10k-calibration-variant = "Sony_NCP-HG100";
+};
+
+&wifi1 {
+	status = "okay";
+	qcom,ath10k-calibration-variant = "Sony_NCP-HG100";
+};

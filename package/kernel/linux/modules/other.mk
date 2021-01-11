@@ -1272,3 +1272,19 @@ define KernelPackage/f71808e-wdt/description
 endef
 
 $(eval $(call KernelPackage,f71808e-wdt))
+
+
+define KernelPackage/mcu-i2c
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=Wistron MCU-I2C bus connection
+  KCONFIG:=CONFIG_MCU_I2C
+  DEPENDS:= +kmod-i2c-core +i2c-tools
+  FILES:=$(LINUX_DIR)/drivers/misc/mcu-i2c.ko
+  AUTOLOAD:=$(call AutoProbe,mcu-i2c,1)
+endef
+
+define KernelPackage/mcu-i2c/description
+  Kernel module for Wistron MCU-I2C bus connection.
+endef
+
+$(eval $(call KernelPackage,mcu-i2c))
