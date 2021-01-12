@@ -57,7 +57,7 @@ Signed-off-by: John Crispin <john@phrozen.org>
 +	qcom-ipq4019-e2600ac-c1.dtb \
 +	qcom-ipq4019-e2600ac-c2.dtb \
 +	qcom-ipq4019-habanero-dvk.dtb \
-+	qcom-ipq4019-ncp-hg100.dtb \
++	qcom-ipq4019-ncp-hg100-cellular.dtb \
 +	qcom-ipq4019-pa2200.dtb \
 +	qcom-ipq4019-rtl30vw.dtb \
 +	qcom-ipq4019-u4019-32m.dtb \
