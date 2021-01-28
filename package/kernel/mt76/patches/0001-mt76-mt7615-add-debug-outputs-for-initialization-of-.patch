@@ -1,0 +1,28 @@
+From 384d888d29097745b6aac5623b200b68d54a0e62 Mon Sep 17 00:00:00 2001
+From: INAGAKI Hiroshi <musashino.open@gmail.com>
+Date: Thu, 28 Jan 2021 11:23:32 +0900
+Subject: [PATCH] mt76: mt7615: add debug outputs for initialization of eeprom
+
+---
+ mt7615/eeprom.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mt7615/eeprom.c b/mt7615/eeprom.c
+index adc797d..e943d36 100644
+--- a/mt7615/eeprom.c
++++ b/mt7615/eeprom.c
+@@ -334,9 +334,11 @@ int mt7615_eeprom_init(struct mt7615_dev *dev, u32 addr)
+ 
+ 	ret = mt7615_check_eeprom(&dev->mt76);
+ 	if (ret && dev->mt76.otp.data) {
++		dev_info(dev->mt76.dev, "use only otp data for mt7615e driver\n");
+ 		memcpy(dev->mt76.eeprom.data, dev->mt76.otp.data,
+ 		       MT7615_EEPROM_SIZE);
+ 	} else {
++		dev_info(dev->mt76.dev, "use eeprom data for mt7615e driver\n");
+ 		dev->flash_eeprom = true;
+ 		mt7615_cal_free_data(dev);
+ 	}
+-- 
+2.29.2.windows.3
+
