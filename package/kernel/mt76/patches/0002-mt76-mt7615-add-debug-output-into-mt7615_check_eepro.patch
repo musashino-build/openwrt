@@ -1,0 +1,24 @@
+From b38fef3bf79733a972f32a2b0ee9ecae38c6d490 Mon Sep 17 00:00:00 2001
+From: INAGAKI Hiroshi <musashino.open@gmail.com>
+Date: Wed, 3 Feb 2021 18:52:05 +0900
+Subject: [PATCH 2/2] mt76: mt7615: add debug output into mt7615_check_eeprom
+
+---
+ mt7615/eeprom.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mt7615/eeprom.c b/mt7615/eeprom.c
+index e943d36..df8ed2b 100644
+--- a/mt7615/eeprom.c
++++ b/mt7615/eeprom.c
+@@ -82,6 +82,7 @@ static int mt7615_eeprom_load(struct mt7615_dev *dev, u32 addr)
+ static int mt7615_check_eeprom(struct mt76_dev *dev)
+ {
+ 	u16 val = get_unaligned_le16(dev->eeprom.data);
++	dev_info(dev->dev, "eeprom magic: %04x\n", val);
+ 
+ 	switch (val) {
+ 	case 0x7615:
+-- 
+2.29.2.windows.3
+
