@@ -128,6 +128,36 @@ define Device/buffalo_wsr-2533dhp2
 endef
 TARGET_DEVICES += buffalo_wsr-2533dhp2
 
+define Device/buffalo_wsr-3200ax4s
+  DEVICE_VENDOR := Buffalo
+  DEVICE_MODEL := WSR-3200AX4S
+  DEVICE_DTS := mt7622-buffalo-wsr-3200ax4s
+  DEVICE_DTS_DIR := ../dts
+  IMAGE_SIZE := 24576k
+  KERNEL_SIZE := 4096k
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  SUBPAGESIZE := 512
+  UBINIZE_OPTS := -E 5
+  KERNEL_SIZE := 4194304
+  BUFFALO_TAG_PLATFORM := MTK
+  BUFFALO_TAG_VERSION := 9.99
+  BUFFALO_TAG_MINOR := 9.99
+  IMAGES += factory.bin factory-uboot.bin
+  KERNEL_INITRAMFS = kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
+	buffalo-kernel-trx
+  IMAGE/factory.bin := append-ubi | trx-nand | \
+	buffalo-enc WSR-3200AX4S $$(BUFFALO_TAG_VERSION) -l | \
+	buffalo-tag-dhp WSR-3200AX4S JP JP | buffalo-enc-tag -l | buffalo-dhp-image
+  IMAGE/factory-uboot.bin := append-ubi | trx-nand
+  IMAGE/sysupgrade.bin := append-kernel | \
+	buffalo-kernel-trx 0x33504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
+	sysupgrade-tar kernel=$$$$@ | append-metadata
+  DEVICE_PACKAGES := kmod-mt7615e kmod-mt7615-firmware kmod-mt7915e
+endef
+TARGET_DEVICES += buffalo_wsr-3200ax4s
+
 define Device/elecom_wrc-2533gent
   DEVICE_VENDOR := Elecom
   DEVICE_MODEL := WRC-2533GENT

@@ -9,6 +9,7 @@ mediatek_setup_interfaces()
 
 	case $board in
 	bananapi,bpi-r64|\
+	buffalo,wsr-3200ax4s|\
 	linksys,e8450|\
 	linksys,e8450-ubi|\
 	mediatek,mt7622-rfb1)
@@ -29,9 +30,26 @@ mediatek_setup_interfaces()
 	esac
 }
 
+mediatek_setup_macs()
+{
+	local board="$1"
+
+	case $board in
+	buffalo,wsr-3200ax4s)
+		lan_mac=$(mtd_get_mac_ascii board_data "mac")
+		wan_mac=$lan_mac
+		label_mac=$lan_mac
+		;;
+	esac
+	[ -n "$lan_mac" ] && ucidef_set_interface_macaddr "lan" $lan_mac
+	[ -n "$wan_mac" ] && ucidef_set_interface_macaddr "wan" $wan_mac
+	[ -n "$label_mac" ] && ucidef_set_label_macaddr $label_mac
+}
+
 board_config_update
 board=$(board_name)
 mediatek_setup_interfaces $board
+mediatek_setup_macs $board
 board_config_flush
 
 exit 0
