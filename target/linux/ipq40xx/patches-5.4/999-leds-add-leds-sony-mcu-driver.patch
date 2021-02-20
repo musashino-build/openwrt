@@ -1,0 +1,31 @@
+Index: linux-5.4.98/drivers/leds/Kconfig
+===================================================================
+--- linux-5.4.98.orig/drivers/leds/Kconfig
++++ linux-5.4.98/drivers/leds/Kconfig
+@@ -823,6 +823,13 @@ config LEDS_LM36274
+ 	  Say Y to enable the LM36274 LED driver for TI LMU devices.
+ 	  This supports the LED device LM36274.
+ 
++config LEDS_SONY_MCU
++	tristate "MCU LED driver for Sony NCP-HG100"
++	depends on LEDS_CLASS
++	depends on MFD_SONY_MCU
++	help
++	  Say Y to enable the MCU LED driver for Sony NCP-HG100.
++
+ comment "LED Triggers"
+ source "drivers/leds/trigger/Kconfig"
+ 
+Index: linux-5.4.98/drivers/leds/Makefile
+===================================================================
+--- linux-5.4.98.orig/drivers/leds/Makefile
++++ linux-5.4.98/drivers/leds/Makefile
+@@ -86,6 +86,8 @@ obj-$(CONFIG_LEDS_TI_LMU_COMMON)	+= leds
+ obj-$(CONFIG_LEDS_LM3697)		+= leds-lm3697.o
+ obj-$(CONFIG_LEDS_LM36274)		+= leds-lm36274.o
+ 
++obj-$(CONFIG_LEDS_SONY_MCU)		+= leds-sony-mcu.o
++
+ # LED SPI Drivers
+ obj-$(CONFIG_LEDS_CR0014114)		+= leds-cr0014114.o
+ obj-$(CONFIG_LEDS_DAC124S085)		+= leds-dac124s085.o
