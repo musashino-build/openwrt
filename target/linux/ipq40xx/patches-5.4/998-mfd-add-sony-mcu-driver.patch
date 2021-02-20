@@ -1,0 +1,27 @@
+Index: linux-5.4.98/drivers/mfd/Kconfig
+===================================================================
+--- linux-5.4.98.orig/drivers/mfd/Kconfig
++++ linux-5.4.98/drivers/mfd/Kconfig
+@@ -2012,5 +2012,13 @@ config RAVE_SP_CORE
+ 	  Select this to get support for the Supervisory Processor
+ 	  device found on several devices in RAVE line of hardware.
+ 
++config MFD_SONY_MCU
++	tristate "MCU driver for Sony NCP-HG100"
++	select MFD_CORE
++	depends on ARCH_IPQ40XX || COMPILE_TEST
++	help
++	  Enables support for the MCU chip (RGB LED & Fan & Thermal
++	  Sensors) on Sony NCP-HG100.
++
+ endmenu
+ endif
+Index: linux-5.4.98/drivers/mfd/Makefile
+===================================================================
+--- linux-5.4.98.orig/drivers/mfd/Makefile
++++ linux-5.4.98/drivers/mfd/Makefile
+@@ -256,3 +256,4 @@ obj-$(CONFIG_MFD_ROHM_BD70528)	+= rohm-b
+ obj-$(CONFIG_MFD_ROHM_BD718XX)	+= rohm-bd718x7.o
+ obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
+ 
++obj-$(CONFIG_MFD_SONY_MCU)	+= sony-mcu.o
