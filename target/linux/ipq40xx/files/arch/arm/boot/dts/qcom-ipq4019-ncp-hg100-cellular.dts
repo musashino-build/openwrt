@@ -5,16 +5,17 @@
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
 #include <dt-bindings/soc/qcom,tcsr.h>
+#include <dt-bindings/leds/common.h>
 
 / {
 	model = "Sony NCP-HG100/Cellular";
 	compatible = "sony,ncp-hg100-cellular", "qcom,ipq4019";
 
 	aliases {
-		led-boot = &led_cloud_green;
-		led-failsafe = &led_cloud_red;
-		led-running = &led_cloud_green;
-		led-upgrade = &led_cloud_green;
+		led-boot = &led_rgb_green;
+		led-failsafe = &led_rgb_red;
+		led-running = &led_rgb_green;
+		led-upgrade = &led_rgb_green;
 		label-mac-device = &gmac0;
 	};
 
@@ -130,7 +131,7 @@
 
 &tlmm {
 	pinctrl-0 = <&uart0_ctrl_pins>, <&bt_pins>,
-		    <&aud_pins>, <&mcu_pins>;
+		    <&aud_pins>;
 	pinctrl-names = "default";
 
 	/*
@@ -335,13 +336,47 @@
 	/*
 	 * There is no driver for the following devices:
 	 * - CY8C4014LQI@14	: Touch-Sensor for buttons on top
-	 * - MINI54FDE@15	: MCU for Fan/RGB LED/Thermal control
 	 * - ALC5629@18		: I2S/PCM Audio DAC
 	 * - CX20924@41		: Voice Input Processor
 	 */
 	pinctrl-0 = <&i2c_1_pins>;
 	pinctrl-names = "default";
 	status = "okay";
+
+	mcu@15 {
+		compatible = "sony,mcu";
+		reg = <0x15>;
+		pinctrl-0 = <&mcu_pins>;
+		pinctrl-names = "default";
+
+		boot-gpio = <&tlmm 38 GPIO_ACTIVE_HIGH>;
+		reset-gpio = <&tlmm 5 GPIO_ACTIVE_HIGH>;
+
+		leds {
+			compatible = "sony,mcu-leds";
+
+			led_rgb_red: red {
+				label = "red:rgb";
+				color = <LED_COLOR_ID_RED>;
+				function = LED_FUNCTION_POWER;
+				function-enumerator = <1>;
+			};
+
+			led_rgb_green: green {
+				label = "green:rgb";
+				color = <LED_COLOR_ID_GREEN>;
+				function = LED_FUNCTION_POWER;
+				function-enumerator = <2>;
+			};
+
+			blue {
+				label = "blue:rgb";
+				color = <LED_COLOR_ID_BLUE>;
+				function = LED_FUNCTION_POWER;
+				function-enumerator = <3>;
+			};
+		};
+	};
 
 	led-controller@32 {
 		compatible = "ti,lp55231";
