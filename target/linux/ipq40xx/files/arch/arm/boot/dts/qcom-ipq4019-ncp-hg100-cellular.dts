@@ -78,28 +78,28 @@
 		autorepeat;
 
 		volup {
-			label = "Volume Up";
+			label = "volume up";
 			linux,code = <KEY_VOLUMEUP>;
 			gpios = <&tlmm 39 GPIO_ACTIVE_HIGH>;
 			linux,input-type = <EV_KEY>;
 		};
 
 		voldown {
-			label = "Volume Down";
+			label = "volume down";
 			linux,code = <KEY_VOLUMEDOWN>;
 			gpios = <&tlmm 40 GPIO_ACTIVE_HIGH>;
 			linux,input-type = <EV_KEY>;
 		};
 
 		alexatrigger {
-			label = "Alexa Trigger";
+			label = "alexa trigger";
 			linux,code = <BTN_0>;
 			gpios = <&tlmm 42 GPIO_ACTIVE_HIGH>;
 			linux,input-type = <EV_KEY>;
 		};
 
 		mute {
-			label = "Mute";
+			label = "mic mute";
 			linux,code = <BTN_1>;
 			gpios = <&tlmm 47 GPIO_ACTIVE_LOW>;
 			linux,input-type = <EV_SW>;
@@ -116,7 +116,7 @@
 		};
 
 		wps {
-			label = "SETUP";
+			label = "setup";
 			gpios = <&tlmm 18 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_WPS_BUTTON>;
 		};
