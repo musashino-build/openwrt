@@ -71,6 +71,7 @@ qxwlan,e2600ac-c2)
 sony,ncp-hg100-cellular)
 	ucidef_set_led_netdev "lan" "LAN" "green:lan" "eth0"
 	ucidef_set_led_netdev "wan" "WAN" "green:wan" "eth1"
+	ucidef_set_led_netdev "wwan" "WWAN" "green:net" "wwan0"
 	;;
 zyxel,nbg6617 |\
 zyxel,wre6606)
