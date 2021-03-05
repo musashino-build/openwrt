@@ -420,13 +420,13 @@
 		};
 
 		chan2 {
-			chan-name = "green:internet";
+			chan-name = "green:net";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
 		};
 
 		chan3 {
-			chan-name = "blue:internet";
+			chan-name = "blue:net";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
 		};
@@ -450,7 +450,7 @@
 		};
 
 		chan7 {
-			chan-name = "red:internet";
+			chan-name = "red:net";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
 		};
