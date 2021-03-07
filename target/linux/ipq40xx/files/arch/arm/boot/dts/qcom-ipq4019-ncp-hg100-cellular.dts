@@ -15,7 +15,7 @@
 	};
 
 	chosen {
-		bootargs-append = " root=/dev/mmcblk0p15 rootfstype=squashfs,ext4 clk_ignore_unused";
+		bootargs = "console=ttyMSM0,115200n8 root=/dev/mmcblk0p15 rootfstype=squashfs,ext4 clk_ignore_unused";
 	};
 
 	memory {
