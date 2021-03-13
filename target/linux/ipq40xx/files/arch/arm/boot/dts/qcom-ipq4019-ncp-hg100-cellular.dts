@@ -230,7 +230,7 @@
 				"gpio28", "gpio29", "gpio30", "gpio31";
 			drive-strength = <4>;
 		};
-		
+
 		mux_sd_clk {
 			function = "sdio";
 			pins = "gpio27";
@@ -300,7 +300,7 @@
 			function = "gpio";
 			output-high;
 		};
-		
+
 		mux_flt {
 			pins = "gpio4";
 			function = "gpio";
