@@ -31,6 +31,10 @@ update_bootconfig() {
 	fi
 }
 
+### Note ###
+# After the commit bad1835f27ec31dbc30060b03cc714212275168a in fstools,
+# p17 (label: "rootfs_data") is mounted as a rootfs_data on boot instead
+# of the loop device labeled as "rootfs_data" in p15 (label: "rootfs").
 sony_emmc_do_upgrade() {
 	local tar_file=$1
 	local kernel_dev
@@ -39,17 +43,12 @@ sony_emmc_do_upgrade() {
 
 	kernel_dev=$(find_mmc_part "0:HLOS")
 	rootfs_dev=$(find_mmc_part "rootfs")
+	rootfs_data_dev=$(find_mmc_part "rootfs_data")
 
-	if [ -z "$kernel_dev" -o -z "$rootfs_dev" ]; then
-		echo "The partition name for kernel or rootfs is not specified or failed to get the mmc device."
+	if [ -z "$kernel_dev" ] || [ -z "$rootfs_dev" ] || [ -z "$rootfs_data_dev" ]; then
+		echo "The partition name for kernel or rootfs or rootfs_data is not specified or failed to get the mmc device."
 		exit 1
 	fi
-
-	# keep sure its unbound
-	losetup --detach-all || {
-		echo "Failed to detach all loop devices, skip this try"
-		reboot -f
-	}
 
 	# use first partitions of kernel/rootfs for NCP-HG100
 	# - offset  88 (0x58): 0:HLOS (kernel)
@@ -66,26 +65,13 @@ sony_emmc_do_upgrade() {
 	echo "Flashing rootfs to ${rootfs_dev}"
 	tar xf $tar_file ${board_dir}/root -O > $rootfs_dev
 
-	local offset=$(tar xf $tar_file ${board_dir}/root -O | wc -c)
-	# calculate padded offset by 65536 (0x10000) for rootfs_data
-	# detection by fstools on booting, if (offset % 65536) != 0
-	[ "$((offset % 65536))" != "0" ] && \
-		offset=$(( (offset / 65536 + 1) * 65536))
-
-	# mount rootfs to loop device with offset for rootfs_data creation
-	local loopdev="$(losetup -f)"
-	losetup -o $offset $loopdev $rootfs_dev || {
-		echo "Failed to mount rootfs to $loopdev"
-		reboot -f
-	}
-
-	echo "Format new rootfs_data at position $offset"
-	mkfs.ext4 -F -L rootfs_data $loopdev
+	echo "Format new rootfs_data"
+	mkfs.ext4 -F -L rootfs_data $rootfs_data_dev
 
 	if [ -e "$UPGRADE_BACKUP" ]; then
 		mkdir /tmp/new_root
-		mount -t ext4 $loopdev /tmp/new_root && {
-			echo "Saving configurations to rootfs_data at position $offset"
+		mount -t ext4 $rootfs_data_dev /tmp/new_root && {
+			echo "Saving configurations to rootfs_data"
 			cp "$UPGRADE_BACKUP" "/tmp/new_root/$BACKUP_FILE"
 			umount /tmp/new_root
 		}
@@ -93,8 +79,6 @@ sony_emmc_do_upgrade() {
 
 	echo "sysupgrade successful"
 
-	# cleanup
-	losetup -d $loopdev >/dev/null 2>&1
 	sync
 	umount -a
 	reboot -f
