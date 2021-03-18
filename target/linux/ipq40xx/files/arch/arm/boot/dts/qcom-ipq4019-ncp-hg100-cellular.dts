@@ -541,12 +541,12 @@
 
 &wifi0 {
 	status = "okay";
-	qcom,ath10k-calibration-variant = "Sony-NCP-HG100";
+	qcom,ath10k-calibration-variant = "Sony-NCP-HG100-Cellular";
 };
 
 &wifi1 {
 	status = "okay";
-	qcom,ath10k-calibration-variant = "Sony-NCP-HG100";
+	qcom,ath10k-calibration-variant = "Sony-NCP-HG100-Cellular";
 };
 
 &watchdog {
