@@ -166,5 +166,5 @@ static struct i2c_driver sony_mcu_driver = {
 module_i2c_driver(sony_mcu_driver);
 
 MODULE_DESCRIPTION("MCU driver for Sony NCP-HG100");
-MODULE_AUTHOR("INAGAKI Hiroshi <musashino.open@gmail.com");
+MODULE_AUTHOR("INAGAKI Hiroshi <musashino.open@gmail.com>");
 MODULE_LICENSE("GPL v2");
