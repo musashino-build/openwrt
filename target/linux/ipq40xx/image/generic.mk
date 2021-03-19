@@ -789,7 +789,7 @@ define Device/sony_ncp-hg100-cellular
 	KERNEL_SIZE := 8192k
 	IMAGE_SIZE := 128m
 	DEVICE_PACKAGES := e2fsprogs ipq-wifi-sony_ncp-hg100-cellular \
-		kmod-fs-ext4 kmod-i2c-core uqmi
+		kmod-fs-ext4 uqmi
 endef
 TARGET_DEVICES += sony_ncp-hg100-cellular
 
