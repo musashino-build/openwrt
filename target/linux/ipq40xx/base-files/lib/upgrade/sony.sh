@@ -33,6 +33,13 @@ update_bootconfig() {
 # After the commit bad1835f27ec31dbc30060b03cc714212275168a in fstools,
 # p17 (label: "rootfs_data") is mounted as a rootfs_data on boot instead
 # of the loop device labeled as "rootfs_data" in p15 (label: "rootfs").
+#
+# cmdline flag is added to avoid mount "rootfs_data" partition by the
+# commit 964d1e3af0e111bad6d393f8a3be702e334c2398 in fstools, but
+# NCP-HG100 doesn't use it because it has a large (abount 1.6GB)
+# "rootfs_data" partition and the advantage is larger than the
+# disadvantages, such as overwriting the stock data in "rootfs_data"
+# partition.
 sony_emmc_do_upgrade() {
 	local tar_file=$1
 	local kernel_dev
