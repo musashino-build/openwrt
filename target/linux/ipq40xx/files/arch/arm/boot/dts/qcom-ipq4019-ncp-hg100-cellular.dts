@@ -11,6 +11,10 @@
 	compatible = "sony,ncp-hg100-cellular", "qcom,ipq4019";
 
 	aliases {
+		led-boot = &led_cloud_green;
+		led-failsafe = &led_cloud_red;
+		led-running = &led_cloud_green;
+		led-upgrade = &led_cloud_green;
 		label-mac-device = &gmac0;
 	};
 
@@ -431,7 +435,7 @@
 			max-cur = /bits/ 8 <100>;
 		};
 
-		chan4 {
+		led_cloud_green: chan4 {
 			chan-name = "green:cloud";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
@@ -455,7 +459,7 @@
 			max-cur = /bits/ 8 <100>;
 		};
 
-		chan8 {
+		led_cloud_red: chan8 {
 			chan-name = "red:cloud";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
