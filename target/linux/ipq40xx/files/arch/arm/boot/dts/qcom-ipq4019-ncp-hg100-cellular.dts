@@ -470,7 +470,7 @@
 			max-cur = /bits/ 8 <100>;
 		};
 
-		led_cloud_green: chan4 {
+		chan4 {
 			chan-name = "green:cloud";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
@@ -494,7 +494,7 @@
 			max-cur = /bits/ 8 <100>;
 		};
 
-		led_cloud_red: chan8 {
+		chan8 {
 			chan-name = "red:cloud";
 			led-cur = /bits/ 8 <50>;
 			max-cur = /bits/ 8 <100>;
