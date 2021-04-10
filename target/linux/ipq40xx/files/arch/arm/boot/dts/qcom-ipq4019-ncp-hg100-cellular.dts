@@ -331,7 +331,7 @@
 	/*
 	 * There is no driver for the following devices:
 	 * - CY8C4014LQI@14	: Touch-Sensor for buttons on top
-	 * - Mini54FDE@15	: MCU for Fan/RGB LED/Thermal control
+	 * - MINI54FDE@15	: MCU for Fan/RGB LED/Thermal control
 	 * - ALC5629@18		: I2S/PCM Audio DAC
 	 * - CX20924@41		: Voice Input Processor
 	 */
