@@ -9,6 +9,12 @@
 	compatible = "iodata,bsh-g24mb", "realtek,rtl838x-soc";
 	model = "I-O DATA BSH-G24MB";
 
+	aliases {
+		led-boot = &led_sys_loop;
+		led-failsafe = &led_sys_loop;
+		led-upgrade = &led_sys_loop;
+	};
+
 	chosen {
 		bootargs = "console=ttyS0,115200";
 	};
@@ -16,6 +22,15 @@
 	memory@0 {
 		device_type = "memory";
 		reg = <0x0 0x8000000>;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_sys_loop: sys_loop {
+			label = "red:sys_loop";
+			gpios = <&gpio0 47 GPIO_ACTIVE_HIGH>;
+		};
 	};
 
 	keys {
