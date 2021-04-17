@@ -24,14 +24,18 @@
 
 		reset {
 			label = "reset";
-			gpios = <&gpio0 1 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
 	};
 };
 
 &gpio0 {
-	indirect-access-bus-id = <0>;
+	leds-per-port = <1>;
+};
+
+&gpio1 {
+	status = "okay";
 };
 
 &spi0 {
