@@ -95,6 +95,10 @@
 	};
 };
 
+&bch {
+	status = "okay";
+};
+
 &cpu0 {
 	proc-supply = <&mt6380_vcpu_reg>;
 	sram-supply = <&mt6380_vm_reg>;
