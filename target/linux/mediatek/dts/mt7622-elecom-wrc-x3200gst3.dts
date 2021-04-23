@@ -54,13 +54,13 @@
 		wlan2g {
 			label = "white:wlan2g";
 			gpios = <&pio 85 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "phy1tpt";
+			linux,default-trigger = "phy0tpt";
 		};
 
 		wlan5g {
 			label = "white:wlan5g";
 			gpios = <&pio 89 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "phy0tpt";
+			linux,default-trigger = "phy1radio";
 		};
 	};
 
