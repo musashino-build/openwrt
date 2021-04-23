@@ -181,13 +181,6 @@
 		};
 	};
 
-	spic1_pins: spic1-pins {
-		mux {
-			function = "spi";
-			groups = "spic1_0";
-		};
-	};
-
 	uart0_pins: uart0-pins {
 		mux {
 			function = "uart";
@@ -359,12 +352,6 @@
 &spi0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&spic0_pins>;
-	status = "okay";
-};
-
-&spi1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&spic1_pins>;
 	status = "okay";
 };
 
