@@ -75,14 +75,14 @@
 
 		ap {
 			label = "ap";
-			gpios = <&pio 42 GPIO_ACTIVE_HIGH>;
+			gpios = <&pio 42 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_0>;
 			linux,input-type = <EV_SW>;
 		};
 
 		router {
 			label = "router";
-			gpios = <&pio 43 GPIO_ACTIVE_HIGH>;
+			gpios = <&pio 43 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_1>;
 			linux,input-type = <EV_SW>;
 		};
