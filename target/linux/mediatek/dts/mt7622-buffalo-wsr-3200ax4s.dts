@@ -32,33 +32,33 @@
 		compatible = "gpio-leds";
 
 		wireless_amber {
-			label = "wsr-3200ax4s:amber:wireless";
+			label = "amber:wireless";
 			gpios = <&pio 2 GPIO_ACTIVE_HIGH>;
 		};
 
 		power_amber: power_amber {
-			label = "wsr-3200ax4s:amber:power";
+			label = "amber:power";
 			gpios = <&pio 3 GPIO_ACTIVE_LOW>;
 		};
 
 		power_green: power_green {
-			label = "wsr-3200ax4s:green:power";
+			label = "green:power";
 			gpios = <&pio 4 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 		};
 
 		wireless_green {
-			label = "wsr-3200ax4s:green:wireless";
+			label = "green:wireless";
 			gpios = <&pio 15 GPIO_ACTIVE_HIGH>;
 		};
 
 		internet {
-			label = "wsr-3200ax4s:green:internet";
+			label = "green:internet";
 			gpios = <&pio 19 GPIO_ACTIVE_HIGH>;
 		};
 
 		router {
-			label = "wsr-3200ax4s:green:router";
+			label = "green:router";
 			gpios = <&pio 20 GPIO_ACTIVE_HIGH>;
 		};
 	};
