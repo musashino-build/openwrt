@@ -62,8 +62,9 @@ define Build/trx-nand
 	#	  if it grows up between releases
 	# root: UBI with one extra block containing UBI mark to trigger erasing
 	#	rest of partition
+	$(eval magic=$(1))
 	$(STAGING_DIR_HOST)/bin/otrx create $@.new \
-		-M 0x32504844 \
+		-M $(magic) \
 		-f $(IMAGE_KERNEL) -a 0x20000 -b 0x400000 \
 		-f $@ \
 		-A $(KDIR)/ubi_mark -a 0x20000
@@ -117,10 +118,10 @@ define Device/buffalo_wsr-2533dhp2
   KERNEL_INITRAMFS := kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
 	buffalo-kernel-trx
-  IMAGE/factory.bin := append-ubi | trx-nand | \
+  IMAGE/factory.bin := append-ubi | trx-nand 0x32504844 | \
 	buffalo-enc WSR-2533DHP2 $$(BUFFALO_TAG_VERSION) -l | \
 	buffalo-tag-dhp WSR-2533DHP2 JP JP | buffalo-enc-tag -l | buffalo-dhp-image
-  IMAGE/factory-uboot.bin := append-ubi | trx-nand
+  IMAGE/factory-uboot.bin := append-ubi | trx-nand 0x32504844
   IMAGE/sysupgrade.bin := append-kernel | \
 	buffalo-kernel-trx 0x32504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
