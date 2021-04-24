@@ -148,8 +148,9 @@ define Device/elecom_wrc-x3200gst3
   PAGESIZE := 2048
   UBINIZE_OPTS := -E 5
   IMAGES += factory.bin
-  IMAGE/factory.bin := append-kernel | pad-to 128k | append-ubi | \
-	check-size | elecom-wrc-gs-factory WRC-X3200GST3 0.00 -N | \
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | check-size | \
+	elecom-wrc-gs-factory WRC-X3200GST3 0.00 -N | \
 	append-string MT7622_ELECOM_WRC-X3200GST3
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   DEVICE_PACKAGES := kmod-mt7915e
