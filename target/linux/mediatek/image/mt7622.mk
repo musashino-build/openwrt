@@ -145,7 +145,7 @@ define Device/buffalo_wsr-3200ax4s
   BUFFALO_TAG_MINOR := 9.99
   IMAGES += factory.bin factory-uboot.bin
   KERNEL_INITRAMFS = kernel-bin | lzma | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
 	buffalo-kernel-trx
   IMAGE/factory.bin := append-ubi | trx-nand | \
 	buffalo-enc WSR-3200AX4S $$(BUFFALO_TAG_VERSION) -l | \
