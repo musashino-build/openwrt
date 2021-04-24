@@ -148,10 +148,10 @@ define Device/buffalo_wsr-3200ax4s
   KERNEL_INITRAMFS = kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
 	buffalo-kernel-trx
-  IMAGE/factory.bin := append-ubi | trx-nand | \
+  IMAGE/factory.bin := append-ubi | trx-nand 0x33504844 | \
 	buffalo-enc WSR-3200AX4S $$(BUFFALO_TAG_VERSION) -l | \
 	buffalo-tag-dhp WSR-3200AX4S JP JP | buffalo-enc-tag -l | buffalo-dhp-image
-  IMAGE/factory-uboot.bin := append-ubi | trx-nand
+  IMAGE/factory-uboot.bin := append-ubi | trx-nand 0x33504844
   IMAGE/sysupgrade.bin := append-kernel | \
 	buffalo-kernel-trx 0x33504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
