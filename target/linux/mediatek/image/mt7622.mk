@@ -155,7 +155,7 @@ define Device/buffalo_wsr-3200ax4s
   IMAGE/sysupgrade.bin := append-kernel | \
 	buffalo-kernel-trx 0x33504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
-  DEVICE_PACKAGES := kmod-mt7615e kmod-mt7615-firmware kmod-mt7915e
+  DEVICE_PACKAGES := kmod-mt7915e
 endef
 TARGET_DEVICES += buffalo_wsr-3200ax4s
 
