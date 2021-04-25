@@ -114,16 +114,16 @@ define Device/buffalo_wsr
   BUFFALO_TAG_VERSION := 9.99
   BUFFALO_TAG_MINOR := 9.99
   IMAGES += factory.bin factory-uboot.bin
-  KERNEL_INITRAMFS := kernel-bin | lzma | \
+  KERNEL_INITRAMFS = kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
 	buffalo-kernel-trx
-  IMAGE/factory.bin := append-ubi | trx-nand $$(BUFFALO_TRX_MAGIC) | \
-	buffalo-enc $$(DEVICE_MODEL) $$(BUFFALO_TAG_VERSION) -l | \
+  IMAGE/factory.bin = append-ubi | trx-nand $$$$(BUFFALO_TRX_MAGIC) | \
+	buffalo-enc $$(DEVICE_MODEL) $$$$(BUFFALO_TAG_VERSION) -l | \
 	buffalo-tag-dhp $$(DEVICE_MODEL) JP JP | buffalo-enc-tag -l | \
 	buffalo-dhp-image
-  IMAGE/factory-uboot.bin := append-ubi | trx-nand $$(BUFFALO_TRX_MAGIC)
+  IMAGE/factory-uboot.bin := append-ubi | trx-nand $$$$(BUFFALO_TRX_MAGIC)
   IMAGE/sysupgrade.bin := append-kernel | \
-	buffalo-kernel-trx $$(BUFFALO_TRX_MAGIC) $(KDIR)/tmp/$$(DEVICE_NAME).null | \
+	buffalo-kernel-trx $$$$(BUFFALO_TRX_MAGIC) $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
 endef
 
