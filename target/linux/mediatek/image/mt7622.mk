@@ -108,7 +108,6 @@ define Device/buffalo_wsr
   KERNEL_SIZE := 4096k
   BLOCKSIZE := 128k
   PAGESIZE := 2048
-  SUBPAGESIZE := 512
   UBINIZE_OPTS := -E 5
   BUFFALO_TAG_PLATFORM := MTK
   BUFFALO_TAG_VERSION := 9.99
@@ -132,6 +131,7 @@ define Device/buffalo_wsr-2533dhp2
   DEVICE_MODEL := WSR-2533DHP2
   DEVICE_DTS := mt7622-buffalo-wsr-2533dhp2
   IMAGE_SIZE := 59392k
+  SUBPAGESIZE := 512
   BUFFALO_TRX_MAGIC := 0x32504844
   DEVICE_PACKAGES := swconfig
 endef
