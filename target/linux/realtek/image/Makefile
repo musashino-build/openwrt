@@ -81,6 +81,15 @@ define Device/inaba_aml2-17gp
 endef
 TARGET_DEVICES += inaba_aml2-17gp
 
+define Device/panasonic_m24eg-28240k
+  SOC := rtl8382
+  IMAGE_SIZE := 6848k
+  DEVICE_VENDOR := Panasonic
+  DEVICE_MODEL := Switch-M24eG
+  DEVICE_VARIANT := PN28240K
+endef
+TARGET_DEVICES += panasonic_m24eg-28240k
+
 define Device/netgear_gs108t-v3
   $(Device/netgear_nge)
   DEVICE_MODEL := GS108T
