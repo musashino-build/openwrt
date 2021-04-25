@@ -6,6 +6,8 @@ else
   KERNEL_LOADADDR := 0x44000000
 endif
 
+DEVICE_VARS += BUFFALO_TRX_MAGIC
+
 define Image/Prepare
 	# For UBI we want only one extra block
 	rm -f $(KDIR)/ubi_mark
@@ -100,12 +102,9 @@ define Device/bananapi_bpi-r64
 endef
 TARGET_DEVICES += bananapi_bpi-r64
 
-define Device/buffalo_wsr-2533dhp2
+define Device/buffalo_wsr
   DEVICE_VENDOR := Buffalo
-  DEVICE_MODEL := WSR-2533DHP2
-  DEVICE_DTS := mt7622-buffalo-wsr-2533dhp2
   DEVICE_DTS_DIR := ../dts
-  IMAGE_SIZE := 59392k
   KERNEL_SIZE := 4096k
   BLOCKSIZE := 128k
   PAGESIZE := 2048
@@ -118,43 +117,32 @@ define Device/buffalo_wsr-2533dhp2
   KERNEL_INITRAMFS := kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
 	buffalo-kernel-trx
-  IMAGE/factory.bin := append-ubi | trx-nand 0x32504844 | \
-	buffalo-enc WSR-2533DHP2 $$(BUFFALO_TAG_VERSION) -l | \
-	buffalo-tag-dhp WSR-2533DHP2 JP JP | buffalo-enc-tag -l | buffalo-dhp-image
-  IMAGE/factory-uboot.bin := append-ubi | trx-nand 0x32504844
+  IMAGE/factory.bin := append-ubi | trx-nand $$(BUFFALO_TRX_MAGIC) | \
+	buffalo-enc $$(DEVICE_MODEL) $$(BUFFALO_TAG_VERSION) -l | \
+	buffalo-tag-dhp $$(DEVICE_MODEL) JP JP | buffalo-enc-tag -l | \
+	buffalo-dhp-image
+  IMAGE/factory-uboot.bin := append-ubi | trx-nand $$(BUFFALO_TRX_MAGIC)
   IMAGE/sysupgrade.bin := append-kernel | \
-	buffalo-kernel-trx 0x32504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
+	buffalo-kernel-trx $$(BUFFALO_TRX_MAGIC) $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
+endef
+
+define Device/buffalo_wsr-2533dhp2
+  $(Device/buffalo_wsr)
+  DEVICE_MODEL := WSR-2533DHP2
+  DEVICE_DTS := mt7622-buffalo-wsr-2533dhp2
+  IMAGE_SIZE := 59392k
+  BUFFALO_TRX_MAGIC := 0x32504844
   DEVICE_PACKAGES := swconfig
 endef
 TARGET_DEVICES += buffalo_wsr-2533dhp2
 
 define Device/buffalo_wsr-3200ax4s
-  DEVICE_VENDOR := Buffalo
+  $(Device/buffalo_wsr)
   DEVICE_MODEL := WSR-3200AX4S
   DEVICE_DTS := mt7622-buffalo-wsr-3200ax4s
-  DEVICE_DTS_DIR := ../dts
   IMAGE_SIZE := 24576k
-  KERNEL_SIZE := 4096k
-  BLOCKSIZE := 128k
-  PAGESIZE := 2048
-  SUBPAGESIZE := 512
-  UBINIZE_OPTS := -E 5
-  KERNEL_SIZE := 4194304
-  BUFFALO_TAG_PLATFORM := MTK
-  BUFFALO_TAG_VERSION := 9.99
-  BUFFALO_TAG_MINOR := 9.99
-  IMAGES += factory.bin factory-uboot.bin
-  KERNEL_INITRAMFS = kernel-bin | lzma | \
-	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd | \
-	buffalo-kernel-trx
-  IMAGE/factory.bin := append-ubi | trx-nand 0x33504844 | \
-	buffalo-enc WSR-3200AX4S $$(BUFFALO_TAG_VERSION) -l | \
-	buffalo-tag-dhp WSR-3200AX4S JP JP | buffalo-enc-tag -l | buffalo-dhp-image
-  IMAGE/factory-uboot.bin := append-ubi | trx-nand 0x33504844
-  IMAGE/sysupgrade.bin := append-kernel | \
-	buffalo-kernel-trx 0x33504844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
-	sysupgrade-tar kernel=$$$$@ | append-metadata
+  BUFFALO_TRX_MAGIC := 0x33504844
   DEVICE_PACKAGES := kmod-mt7915e
 endef
 TARGET_DEVICES += buffalo_wsr-3200ax4s
