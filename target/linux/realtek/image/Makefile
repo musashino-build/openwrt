@@ -87,6 +87,7 @@ define Device/panasonic_m24eg-28240k
   DEVICE_VENDOR := Panasonic
   DEVICE_MODEL := Switch-M24eG
   DEVICE_VARIANT := PN28240K
+  DEVICE_PACKAGES := kmod-gpio-pca953x
 endef
 TARGET_DEVICES += panasonic_m24eg-28240k
 
