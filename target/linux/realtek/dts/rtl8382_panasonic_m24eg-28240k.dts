@@ -44,14 +44,14 @@
 		};
 	};*/
 
-	i2c0: i2c-gpio-0 {
+/*	i2c0: i2c-gpio-0 {
 		compatible = "i2c-gpio";
 		scl-gpios = <&gpio0 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
 		sda-gpios = <&gpio0 3 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
 		i2c-gpio,delay-us = <2>;
 		#address-cells = <1>;
 		#size-cells = <0>;
-	};
+	};*/
 
 /*	i2c1: i2c-gpio-1 {
 		compatible = "i2c-gpio";
