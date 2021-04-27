@@ -141,6 +141,14 @@
 				output-high;
 				line-name = "ext-switch-reset";
 			};
+
+			/* GPIO14 (IO1_6): 6x Shift Register (port LED) */
+			portled_sregister_reset {
+				gpio-hog;
+				gpios = <14 GPIO_ACTIVE_HIGH>;
+				output-high;
+				line-name = "portled-sregister-reset";
+			};
 		};
 	};
 };
