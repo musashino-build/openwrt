@@ -87,6 +87,7 @@
 
 		i2c-switch@70 {
 			compatible = "nxp,pca9545";
+			reset-gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
 			reg = <0x70>;
 			#address-cells = <1>;
 			#size-cells = <0>;
