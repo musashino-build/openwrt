@@ -83,7 +83,7 @@ TARGET_DEVICES += inaba_aml2-17gp
 
 define Device/panasonic_m24eg-28240k
   SOC := rtl8382
-  IMAGE_SIZE := 6848k
+  IMAGE_SIZE := 13696k
   DEVICE_VENDOR := Panasonic
   DEVICE_MODEL := Switch-M24eG
   DEVICE_VARIANT := PN28240K

@@ -166,34 +166,41 @@
 			partition@80000 {
 				label = "u-boot-env";
 				reg = <0x80000 0x10000>;
-				read-only;
 			};
 
-/*			partition@90000 {
+			partition@90000 {
 				label = "u-boot-env2";
 				reg = <0x90000 0x10000>;
-			};*/
+			};
 
-			partition@90000 {
+			partition@a0000 {
 				label = "reserved1";
-				reg = <0x90000 0x510000>;
+				reg = <0xa0000 0x500000>;
 				read-only;
 			};
 
 			partition@5a0000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0x5a0000 0x6b0000>;
-			};
-
-			partition@c50000 {
-				label = "firmware2";
-				reg = <0xc50000 0x6b0000>;
+				reg = <0x5a0000 0xd60000>;
 			};
 
 			partition@1300000 {
 				label = "reserved2";
-				reg = <0x1300000 0xd00000>;
+				reg = <0x1300000 0xb20000>;
+				read-only;
+			};
+
+			partition@1e20000 {
+				label = "vlog_data";
+				reg = <0x1e20000 0xe0000>;
+				read-only;
+			};
+
+			partition@1f00000 {
+				label = "elog_data";
+				reg = <0x1f00000 0x100000>;
+				read-only;
 			};
 		};
 	};
