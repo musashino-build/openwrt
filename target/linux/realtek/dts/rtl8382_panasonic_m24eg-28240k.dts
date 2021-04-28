@@ -186,7 +186,7 @@
 			partition@a0000 {
 				label = "reserved1";
 				reg = <0xa0000 0x500000>;
-				read-only;
+				//read-only;
 			};
 
 			partition@5a0000 {
@@ -198,7 +198,7 @@
 			partition@1300000 {
 				label = "reserved2";
 				reg = <0x1300000 0xb20000>;
-				read-only;
+				//read-only;
 			};
 
 			partition@1e20000 {
