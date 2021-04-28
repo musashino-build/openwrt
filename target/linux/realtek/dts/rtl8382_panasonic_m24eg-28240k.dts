@@ -75,7 +75,7 @@
 		};
 	};
 
-	i2c0: i2c-gpio-0 {
+	i2c-gpio-0 {
 		compatible = "i2c-gpio";
 		/* SoC GPIO 12 */
 		scl-gpios = <&gpio0 20 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
@@ -106,7 +106,7 @@
 		};
 	};
 
-	i2c1: i2c-gpio-1 {
+	i2c-gpio-1 {
 		compatible = "i2c-gpio";
 		/* SoC GPIO 0 */
 		scl-gpios = <&gpio0 24 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
