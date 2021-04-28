@@ -148,6 +148,24 @@
 			};
 		};
 	};
+
+	sfp0: sfp-p23 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c0>;
+		tx-fault-gpio = <&gpio2 0 GPIO_ACTIVE_HIGH>;
+		tx-disable-gpio = <&gpio2 1 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio2 2 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio2 3 GPIO_ACTIVE_HIGH>;
+	};
+
+	sfp1: sfp-p24 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c1>;
+		tx-fault-gpio = <&gpio2 4 GPIO_ACTIVE_HIGH>;
+		tx-disable-gpio = <&gpio2 5 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio2 6 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &spi0 {
