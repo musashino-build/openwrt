@@ -124,17 +124,6 @@
 			gpio-controller;
 			#gpio-cells = <2>;
 
-			/*
-			 * GPIO3 (IO0_3): RTL8382M
-			 * Normal: LOW, Reset: HIGH
-			 */
-			soc_reset {
-				gpio-hog;
-				gpios = <3 GPIO_ACTIVE_LOW>;
-				output-low;
-				line-name = "soc-reset";
-			};
-
 			/* GPIO12 (IO1_4): RTL8218B + RTL8218D */
 			ext_switch_reset {
 				gpio-hog;
