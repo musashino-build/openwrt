@@ -92,13 +92,15 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			i2c@0 {
+			/* for port 23 (combo) SFP */
+			i2c0: i2c@0 {
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <0>;
 			};
 
-			i2c@1 {
+			/* for port 24 (combo) SFP */
+			i2c1: i2c@1 {
 				#address-cells = <1>;
 				#size-cells = <0>;
 				reg = <1>;
