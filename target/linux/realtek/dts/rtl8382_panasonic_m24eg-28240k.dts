@@ -179,29 +179,22 @@
 			};
 
 			/*
+			 * 0x100000 - 0x1DFFFFF
 			 * Filesystem area in stock for os-image files
 			 * and configuration files
 			 */
+
+			/* The offset of the re-created fs */
 			partition@100000 {
-				label = "filesystem";
-				reg = <0x100000 0x1d00000>;
+				label = "fs_reserved";
+				reg = <0x100000 0x930000>;
+			};
 
-				compatible = "fixed-partitions";
-				#address-cells = <1>;
-				#size-cells = <1>;
-
-				/* The offset of the re-created fs */
-				partition@0 {
-					label = "fs_reserved";
-					reg = <0x0 0x930000>;
-				};
-
-				/* The default offset of the fs */
-				partition@930000 {
-					compatible = "denx,uimage";
-					label = "firmware";
-					reg = <0x930000 0x13d0000>;
-				};
+			/* The default offset of the fs */
+			partition@a30000 {
+				compatible = "denx,uimage";
+				label = "firmware";
+				reg = <0xa30000 0x13d0000>;
 			};
 
 			partition@1e20000 {
