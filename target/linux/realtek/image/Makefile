@@ -81,15 +81,6 @@ define Device/inaba_aml2-17gp
 endef
 TARGET_DEVICES += inaba_aml2-17gp
 
-define Device/panasonic_m24eg-28240k
-  SOC := rtl8382
-  IMAGE_SIZE := 13696k
-  DEVICE_VENDOR := Panasonic
-  DEVICE_MODEL := Switch-M24eG
-  DEVICE_VARIANT := PN28240K
-endef
-TARGET_DEVICES += panasonic_m24eg-28240k
-
 define Device/netgear_gs108t-v3
   $(Device/netgear_nge)
   DEVICE_MODEL := GS108T
@@ -120,6 +111,15 @@ define Device/netgear_gs310tp-v1
   DEVICE_PACKAGES += lua-rs232
 endef
 TARGET_DEVICES += netgear_gs310tp-v1
+
+define Device/panasonic_m24eg-pn28240k
+  SOC := rtl8382
+  IMAGE_SIZE := 13696k
+  DEVICE_VENDOR := Panasonic
+  DEVICE_MODEL := Switch-M24eG
+  DEVICE_VARIANT := PN28240K
+endef
+TARGET_DEVICES += panasonic_m24eg-pn28240k
 
 define Device/zyxel_gs1900
   SOC := rtl8380

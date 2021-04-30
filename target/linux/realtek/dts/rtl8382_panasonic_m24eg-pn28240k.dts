@@ -6,7 +6,7 @@
 #include <dt-bindings/gpio/gpio.h>
 
 / {
-	compatible = "panasonic,m24eg-28240k", "realtek,rtl838x-soc";
+	compatible = "panasonic,m24eg-pn28240k", "realtek,rtl838x-soc";
 	model = "Panasonic Switch-M24eG (PN28240K)";
 
 	aliases {
