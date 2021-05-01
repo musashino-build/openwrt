@@ -45,10 +45,6 @@
 	};
 };
 
-&gpio0 {
-	leds-per-port = <1>;
-};
-
 &gpio1 {
 	status = "okay";
 };
