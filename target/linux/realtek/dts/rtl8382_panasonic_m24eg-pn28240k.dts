@@ -30,37 +30,37 @@
 
 		collision {
 			label = "amber:any_col";
-			gpios = <&gpio3 0 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
 		};
 
 		led_status_amber: status_amber {
 			label = "amber:status_eco";
-			gpios = <&gpio3 1 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 1 GPIO_ACTIVE_LOW>;
 		};
 
 		led_status_green: status_green {
 			label = "green:status_eco";
-			gpios = <&gpio3 2 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 2 GPIO_ACTIVE_LOW>;
 		};
 
 		gigabit {
 			label = "green:giga";
-			gpios = <&gpio3 8 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
 		};
 
 		100mbps {
 			label = "green:100m";
-			gpios = <&gpio3 9 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
 		};
 
 		full_duplex {
 			label = "green:full";
-			gpios = <&gpio3 10 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
 		};
 
 		loop_history {
 			label = "green:loop_history";
-			gpios = <&gpio3 11 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
 		};
 	};
 
@@ -70,10 +70,13 @@
 
 		led_mode {
 			label = "led-mode";
-			gpios = <&gpio3 15 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_0>;
 		};
 	};
+
+	/* Switch-M24eG PN28240K has no RTL8231 chip */
+	/delete-node/ rtl8231-gpio;
 
 	i2c-gpio-0 {
 		compatible = "i2c-gpio";
@@ -87,7 +90,7 @@
 
 		i2c-switch@70 {
 			compatible = "nxp,pca9545";
-			reset-gpios = <&gpio3 13 GPIO_ACTIVE_LOW>;
+			reset-gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
 			reg = <0x70>;
 			#address-cells = <1>;
 			#size-cells = <0>;
@@ -118,14 +121,14 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		gpio2: gpio@20 {
+		gpio1: gpio@20 {
 			compatible = "nxp,pca9555";
 			reg = <0x20>;
 			gpio-controller;
 			#gpio-cells = <2>;
 		};
 
-		gpio3: gpio@75 {
+		gpio2: gpio@75 {
 			compatible = "nxp,pca9539";
 			reg = <0x75>;
 			gpio-controller;
@@ -152,19 +155,19 @@
 	sfp0: sfp-p23 {
 		compatible = "sff,sfp";
 		i2c-bus = <&i2c0>;
-		tx-fault-gpio = <&gpio2 0 GPIO_ACTIVE_HIGH>;
-		tx-disable-gpio = <&gpio2 1 GPIO_ACTIVE_HIGH>;
-		mod-def0-gpio = <&gpio2 2 GPIO_ACTIVE_LOW>;
-		los-gpio = <&gpio2 3 GPIO_ACTIVE_HIGH>;
+		tx-fault-gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+		tx-disable-gpio = <&gpio1 1 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio1 2 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio1 3 GPIO_ACTIVE_HIGH>;
 	};
 
 	sfp1: sfp-p24 {
 		compatible = "sff,sfp";
 		i2c-bus = <&i2c1>;
-		tx-fault-gpio = <&gpio2 4 GPIO_ACTIVE_HIGH>;
-		tx-disable-gpio = <&gpio2 5 GPIO_ACTIVE_HIGH>;
-		mod-def0-gpio = <&gpio2 6 GPIO_ACTIVE_LOW>;
-		los-gpio = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+		tx-fault-gpio = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+		tx-disable-gpio = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio1 6 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio1 7 GPIO_ACTIVE_HIGH>;
 	};
 };
 
