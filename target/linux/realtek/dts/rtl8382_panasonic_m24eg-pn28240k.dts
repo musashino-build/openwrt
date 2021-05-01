@@ -203,26 +203,29 @@
 			partition@a0000 {
 				label = "reserved";
 				reg = <0xa0000 0x60000>;
-				//read-only;
+				read-only;
 			};
 
 			/*
 			 * 0x100000 - 0x1DFFFFF
-			 * Filesystem area in stock for os-image files
-			 * and configuration files
+			 * Filesystem area for runtime images and
+			 * configuration files in stock firmware
 			 */
 
-			/* The offset of the re-created fs */
+			/*
+			 * re-created filesystem area, 2x stock images
+			 * are included with checksum files
+			 */
 			partition@100000 {
 				label = "fs_reserved";
-				reg = <0x100000 0x930000>;
+				reg = <0x100000 0xd00000>;
 			};
 
-			/* The default offset of the fs */
-			partition@a30000 {
+			/* free area for OpenWrt */
+			partition@e00000 {
 				compatible = "denx,uimage";
 				label = "firmware";
-				reg = <0xa30000 0x13d0000>;
+				reg = <0xe00000 0x1000000>;
 			};
 
 			partition@1e20000 {

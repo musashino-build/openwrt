@@ -114,7 +114,7 @@ TARGET_DEVICES += netgear_gs310tp-v1
 
 define Device/panasonic_m24eg-pn28240k
   SOC := rtl8382
-  IMAGE_SIZE := 13696k
+  IMAGE_SIZE := 16384k
   DEVICE_VENDOR := Panasonic
   DEVICE_MODEL := Switch-M24eG
   DEVICE_VARIANT := PN28240K
