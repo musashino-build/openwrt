@@ -17,6 +17,10 @@
 		label-mac-device = &wan;
 	};*/
 
+	chosen {
+		bootargs = "console=ttyS0,115200";
+	};
+
 /*	leds {
 		compatible = "gpio-leds";
 
