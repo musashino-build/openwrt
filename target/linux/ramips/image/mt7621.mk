@@ -661,10 +661,14 @@ define Device/iodata_nand
   PAGESIZE := 2048
   UBINIZE_OPTS := -E 5
   KERNEL_SIZE := 4096k
-  IMAGE_SIZE := 51200k
   LOADER_TYPE := bin
-  KERNEL := kernel-bin | append-dtb | lzma | loader-kernel | lzma | uImage lzma
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+
+define Device/iodata_mstc_nand
+  $(Device/iodata_nand)
+  IMAGE_SIZE := 51200k
+  KERNEL := kernel-bin | append-dtb | lzma | loader-kernel | lzma | uImage lzma
 endef
 
 # The OEM webinterface expects an kernel with initramfs which has the uImage
@@ -674,7 +678,7 @@ endef
 # webinterface. It will soft-brick the board.
 
 define Device/iodata_wn-ax1167gr2
-  $(Device/iodata_nand)
+  $(Device/iodata_mstc_nand)
   DEVICE_MODEL := WN-AX1167GR2
   KERNEL_INITRAMFS := $(KERNEL_DTB) | loader-kernel | lzma | \
 	uImage lzma -M 0x434f4d42 -n '3.10(XBC.1)b10' | iodata-mstc-header
@@ -683,7 +687,7 @@ endef
 TARGET_DEVICES += iodata_wn-ax1167gr2
 
 define Device/iodata_wn-ax2033gr
-  $(Device/iodata_nand)
+  $(Device/iodata_mstc_nand)
   DEVICE_MODEL := WN-AX2033GR
   KERNEL_INITRAMFS := $(KERNEL_DTB) | loader-kernel | lzma | \
 	uImage lzma -M 0x434f4d42 -n '3.10(VST.1)C10' | iodata-mstc-header
@@ -691,8 +695,18 @@ define Device/iodata_wn-ax2033gr
 endef
 TARGET_DEVICES += iodata_wn-ax2033gr
 
-define Device/iodata_wn-dx1167r
+define Device/iodata_wn-deax1800gr
   $(Device/iodata_nand)
+  DEVICE_MODEL := WN-DEAX1800GR
+  IMAGE_SIZE := 47104k
+  KERNEL := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
+  DEVICE_PACKAGES := kmod-mt7915e
+endef
+TARGET_DEVICES += iodata_wn-deax1800gr
+
+define Device/iodata_wn-dx1167r
+  $(Device/iodata_mstc_nand)
   DEVICE_MODEL := WN-DX1167R
   KERNEL_INITRAMFS := $(KERNEL_DTB) | loader-kernel | lzma | \
 	uImage lzma -M 0x434f4d43 -n '3.10(XIK.1)b10' | iodata-mstc-header
@@ -701,7 +715,7 @@ endef
 TARGET_DEVICES += iodata_wn-dx1167r
 
 define Device/iodata_wn-dx1200gr
-  $(Device/iodata_nand)
+  $(Device/iodata_mstc_nand)
   DEVICE_MODEL := WN-DX1200GR
   KERNEL_INITRAMFS := $(KERNEL_DTB) | loader-kernel | lzma | \
 	uImage lzma -M 0x434f4d43 -n '3.10(XIQ.0)b20' | iodata-mstc-header

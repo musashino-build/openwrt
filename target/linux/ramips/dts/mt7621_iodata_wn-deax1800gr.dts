@@ -1,0 +1,165 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "mt7621.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/ {
+	compatible = "iodata,wn-deax1800gr", "mediatek,mt7621-soc";
+	model = "I-O DATA WN-DEAX1800GR";
+
+/*	aliases {
+		led-boot = &led_power;
+		led-failsafe = &led_power;
+		led-running = &led_power;
+		led-upgrade = &led_power;
+		label-mac-device = &wan;
+	};*/
+
+/*	leds {
+		compatible = "gpio-leds";
+
+		wps {
+			label = "green:wps";
+			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
+		};
+
+		led_power: power {
+			label = "green:power";
+			gpios = <&gpio 9 GPIO_ACTIVE_HIGH>;
+		};
+	};*/
+
+/*	keys {
+		compatible = "gpio-keys";
+
+		reset {
+			label = "reset";
+			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+
+		repeater {
+			label = "repeater";
+			gpios = <&gpio 7 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_0>;
+			linux,input-type = <EV_SW>;
+		};
+
+		wps {
+			label = "wps";
+			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};*/
+};
+
+&nand {
+	status = "okay";
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		partition@0 {
+			label = "u-boot";
+			reg = <0x0 0x80000>;
+			read-only;
+		};
+
+		partition@80000 {
+			label = "u-boot-env";
+			reg = <0x80000 0x80000>;
+			read-only;
+		};
+
+		factory: partition@100000 {
+			label = "factory";
+			reg = <0x100000 0x80000>;
+		};
+
+		partition@180000 {
+			label = "kernel";
+			reg = <0x180000 0x400000>;
+		};
+
+		partition@580000 {
+			label = "ubi";
+			reg = <0x580000 0x2a00000>;
+		};
+
+		partition@2f80000 {
+			label = "firmware2";
+			reg = <0x2f80000 0x2e00000>;
+		};
+
+		partition@5d80000 {
+			label = "storage";
+			reg = <0x5d80000 0x600000>;
+			read-only;
+		};
+
+		partition@6380000 {
+			label = "idmkey";
+			reg = <0x6380000 0x100000>;
+			read-only;
+		};
+
+		partition@6480000 {
+			label = "working";
+			reg = <0x6480000 0x80000>;
+		};
+	};
+};
+
+&gmac0 {
+	mtd-mac-address = <&factory 0x4>;
+};
+
+&switch0 {
+	ports {
+		wan: port@0 {
+			status = "okay";
+			label = "wan";
+			mtd-mac-address = <&factory 0x4>;
+			mtd-mac-address-increment = <2>;
+		};
+
+		port@1 {
+			status = "okay";
+			label = "lan2";
+		};
+
+		port@2 {
+			status = "okay";
+			label = "lan1";
+		};
+	};
+};
+
+&pcie {
+	status = "okay";
+};
+
+&pcie0 {
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+
+		mediatek,mtd-eeprom = <&factory 0x0>;
+		ieee80211-freq-limit = <2400000 2500000>;
+	};
+};
+
+&state_default {
+	gpio {
+		groups = "i2c", "jtag", "uart2", "uart3";
+		function = "gpio";
+	};
+};
+
+&xhci {
+	status = "disabled";
+};
