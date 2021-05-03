@@ -41,6 +41,7 @@
 		power {
 			label = "green:power";
 			gpios = <&gpio 14 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
 		};
 
 		router {
