@@ -165,24 +165,17 @@
 &pcie {
 	status = "okay";
 };
+
 /*
-&pcie0 {
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-
-		mediatek,mtd-eeprom = <&factory 0x0>;
-		ieee80211-freq-limit = <5000000 6000000>;
-	};
-};*/
-
+ * pcie0: MT7915 HIF (14c3,7916)
+ * pcie1: MT7915     (14c3,7915)
+ */
 &pcie1 {
 	wifi@0,0 {
 		compatible = "mediatek,mt76";
 		reg = <0x0000 0 0 0 0>;
 
 		mediatek,mtd-eeprom = <&factory 0x0>;
-//		ieee80211-freq-limit = <2400000 2500000>;
 	};
 };
 
