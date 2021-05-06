@@ -86,7 +86,7 @@
 	spi0: spi@b8001200 {
 		status = "okay";
 
-		compatible = "realtek,rtl838x-nor";
+		compatible = "realtek,rtl8380-spi";
 		reg = <0xb8001200 0x100>;
 
 		#address-cells = <1>;
