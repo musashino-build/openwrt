@@ -7,7 +7,7 @@
 
 / {
 	compatible = "panasonic,m24eg-pn28240k", "realtek,rtl838x-soc";
-	model = "Panasonic Switch-M24eG (PN28240K)";
+	model = "Panasonic Switch-M24eG PN28240K";
 
 	aliases {
 		led-boot = &led_status_green;
