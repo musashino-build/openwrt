@@ -205,7 +205,7 @@
 			};
 
 			partition@a0000 {
-				label = "reserved";
+				label = "sysinfo";
 				reg = <0xa0000 0x60000>;
 				read-only;
 			};
