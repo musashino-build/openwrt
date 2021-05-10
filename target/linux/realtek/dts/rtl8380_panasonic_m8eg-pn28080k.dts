@@ -238,6 +238,8 @@
 		INTERNAL_PHY(13)
 		INTERNAL_PHY(14)
 		INTERNAL_PHY(15)
+
+		INTERNAL_PHY(24)
 	};
 };
 
@@ -254,6 +256,15 @@
 		SWITCH_PORT(13, 6, internal)
 		SWITCH_PORT(14, 7, internal)
 		SWITCH_PORT(15, 8, internal)
+
+		port@24 {
+			reg = <24>;
+			label = "lan9";
+			phy-mode = "1000base-x";
+			phy-handle = <&phy24>;
+			managed = "in-band-status";
+			sfp = <&sfp0>;
+		};
 
 		port@28 {
 			ethernet = <&ethernet0>;
