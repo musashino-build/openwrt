@@ -55,6 +55,10 @@
 
 	compatible = "realtek,rtl838x-soc";
 
+	aliases {
+		mdio-gpio0 = &mdio_gpio;
+	};
+
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -145,7 +149,7 @@
 		};
 	};
 
-	mdio-gpio {
+	mdio_gpio: mdio-gpio {
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinmux_gpio_mdx_pins>;
 		compatible = "virtual,mdio-gpio";
