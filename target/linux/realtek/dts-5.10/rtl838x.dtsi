@@ -2,6 +2,8 @@
 
 /dts-v1/;
 
+#include <dt-bindings/gpio/gpio.h>
+
 #define STRINGIZE(s) #s
 #define LAN_LABEL(p, s) STRINGIZE(p ## s)
 #define SWITCH_PORT_LABEL(n) LAN_LABEL(lan, n)
@@ -143,13 +145,26 @@
 		};
 	};
 
-	gpio1: rtl8231-gpio {
-		compatible = "realtek,rtl8231-gpio";
-		#gpio-cells = <2>;
-		indirect-access-bus-id = <0>;
-		gpio-controller;
+	mdio-gpio {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinmux_gpio_mdx_pins>;
+		compatible = "virtual,mdio-gpio";
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-		status = "disabled";
+		gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>,
+			<&gpio0 3 GPIO_ACTIVE_HIGH>;
+
+		gpio1: expander@0 {
+			compatible = "realtek,rtl8231";
+			reg = <0x0>;
+
+			gpio-controller;
+			#gpio-cells = <2>;
+			gpio-ranges = <&gpio1 0 0 37>;
+
+			status = "disabled";
+		};
 	};
 
 	pinmux: pinmux@bb001000 {
@@ -179,6 +194,21 @@
 		/* enable GPIO 0 */
 		pinmux_disable_sys_led: disable_sys_led {
 			pinctrl-single,bits = <0x0 0x0 0x8000>;
+		};
+	};
+
+	pinmux_ext_gpio: pinmux@bb00a0e0 {
+		compatible = "pinctrl-single";
+		reg = <0xbb00a0e0 0x4>;
+
+		pinctrl-single,bit-per-mux;
+		pinctrl-single,register-width = <32>;
+		pinctrl-single,function-mask = <0x1>;
+		#pinctrl-cells = <2>;
+
+		/* enable GPIO 2,3 */
+		pinmux_gpio_mdx_pins: gpio_mdx_pins {
+			pinctrl-single,bits = <0x0 0x0 0x1>;
 		};
 	};
 
