@@ -151,7 +151,8 @@
 
 	mdio_gpio: mdio-gpio {
 		pinctrl-names = "default";
-		pinctrl-0 = <&pinmux_gpio_mdx_pins>;
+		pinctrl-0 = <&pinmux_gpio_mdx_pins>,
+			    <&pinmux_disable_shadow>;
 		compatible = "virtual,mdio-gpio";
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -170,6 +171,21 @@
 			gpio-ranges = <&gpio1 0 0 37>;
 
 			status = "disabled";
+		};
+	};
+
+	pinmux_ext_gpio_bus: pinmux@bb000144 {
+		compatible = "pinctrl-single";
+		reg = <0xbb000144 0x4>;
+
+		pinctrl-single,bit-per-mux;
+		pinctrl-single,register-width = <32>;
+		pinctrl-single,function-mask = <0x1>;
+		#pinctrl-cells = <2>;
+
+		/* disable register shadowing and set as i2c bus */
+		pinmux_disable_shadow: disable_shadow_i2c {
+			pinctrl-single,bits = <0x0 0x0 0x2>;
 		};
 	};
 
