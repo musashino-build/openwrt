@@ -203,7 +203,7 @@
 		};
 	};
 
-	pinmux_ext_gpio: pinmux@bb00a0e0 {
+	pinmux_ext_gpio_dev: pinmux@bb00a0e0 {
 		compatible = "pinctrl-single";
 		reg = <0xbb00a0e0 0x4>;
 
