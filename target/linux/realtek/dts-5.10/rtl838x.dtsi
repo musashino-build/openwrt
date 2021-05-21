@@ -82,11 +82,26 @@
 		ranges = <0x0 0xb8000000 0x10000>;
 
 		intc: rtlintc@3000 {
+			compatible = "realtek,rtl-intc";
 			#address-cells = <0>;
 			#interrupt-cells = <1>;
 			interrupt-controller;
-			compatible = "realtek,rt8380-intc";
 			reg = <0x3000 0x20>;
+			interrupt-map =
+				<31 &cpuintc 2>, /* UART0 */
+				<30 &cpuintc 1>, /* UART1 */
+				<29 &cpuintc 5>, /* TC0 */
+				<28 &cpuintc 1>, /* TC1 */
+				<27 &cpuintc 1>, /* OCPTO */
+				<26 &cpuintc 1>, /* HLXTO */
+				<25 &cpuintc 1>, /* SLXTO */
+				<24 &cpuintc 4>, /* NIC */
+				<23 &cpuintc 4>, /* GPIO_ABCD */
+				<22 &cpuintc 4>, /* GPIO_EFGH */
+				<21 &cpuintc 4>, /* RTC */
+				<20 &cpuintc 3>, /* SWCORE */
+				<19 &cpuintc 4>, /* WDT_IP1 */
+				<18 &cpuintc 5>; /* WDT_IP2 */
 		};
 
 		spi0: spi@1200 {
