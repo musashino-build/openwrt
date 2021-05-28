@@ -118,6 +118,7 @@ define Device/panasonic_m8eg-pn28080k
   DEVICE_VENDOR := Panasonic
   DEVICE_MODEL := Switch-M8eG
   DEVICE_VARIANT := PN28080K
+  DEVICE_PACKAGES := kmod-i2c-mux-pca954x
 endef
 TARGET_DEVICES += panasonic_m8eg-pn28080k
 
