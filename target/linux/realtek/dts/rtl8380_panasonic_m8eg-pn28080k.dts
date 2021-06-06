@@ -43,12 +43,12 @@
 			gpios = <&gpio2 2 GPIO_ACTIVE_LOW>;
 		};
 
-		gigabit {
+		giga {
 			label = "green:giga";
 			gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
 		};
 
-		100mbps {
+		100m {
 			label = "green:100m";
 			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
 		};
