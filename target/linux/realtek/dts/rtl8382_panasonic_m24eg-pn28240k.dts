@@ -10,10 +10,10 @@
 	model = "Panasonic Switch-M24eG PN28240K";
 
 	aliases {
-		led-boot = &led_status_green;
-		led-failsafe = &led_status_amber;
-		led-running = &led_status_green;
-		led-upgrade = &led_status_green;
+		led-boot = &led_status_eco_green;
+		led-failsafe = &led_status_eco_amber;
+		led-running = &led_status_eco_green;
+		led-upgrade = &led_status_eco_green;
 	};
 
 	chosen {
@@ -28,27 +28,27 @@
 	leds {
 		compatible = "gpio-leds";
 
-		collision {
+		any_collision {
 			label = "amber:any_col";
 			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
 		};
 
-		led_status_amber: status_amber {
+		led_status_eco_amber: status_eco_amber {
 			label = "amber:status_eco";
 			gpios = <&gpio2 1 GPIO_ACTIVE_LOW>;
 		};
 
-		led_status_green: status_green {
+		led_status_eco_green: status_eco_green {
 			label = "green:status_eco";
 			gpios = <&gpio2 2 GPIO_ACTIVE_LOW>;
 		};
 
-		gigabit {
+		giga {
 			label = "green:giga";
 			gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
 		};
 
-		100mbps {
+		100m {
 			label = "green:100m";
 			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
 		};
