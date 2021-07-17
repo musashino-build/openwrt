@@ -237,7 +237,7 @@
 				reg = <0xe00000 0x1000000>;
 			};
 
-			partition@1e20000 {
+			partition@1e00000 {
 				label = "vlog_data";
 				reg = <0x1e00000 0x100000>;
 				read-only;
