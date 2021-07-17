@@ -134,7 +134,7 @@
 			gpio-controller;
 			#gpio-cells = <2>;
 
-			/* GPIO12 (IO1_4): RTL8218B + RTL8218D */
+			/* GPIO12 (IO1_4): RTL8218B + RTL8218FB */
 			ext_switch_reset {
 				gpio-hog;
 				gpios = <12 GPIO_ACTIVE_HIGH>;
