@@ -18,6 +18,8 @@ enum rtl8367_port_speed {
 	RTL8367_PORT_SPEED_10 = 0,
 	RTL8367_PORT_SPEED_100,
 	RTL8367_PORT_SPEED_1000,
+	RTL8367S_PORT_SPEED_500M,
+	RTL8367S_PORT_SPEED_2500M,
 };
 
 struct rtl8367_port_ability {
@@ -28,6 +30,12 @@ struct rtl8367_port_ability {
 	int link;
 	int duplex;
 	enum rtl8367_port_speed speed;
+};
+
+enum rtl8367_extif {
+	RTL8367_EXTIF0 = 0,
+	RTL8367_EXTIF1,
+	RTL8367_EXTIF2,
 };
 
 enum rtl8367_extif_mode {
@@ -42,6 +50,8 @@ enum rtl8367_extif_mode {
 	RTL8367B_EXTIF_MODE_RMII_MAC = 7,
 	RTL8367B_EXTIF_MODE_RMII_PHY,
 	RTL8367B_EXTIF_MODE_RGMII_33V,
+	RTL8367S_EXTIF_MODE_SGMII = 9,
+	RTL8367S_EXTIF_MODE_HSGMII,
 };
 
 struct rtl8367_extif_config {
