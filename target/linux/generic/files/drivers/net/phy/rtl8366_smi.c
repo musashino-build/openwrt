@@ -256,7 +256,7 @@ static int __rtl8366_smi_read_reg(struct rtl8366_smi *smi, u32 addr, u32 *data)
 
 int __rtl8366_mdio_read_reg(struct rtl8366_smi *smi, u32 addr, u32 *data)
 {
-	u32 phy_id = MDC_REALTEK_PHY_ADDR;
+	u32 phy_id = smi->phy_id ? smi->phy_id : MDC_REALTEK_PHY_ADDR;
 	struct mii_bus *mbus = smi->ext_mbus;
 
 	BUG_ON(in_interrupt());
@@ -293,7 +293,7 @@ int __rtl8366_mdio_read_reg(struct rtl8366_smi *smi, u32 addr, u32 *data)
 
 static int __rtl8366_mdio_write_reg(struct rtl8366_smi *smi, u32 addr, u32 data)
 {
-	u32 phy_id = MDC_REALTEK_PHY_ADDR;
+	u32 phy_id = smi->phy_id ? smi->phy_id : MDC_REALTEK_PHY_ADDR;
 	struct mii_bus *mbus = smi->ext_mbus;
 
 	BUG_ON(in_interrupt());
