@@ -152,6 +152,10 @@
 &i2c0 {
 	status = "okay";
 
+	rtc@32 {
+		compatible = "ricoh,rs5c372a";
+		reg = <0x32>;
+	};
 };
 
 &mdio {

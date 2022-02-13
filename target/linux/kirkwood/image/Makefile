@@ -161,7 +161,8 @@ TARGET_DEVICES += globalscale_sheevaplug
 define Device/iodata_hdl2-a
   DEVICE_VENDOR := I-O DATA
   DEVICE_MODEL := HDL2-A (2.0/4.0/6.0)
-  DEVICE_PACKAGES := e2fsprogs kmod-ata-marvell-sata kmod-fs-ext4
+  DEVICE_PACKAGES := e2fsprogs kmod-ata-marvell-sata kmod-fs-ext4 \
+	kmod-rtc-rs5c372a
   IMAGES := sysupgrade.bin
 endef
 TARGET_DEVICES += iodata_hdl2-a
