@@ -1,0 +1,243 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+/dts-v1/;
+
+#include "kirkwood.dtsi"
+#include "kirkwood-6282.dtsi"
+
+/ {
+	model = "I-O DATA HDL2-A (2.0/4.0/6.0)";
+	compatible = "iodata,hdl2-a", "marvell,kirkwood-88f6282", "marvell,kirkwood";
+
+/*	aliases {
+		led-boot = &led_status_green;
+		led-failsafe = &led_status_red;
+		led-running = &led_status_green;
+		led-upgrade = &led_status_red;
+	};*/
+
+	chosen {
+		bootargs = "console=ttyS0,115200";
+		stdout-path = &uart0;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x10000000>;
+	};
+
+/*	keys {
+		compatible = "gpio-keys";
+		pinctrl-0 = <&pmx_buttons>;
+		pinctrl-names = "default";
+
+		power {
+			label = "Power Button";
+			linux,code = <KEY_POWER>;
+			gpios = <&gpio1 16 GPIO_ACTIVE_HIGH>;
+		};
+
+		reset {
+			label = "Reset Button";
+			linux,code = <KEY_RESTART>;
+			gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
+		};
+
+		usb1 {
+			label = "USB1 Button";
+			linux,code = <BTN_0>;
+			gpios = <&gpio0 28 GPIO_ACTIVE_LOW>;
+		};
+
+		usb2 {
+			label = "USB2 Button";
+			linux,code = <BTN_1>;
+			gpios = <&gpio0 29 GPIO_ACTIVE_LOW>;
+		};
+	};*/
+
+/*	gpio-poweroff {
+		compatible = "gpio-poweroff";
+		pinctrl-0 = <&pmx_poweroff>;
+		pinctrl-names = "default";
+		gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+	};*/
+
+/*	leds {
+		compatible = "gpio-leds";
+		pinctrl-0 = <&pmx_leds>;
+		pinctrl-names = "default";
+
+		led_status_green: status-green {
+			label = "green:status";
+			gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
+		};
+
+		led_status_red: status-red {
+			label = "red:status";
+			gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+		};
+
+		cloud-blue {
+			label = "blue:cloud";
+			gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+		};
+
+		disk1-green {
+			label = "green:disk1";
+			gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "ata1";
+		};
+
+		disk1-red {
+			label = "red:disk1";
+			gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+		};
+
+		disk2-green {
+			label = "green:disk2";
+			gpios = <&gpio0 16 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "ata2";
+		};
+
+		disk2-red {
+			label = "red:disk2";
+			gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
+		};
+
+		disk-fail-green {
+			label = "green:disk-fail";
+			gpios = <&gpio1 11 GPIO_ACTIVE_LOW>;
+		};
+
+		disk-fail-red {
+			label = "red:disk-fail";
+			gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+		};
+
+		usb1-green {
+			label = "green:usb1";
+			gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "usbport";
+			trigger-sources = <&hub_port2>;
+		};
+
+		usb1-red {
+			label = "red:usb1";
+			gpios = <&gpio1 12 GPIO_ACTIVE_LOW>;
+		};
+
+		usb2-green {
+			label = "green:usb2";
+			gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "usbport";
+			trigger-sources = <&hub_port1>;
+		};
+
+		usb2-red {
+			label = "red:usb2";
+			gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+		};
+	};*/
+};
+
+&eth0 {
+	status = "okay";
+};
+
+&eth0port {
+	phy-handle = <&ethphy0>;
+};
+
+&i2c0 {
+	status = "okay";
+
+};
+
+&i2c1 {
+	status = "okay";
+};
+
+&mdio {
+	status = "okay";
+
+	ethphy0: ethernet-phy@0 {
+		reg = <0>;
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <40000000>;
+		reg = <0>;
+
+		partition@0 {
+			label = "all";
+			reg = <0x0 0x80000>;
+		};
+	};
+};
+
+
+&pinctrl {
+	/* buzzer gpios are connected to two pins of buzzer
+	 * leave it as is due lack of proper driver
+	 */
+	pmx_buzzer: pmx-buzzer {
+		marvell,pins = "mpp12", "mpp13";
+		marvell,function = "gpio";
+	};
+
+	pmx_leds: pmx-leds {
+		marvell,pins = "mpp14", "mpp15", "mpp16", "mpp17", "mpp38",
+			       "mpp39", "mpp40", "mpp42", "mpp43", "mpp44",
+			       "mpp45", "mpp46", "mpp47";
+		marvell,function = "gpio";
+	};
+
+	pmx_buttons: pmx-buttons {
+		marvell,pins = "mpp28", "mpp29", "mpp48", "mpp49";
+		marvell,function = "gpio";
+	};
+
+	pmx_poweroff: pmx-poweroff {
+		marvell,pins = "mpp34";
+		marvell,function = "gpio";
+	};
+};
+
+&rtc {
+	status = "disabled";
+};
+
+&sata {
+	status = "okay";
+	nr-ports = <2>;
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&usb0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	port@1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <1>;
+
+		port@1 {
+			reg = <1>;
+		};
+
+		port@2 {
+			reg = <2>;
+		};
+	};
+};
