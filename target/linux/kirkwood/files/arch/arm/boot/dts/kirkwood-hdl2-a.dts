@@ -17,8 +17,15 @@
 	};*/
 
 	chosen {
-		bootargs = "console=ttyS0,115200";
-		stdout-path = &uart0;
+		/*
+		 * The kernel and rootfs are stored to the storage
+		 * connected SATA port, port1 or port2. The path to
+		 * the partition (/dev/sdXN) which contains root data
+		 * will be assigned dynamically, GPT partition name is
+		 * required instead.
+		 */
+		bootargs-append = " console=ttyS0,115200 root=PARTLABEL=rootfs";
+		stdout-path = "serial0:115200n8";
 	};
 
 	memory@0 {
