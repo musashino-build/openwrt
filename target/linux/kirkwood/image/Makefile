@@ -123,8 +123,7 @@ define Device/cloudengines_pogoplugv4
   DEVICE_VENDOR := Cloud Engines
   DEVICE_MODEL := Pogoplug V4
   DEVICE_DTS := kirkwood-pogoplug-series-4
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-mvsdio kmod-usb3 \
-	kmod-gpio-button-hotplug
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-mvsdio kmod-usb3 kmod-gpio-button-hotplug
 endef
 TARGET_DEVICES += cloudengines_pogoplugv4
 
@@ -132,8 +131,8 @@ define Device/ctera_c200-v1
   DEVICE_VENDOR := Ctera
   DEVICE_MODEL := C200
   DEVICE_VARIANT := V1
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-gpio-button-hotplug \
-	kmod-hwmon-lm63 kmod-rtc-s35390a kmod-usb-ledtrig-usbport
+  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-hwmon-lm63 kmod-rtc-s35390a \
+	kmod-usb-ledtrig-usbport
   KERNEL := kernel-bin | append-dtb | uImage none | ctera-firmware
   KERNEL_IN_UBI :=
   KERNEL_SUFFIX := -factory.firm
@@ -171,8 +170,7 @@ define Device/iom_ix2-200
   DEVICE_VENDOR := Iomega
   DEVICE_MODEL := StorCenter ix2-200
   DEVICE_DTS := kirkwood-iomega_ix2_200
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-hwmon-lm63
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug kmod-hwmon-lm63
   PAGESIZE := 512
   SUBPAGESIZE := 256
   BLOCKSIZE := 16k
@@ -188,8 +186,7 @@ TARGET_DEVICES += iom_ix2-200
 define Device/iom_ix4-200d
   DEVICE_VENDOR := Iomega
   DEVICE_MODEL := StorCenter ix4-200d
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-gpio-nxp-74hc164 \
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug kmod-gpio-nxp-74hc164 \
 	kmod-hwmon-adt7475 kmod-mvsdio kmod-spi-gpio
   PAGESIZE := 512
   SUBPAGESIZE := 256
@@ -206,9 +203,9 @@ TARGET_DEVICES += iom_ix4-200d
 define Device/iptime_nas1
   DEVICE_VENDOR := ipTIME
   DEVICE_MODEL := NAS1
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-gpio-pca953x kmod-hwmon-drivetemp \
-	kmod-hwmon-gpiofan kmod-usb-ledtrig-usbport -uboot-envtools
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug kmod-gpio-pca953x \
+	kmod-hwmon-drivetemp kmod-hwmon-gpiofan kmod-usb-ledtrig-usbport \
+	-uboot-envtools
   KERNEL := $$(KERNEL) | iptime-naspkg nas1
   BLOCKSIZE := 256k
   IMAGE_SIZE := 15872k
@@ -264,8 +261,8 @@ define Device/netgear_readynas-duo-v2
   DEVICE_DTS := kirkwood-netgear_readynas_duo_v2
   KERNEL_IN_UBI :=
   IMAGES := sysupgrade.bin
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-hwmon-g762 kmod-rtc-rs5c372a kmod-usb3
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug kmod-hwmon-g762 \
+	kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += netgear_readynas-duo-v2
 
@@ -273,7 +270,7 @@ define Device/raidsonic_ib-nas62x0
   DEVICE_VENDOR := RaidSonic
   DEVICE_MODEL := ICY BOX IB-NAS62x0
   DEVICE_DTS := kirkwood-ib62x0
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4
+  DEVICE_PACKAGES := kmod-fs-ext4
   SUPPORTED_DEVICES += ib62x0
 endef
 TARGET_DEVICES += raidsonic_ib-nas62x0
@@ -281,8 +278,7 @@ TARGET_DEVICES += raidsonic_ib-nas62x0
 define Device/seagate_blackarmor-nas220
   DEVICE_VENDOR := Seagate
   DEVICE_MODEL := Blackarmor NAS220
-  DEVICE_PACKAGES := kmod-hwmon-adt7475 kmod-fs-ext4 kmod-ata-marvell-sata \
-	mdadm kmod-gpio-button-hotplug
+  DEVICE_PACKAGES := kmod-hwmon-adt7475 kmod-fs-ext4 mdadm kmod-gpio-button-hotplug
   PAGESIZE := 512
   SUBPAGESIZE := 256
   BLOCKSIZE := 16k
@@ -300,7 +296,7 @@ TARGET_DEVICES += seagate_dockstar
 define Device/seagate_goflexnet
   DEVICE_VENDOR := Seagate
   DEVICE_MODEL := GoFlexNet
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4
+  DEVICE_PACKAGES := kmod-fs-ext4
   SUPPORTED_DEVICES += goflexnet
 endef
 TARGET_DEVICES += seagate_goflexnet
@@ -308,7 +304,7 @@ TARGET_DEVICES += seagate_goflexnet
 define Device/seagate_goflexhome
   DEVICE_VENDOR := Seagate
   DEVICE_MODEL := GoFlexHome
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4
+  DEVICE_PACKAGES := kmod-fs-ext4
   SUPPORTED_DEVICES += goflexhome
 endef
 TARGET_DEVICES += seagate_goflexhome
@@ -316,8 +312,8 @@ TARGET_DEVICES += seagate_goflexhome
 define Device/zyxel_nsa310b
   DEVICE_VENDOR := ZyXEL
   DEVICE_MODEL := NSA310b
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-r8169 kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-hwmon-lm85
+  DEVICE_PACKAGES := kmod-r8169 kmod-fs-ext4 kmod-gpio-button-hotplug \
+	kmod-hwmon-lm85
   SUPPORTED_DEVICES += nsa310b
 endef
 TARGET_DEVICES += zyxel_nsa310b
@@ -325,7 +321,7 @@ TARGET_DEVICES += zyxel_nsa310b
 define Device/zyxel_nsa310s
   DEVICE_VENDOR := ZyXEL
   DEVICE_MODEL := NSA310S
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 kmod-gpio-button-hotplug
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug
 endef
 TARGET_DEVICES += zyxel_nsa310s
 
@@ -333,8 +329,8 @@ define Device/zyxel_nsa325
   DEVICE_VENDOR := ZyXEL
   DEVICE_MODEL := NSA325
   DEVICE_VARIANT := v1/v2
-  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-rtc-pcf8563 kmod-usb3
+  DEVICE_PACKAGES := kmod-fs-ext4 kmod-gpio-button-hotplug kmod-rtc-pcf8563 \
+	kmod-usb3
   SUPPORTED_DEVICES += nsa325
 endef
 TARGET_DEVICES += zyxel_nsa325
