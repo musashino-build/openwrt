@@ -353,6 +353,10 @@ find_mmc_part() {
 	find_stor_part "mmcblk" "p" $@
 }
 
+find_scsi_part() {
+	find_stor_part "sd" "" $@
+}
+
 group_add() {
 	local name="$1"
 	local gid="$2"
