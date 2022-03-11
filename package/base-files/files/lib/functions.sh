@@ -330,7 +330,7 @@ find_mtd_part() {
 	echo "${INDEX:+$PREFIX$INDEX}"
 }
 
-find_stor_part() {
+find_blkdev_part_common() {
 	local DEVNAME PARTNAME ROOTDEV
 
 	if grep -q "$3" /proc/mtd; then
@@ -350,11 +350,11 @@ find_stor_part() {
 }
 
 find_mmc_part() {
-	find_stor_part "mmcblk" "p" $@
+	find_blkdev_part_common "mmcblk" "p" $@
 }
 
 find_scsi_part() {
-	find_stor_part "sd" "" $@
+	find_blkdev_part_common "sd" "" $@
 }
 
 group_add() {
