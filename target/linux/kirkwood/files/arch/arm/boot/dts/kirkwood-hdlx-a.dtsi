@@ -24,12 +24,40 @@
 	};
 };
 
+&pinctrl {
+	pmx_board_model: pmx-board-model {
+		marvell,pins = "mpp39", "mpp40", "mpp41", "mpp42",
+			       "mpp43";
+		marvell,function = "gpio";
+	};
+};
+
 &eth0 {
 	status = "okay";
 };
 
 &eth0port {
 	phy-handle = <&ethphy0>;
+};
+
+&gpio1 {
+	/*
+	 * these pins are used for board-model detection
+	 * on stock firmware of HDL-A/HDL2-A
+	 *   0: HDL2-A
+	 *   1: HDL-A
+	 */
+	board-model {
+		pinctrl-0 = <&pmx_board_model>;
+		pinctrl-names = "default";
+
+		gpio-hog;
+		gpios = <7 GPIO_ACTIVE_HIGH>, <8 GPIO_ACTIVE_HIGH>,
+			<9 GPIO_ACTIVE_HIGH>, <10 GPIO_ACTIVE_HIGH>,
+			<11 GPIO_ACTIVE_HIGH>;
+		input;
+		line-name = "board-model";
+	};
 };
 
 &i2c0 {
