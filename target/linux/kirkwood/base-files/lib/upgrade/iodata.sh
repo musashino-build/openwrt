@@ -59,8 +59,8 @@ iodata_do_upgrade() {
 	local tar_file="$2"
 	local board_dir=$(tar tf "$tar_file" | grep -m 1 '^sysupgrade-.*/$')
 
-	local kerndev="$(find_scsi_part $CI_KERNPART)"
-	local rootdev="$(find_scsi_part $CI_ROOTPART)"
+	local kerndev="$(find_scsi_part kernel)"
+	local rootdev="$(find_scsi_part rootfs)"
 	local datadev="$(find_scsi_part rootfs_data)"
 
 	if [ -z "$uimage_suffix" ]; then
