@@ -5,8 +5,8 @@ iodata_check_image() {
 
 	local kernsize rootsize kerndev_size rootdev_size datadev_size
 	local data_min_size="$((64 * 1024 * 1024))"
-	local kerndev="$(find_scsi_part $CI_KERNPART)"
-	local rootdev="$(find_scsi_part $CI_ROOTPART)"
+	local kerndev="$(find_scsi_part kernel)"
+	local rootdev="$(find_scsi_part rootfs)"
 	local datadev="$(find_scsi_part rootfs_data)"
 
 	if [ -z "$kerndev" -o -z "$rootdev" -o -z "$datadev" ]; then
