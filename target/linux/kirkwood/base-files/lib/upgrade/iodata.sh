@@ -85,7 +85,7 @@ iodata_do_upgrade() {
 		of=/mnt/${board_dir}initrd.${uimage_suffix}
 
 	sync
-	if umount /mnt/${board_dir}; then
+	if ! umount /mnt/${board_dir}; then
 		echo "failed to unmount ${kerndev}, exit..."
 		exit 1
 	fi
