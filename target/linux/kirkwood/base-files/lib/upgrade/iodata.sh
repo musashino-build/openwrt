@@ -10,7 +10,10 @@ iodata_check_image() {
 
 	if [ -z "$kerndev" -o -z "$rootdev" -o -z "$datadev" ]; then
 		echo "partition layout is wong, please check"
-		echo "required partitions for sysupgrade: \"kernel\", \"rootfs\", \"rootfs_data\""
+		echo "required partitions for sysupgrade:"
+		echo "  \"kernel\" -> $kerndev"
+		echo "  \"rootfs\" -> $rootdev"
+		echo "  \"rootfs_data\" -> $datadev"
 		return 1
 	fi
 
