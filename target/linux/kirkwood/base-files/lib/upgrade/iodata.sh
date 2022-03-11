@@ -66,13 +66,12 @@ iodata_do_upgrade() {
 		exit 1
 	fi
 
-	tar xf "$tar_file" ${board_dir}/kernel -C /mnt/${board_dir}
-	mv /mnt/${board_dir}/kernel \
-		/mnt/${board_dir}/uImage.${uimage_suffix}
+	tar xf "$tar_file" ${board_dir}kernel -O \
+		> /mnt/${board_dir}uImage.${uimage_suffix}
 
 	# create dummy initrd
 	dd if=/dev/zero bs=4 count=1 \
-		of=/mnt/${board_dir}/initrd.${uimage_suffix}
+		of=/mnt/${board_dir}initrd.${uimage_suffix}
 
 	sync
 	if umount /mnt/${board_dir}; then
@@ -81,7 +80,7 @@ iodata_do_upgrade() {
 	fi
 
 	# update rootfs
-	tar xf "$tar_file" ${board_dir}/root -O > "$rootdev"
+	tar xf "$tar_file" ${board_dir}root -O > "$rootdev"
 
 	# prepare rootfs_data
 	mkfs.ext4 -F $datadev
@@ -92,7 +91,7 @@ iodata_do_upgrade() {
 			exit 1
 		fi
 
-		cp "$UPGRADE_BACKUP" /mnt/${board_dir}/
+		cp "$UPGRADE_BACKUP" /mnt/${board_dir}
 	fi
 
 	echo "sysupgrade successful"
