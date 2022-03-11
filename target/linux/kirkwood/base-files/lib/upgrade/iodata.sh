@@ -1,6 +1,7 @@
 iodata_check_image() {
 	local tar_file="$1"
 	local board_dir=$(tar tf "$tar_file" | grep -m 1 '^sysupgrade-.*/$')
+	local found_tools
 
 	local kernsize rootsize kerndev_size rootdev_size datadev_size
 	local data_min_size="$((64 * 1024 * 1024))"
@@ -14,6 +15,13 @@ iodata_check_image() {
 		echo "  \"kernel\" -> $kerndev"
 		echo "  \"rootfs\" -> $rootdev"
 		echo "  \"rootfs_data\" -> $datadev"
+		return 1
+	fi
+
+	if ! found_tools="$(which fdisk mkfs.ext3 mkfs.ext4)"; then
+		echo "sysupgrade requires some commands, fdisk, mkfs.ext3 and mkfs.ext4"
+		echo "found:"
+		echo "$found_tools"
 		return 1
 	fi
 
