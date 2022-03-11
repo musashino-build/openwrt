@@ -17,9 +17,12 @@ iodata_check_image() {
 	kernsize=$( (tar xf "$tar_file" ${board_dir}/kernel -O | wc -c) 2> /dev/null)
 	rootsize=$( (tar xf "$tar_file" ${board_dir}/root -O | wc -c) 2> /dev/null)
 
-	kerndev_size=$( (fdisk -l $kerndev | head -n1 | grep -o "[0-9]\{1,16\} bytes") 2>/dev/null)
-	rootdev_size=$( (fdisk -l $rootdev | head -n1 | grep -o "[0-9]\{1,16\} bytes") 2>/dev/null)
-	datadev_size=$( (fdisk -l $datadev | head -n1 | grep -o "[0-9]\{1,16\} bytes") 2>/dev/null)
+	kerndev_size=$( (fdisk -l $kerndev | head -n1 | \
+		grep -o "[0-9]\{1,16\} bytes" | cut -d' ' -f1) 2>/dev/null)
+	rootdev_size=$( (fdisk -l $rootdev | head -n1 | \
+		grep -o "[0-9]\{1,16\} bytes" | cut -d' ' -f1) 2>/dev/null)
+	datadev_size=$( (fdisk -l $datadev | head -n1 | \
+		grep -o "[0-9]\{1,16\} bytes" | cut -d' ' -f1) 2>/dev/null)
 
 
 	# calcuate mergin for filesystem in kernel
