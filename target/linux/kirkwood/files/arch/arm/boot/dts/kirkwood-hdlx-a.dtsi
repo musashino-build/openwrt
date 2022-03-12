@@ -14,7 +14,7 @@
 		 * will be assigned dynamically, GPT partition name is
 		 * required instead.
 		 */
-		bootargs-append = " root=PARTLABEL=rootfs fstools_use_partlabel=1";
+		bootargs-append = " root=PARTLABEL=rootfs";
 		stdout-path = "serial0:115200n8";
 	};
 
