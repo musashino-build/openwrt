@@ -121,8 +121,9 @@
 			regulator-name = "sata-power";
 			regulator-min-microvolt = <12000000>;
 			regulator-max-microvolt = <12000000>;
-			gpio = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+			enable-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
 			regulator-always-on;
+			enable-active-high;
 		};
 	};
 };
