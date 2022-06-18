@@ -176,7 +176,7 @@
 		input;
 		line-name = "board-model";
 	};
-}
+};
 
 &gpio1 {
 	board-model {
