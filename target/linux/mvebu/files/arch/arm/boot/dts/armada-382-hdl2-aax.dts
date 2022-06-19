@@ -14,6 +14,7 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/thermal/thermal.h>
 
 / {
 	model = "I-O DATA HDL2-AAX (0/2/4/6/8/12/16)";
@@ -89,7 +90,7 @@
 		};
 	};*/
 
-	gpio-fan {
+	system_fan: gpio-fan {
 		compatible = "gpio-fan";
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio_fan_pins>;
@@ -126,6 +127,125 @@
 			enable-active-high;
 		};
 	};
+
+	thermal-zones {
+		sata0-thermal {
+			polling-delay = <2000>;
+			polling-delay-passive = <2000>;
+
+			thermal-sensors = <&sata_port0>;
+
+			trips {
+				sata0_alart1: trip1 {
+					temperature = <36000>;
+					hysteresis = <2000>;
+					type = "active";
+				};
+
+				sata0_alart2: trip2 {
+					temperature = <50000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				trip3 {
+					temperature = <60000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map1 {
+					trip = <&sata0_alart1>;
+					cooling-device = <&system_fan THERMAL_NO_LIMIT 1>;
+				};
+
+				map2 {
+					trip = <&sata0_alart2>;
+					cooling-device = <&system_fan 2 THERMAL_NO_LIMIT>;
+				};
+			};
+		};
+
+		sata1-thermal {
+			polling-delay = <2000>;
+			polling-delay-passive = <2000>;
+
+			thermal-sensors = <&sata_port1>;
+
+			trips {
+				sata1_alart1: trip1 {
+					temperature = <36000>;
+					hysteresis = <2000>;
+					type = "active";
+				};
+
+				sata1_alart2: trip2 {
+					temperature = <50000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				trip3 {
+					temperature = <60000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map1 {
+					trip = <&sata1_alart1>;
+					cooling-device = <&system_fan THERMAL_NO_LIMIT 1>;
+				};
+
+				map2 {
+					trip = <&sata1_alart2>;
+					cooling-device = <&system_fan 2 THERMAL_NO_LIMIT>;
+				};
+			};
+		};
+
+		system-thermal {
+			polling-delay = <2000>;
+			polling-delay-passive = <2000>;
+
+			thermal-sensors = <&system_temp>;
+
+			trips {
+				system_alart1: trip1 {
+					temperature = <40000>;
+					hysteresis = <2000>;
+					type = "active";
+				};
+
+				system_alart2: trip2 {
+					temperature = <52000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				trip3 {
+					temperature = <60000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map1 {
+					trip = <&system_alart1>;
+					cooling-device = <&system_fan THERMAL_NO_LIMIT 1>;
+				};
+
+				map2 {
+					trip = <&system_alart2>;
+					cooling-device = <&system_fan 2 THERMAL_NO_LIMIT>;
+				};
+			};
+		};
+	};
 };
 
 &ahci0 {
@@ -134,13 +254,13 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	sata-port@0 {
+	sata_port0: sata-port@0 {
 		reg = <0>;
 		target-supply = <&reg_sata_power>;
 		#thermal-sensor-cells = <0>;
 	};
 
-	sata-port@1 {
+	sata_port1: sata-port@1 {
 		reg = <1>;
 		target-supply = <&reg_sata_power>;
 		#thermal-sensor-cells = <0>;
@@ -202,7 +322,7 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 
-	sensor@49 {
+	system_temp: sensor@49 {
 		compatible = "ti,tmp75";
 		reg = <0x49>;
 		#thermal-sensor-cells = <0>;
