@@ -1206,6 +1206,25 @@ endef
 $(eval $(call KernelPackage,keys-trusted))
 
 
+define KernelPackage/pwm-beeper
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=PWM beeper support
+  DEPENDS:=+kmod-input-core
+  KCONFIG:= \
+	CONFIG_INPUT_MISC=y \
+	CONFIG_INPUT_PWM_BEEPER
+  FILES:= \
+	$(LINUX_DIR)/drivers/input/misc/pwm-beeper.ko
+  AUTOLOAD:=$(call AutoLoad,50,pwm-beeper)
+endef
+
+define KernelPackage/pwm-beeper/description
+ This enables playing beeps through an PWM-controlled buzzer
+endef
+
+$(eval $(call KernelPackage,pwm-beeper))
+
+
 define KernelPackage/tpm
   SUBMENU:=$(OTHER_MENU)
   TITLE:=TPM Hardware Support
