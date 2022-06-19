@@ -96,6 +96,7 @@
 		pinctrl-0 = <&gpio_fan_pins>;
 		gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>,
 		        <&gpio1 13 GPIO_ACTIVE_HIGH>;
+		alarm-gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
 		/* We don't know the exact rpm, just use dummy values here. */
 		gpio-fan,speed-map = <0 0>, <1 1>, <2 2>;
 		#cooling-cells = <2>;
