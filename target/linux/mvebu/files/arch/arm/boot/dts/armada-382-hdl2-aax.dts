@@ -14,19 +14,20 @@
 
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 #include <dt-bindings/thermal/thermal.h>
 
 / {
 	model = "I-O DATA HDL2-AAX (0/2/4/6/8/12/16)";
 	compatible = "iodata,hdl2-aax", "marvell,armada382", "marvell,armada380";
 
-/*	aliases {
-		led-boot = &led_ready;
-		led-failsafe = &led_ready;
-		led-running = &led_ready;
-		led-upgrade = &led_ready;
+	aliases {
+		led-boot = &led_power_green;
+		led-failsafe = &led_power_red;
+		led-running = &led_power_green;
+		led-upgrade = &led_power_green;
 		label-mac-device = &eth0;
-	};*/
+	};
 
 	chosen {
 		bootargs = "console=ttyS0,115200n8";
@@ -66,29 +67,69 @@
 		};
 	};
 
-/*	gpio-leds {
+	gpio-leds {
 		compatible = "gpio-leds";
 		pinctrl-names = "default";
 		pinctrl-0 = <&gpio_leds_pins>;
 
-		led_ready: ready {
-			label = "blue:ready";
-			gpios = <&gpio0 18 GPIO_ACTIVE_LOW>;
+		led_power_green: led-0 {
+			label = "green:power";
+			gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_POWER;
+			function-enumerator = <1>;
 		};
 
-		hdd {
-			label = "blue:hdd";
-			gpios = <&gpio0 20 GPIO_ACTIVE_LOW>;
-			linux,default-trigger = "disk-activity";
+		led-1 {
+			label = "orange:power";
+			gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_AMBER>;
+			function = LED_FUNCTION_POWER;
+			function-enumerator = <2>;
 		};
 
-		usb {
-			label = "blue:usb";
-			gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
-			trigger-sources = <&usb3_0_port1 &usb3_0_port2>;
-			linux,default-trigger = "usbport";
+		led_power_red: led-2 {
+			label = "red:power";
+			gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_POWER;
+			function-enumerator = <3>;
 		};
-	};*/
+
+		led-3 {
+			label = "green:hdd1";
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "ata2";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_DISK;
+			function-enumerator = <1>;
+		};
+
+		led-4 {
+			label = "green:hdd2";
+			gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+			linux,default-trigger = "ata1";
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_DISK;
+			function-enumerator = <2>;
+		};
+
+		led-5 {
+			label = "red:hdd1";
+			gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_DISK_ERR;
+			function-enumerator = <1>;
+		};
+
+		led-6 {
+			label = "red:hdd2";
+			gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_DISK_ERR;
+			function-enumerator = <2>;
+		};
+	};
 
 	system_fan: gpio-fan {
 		compatible = "gpio-fan";
