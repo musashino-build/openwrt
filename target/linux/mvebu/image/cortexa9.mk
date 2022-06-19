@@ -84,7 +84,7 @@ define Device/iodata_hdl2-aax
   SOC := armada-382
   KERNEL := kernel-bin | append-dtb
   DEVICE_PACKAGES := kmod-eeprom-at24 kmod-hwmon-drivetemp \
-    kmod-hwmon-gpiofan kmod-hwmon-lm75
+    kmod-hwmon-gpiofan kmod-hwmon-lm75 kmod-pwm-beeper
 endef
 TARGET_DEVICES += iodata_hdl2-aax
 

@@ -110,6 +110,11 @@
 		active-delay-ms = <1000>;
 	};
 
+	pwm-beeper {
+		compatible = "pwm-beeper";
+		pwms = <&gpio1 12 40000>;
+	};
+
 	regulators {
 		compatible = "simple-bus";
 		#address-cells = <1>;
@@ -425,6 +430,11 @@
 
 	ac_detection_pins: ac-detection-pins {
 		marvell,pins = "mpp43";
+		marvell,function = "gpio";
+	};
+
+	beeper_pins: beeper-pins {
+		marvell,pins = "mpp44";
 		marvell,function = "gpio";
 	};
 
