@@ -27,6 +27,7 @@
 		led-running = &led_power_green;
 		led-upgrade = &led_power_green;
 		label-mac-device = &eth0;
+		mdio-gpio0 = &mdio0;
 	};
 
 	chosen {
@@ -154,6 +155,22 @@
 	pwm-beeper {
 		compatible = "pwm-beeper";
 		pwms = <&gpio1 12 40000>;
+	};
+
+	mdio0: mdio {
+		compatible = "virtual,mdio-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_mdio_pins>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>,
+			<&gpio0 5 GPIO_ACTIVE_HIGH>;
+
+		ethphy0: ethernet-phy@0 {
+			compatible = "ethernet-phy-ieee802.3-c45";
+			reg = <0>;
+		};
 	};
 
 	regulators {
@@ -427,16 +444,6 @@
 	};
 };
 
-&mdio {
-	pinctrl-names = "default";
-	pinctrl-0 = <&mdio_pins>;
-
-	ethphy0: ethernet-phy@0 {
-		reg = <0>;
-		max-speed = <2500>;
-	};
-};
-
 &pinctrl {
 	gpio_keys_pins: gpio-keys-pins {
 		marvell,pins = "mpp26", "mpp27";
@@ -446,6 +453,11 @@
 	gpio_leds_pins: gpio-leds-pins {
 		marvell,pins = "mpp29", "mpp31", "mpp32", "mpp33", "mpp34",
 			       "mpp35", "mpp47";
+		marvell,function = "gpio";
+	};
+
+	gpio_mdio_pins: gpio-mdio-pins {
+		marvell,pins = "mpp4", "mpp5";
 		marvell,function = "gpio";
 	};
 
