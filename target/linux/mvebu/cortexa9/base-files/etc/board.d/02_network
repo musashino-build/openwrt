@@ -69,6 +69,10 @@ mvebu_setup_macs()
 		label_mac=$(mtd_get_mac_ascii dev_params mac)
 		lan_mac=$label_mac
 		;;
+	iodata,hdl2-aax)
+		label_mac=$(mtd_get_mac_ascii u-boot-env ethaddr)
+		lan_mac=$label_mac
+		;;
 	linksys,wrt1200ac|\
 	linksys,wrt1900ac-v2|\
 	linksys,wrt1900acs|\
