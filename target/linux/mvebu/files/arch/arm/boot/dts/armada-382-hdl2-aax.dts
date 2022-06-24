@@ -395,52 +395,20 @@
 	eeprom@50 {
 		compatible = "rohm,br24g02", "atmel,24c02";
 		reg = <0x50>;
-		#address-cells = <1>;
-		#size-cells = <1>;
 
-		uptime@4 {
-			reg = <0x4 0x4>;
-		};
-
-		fan-using-time@8 {
-			reg = <0x8 0x4>;
-		};
-
-		power-time@c {
-			reg = <0xc 0x4>;
-		};
-
-		power-cycle-count@10 {
-			reg = <0x10 0x4>;
-		};
-
-		fan-fail-count@14 {
-			reg = <0x14 0x4>;
-		};
-
-		temp-fail-count@18 {
-			reg = <0x18 0x4>;
-		};
-
-		no-warranty@1c {
-			reg = <0x1c 0x1>;
-		};
-
-		boot-on-ac@1d {
-			reg = <0x1d 0x1>;
-		};
-
-		wol-enable@1e {
-			reg = <0x1e 0x1>;
-		};
-
-		boot-beep@1f {
-			reg = <0x1f 0x1>;
-		};
-
-		led-brightness@20 {
-			reg = <0x20 0x1>;
-		};
+		/*
+		 * 0x4 - 0x7: uptime
+		 * 0x8 - 0xb: fan using time
+		 * 0xc - 0xf: power time
+		 * 0x10-0x13: power cycle count
+		 * 0x14-0x17: fan fail count
+		 * 0x18-0x1b: temp fail count
+		 * 0x1c     : no warranty
+		 * 0x1d     : boot on AC
+		 * 0x1e     : WoL enable
+		 * 0x1f     : boot beep
+		 * 0x20     : LED brightness
+		 */
 	};
 };
 
