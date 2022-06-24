@@ -56,7 +56,6 @@
 
 		power {
 			label = "power";
-			linux,input-type = <EV_SW>;
 			linux,code = <KEY_POWER>;
 			gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
 		};
