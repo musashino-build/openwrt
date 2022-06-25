@@ -1,12 +1,4 @@
-// SPDX-License-Identifier: (GPL-2.0-only OR MIT)
-/*
- * Device Tree file for ipTIME NAS1dual
- *
- * Copyright (C) 2020 Sungbo Eo <mans0n@gorani.run>
- *
- * Based on armada-385-linksys.dtsi
- * Copyright (C) 2015 Imre Kaloz <kaloz@openwrt.org>
- */
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
 
 /dts-v1/;
 
