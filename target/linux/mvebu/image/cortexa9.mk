@@ -3,6 +3,15 @@
 # Copyright (C) 2012-2016 OpenWrt.org
 # Copyright (C) 2016 LEDE-project.org
 
+define Build/sysupgrade-tar-append-file
+  $(eval append_file=$(word 1,$(1)))
+  $(eval target_file=$(word 2,$(1)))
+  tar -rf $@ $(append_file) \
+    --owner=0 --group=0 --numeric-owner \
+    $(if $(SOURCE_DATE_EPOCH),--mtime="@$(SOURCE_DATE_EPOCH)") \
+    --transform='s/.*/sysupgrade-$(if $(BOARD_NAME),$(BOARD_NAME),$(DEVICE_NAME))\/$(target_file)/'
+endef
+
 define Device/dsa-migration
   DEVICE_COMPAT_VERSION := 1.1
   DEVICE_COMPAT_MESSAGE := Config cannot be migrated from swconfig to DSA
@@ -82,7 +91,17 @@ define Device/iodata_hdl2-aax
   DEVICE_VENDOR := I-O DATA
   DEVICE_MODEL := HDL2-AAX (0/2/4/6/8/12/16)
   SOC := armada-382
-  KERNEL := kernel-bin | append-dtb
+  KERNEL := kernel-bin
+  KERNEL_INITRAMFS := kernel-bin | append-dtb
+  COMPILE := $$(DEVICE_NAME)-fake.initrd
+  COMPILE/$$(DEVICE_NAME)-fake.initrd := pad-extra 4 | \
+    uImage none -a 0 -e 0 -n 'HDL-AAX' -T ramdisk
+  IMAGE/sysupgrade.bin := sysupgrade-tar | \
+    sysupgrade-tar-append-file $$(KDIR)/$$(DEVICE_NAME)-fake.initrd \
+      uInitrd | \
+    sysupgrade-tar-append-file $$(KDIR)/image-$$(DEVICE_DTS).dtb \
+      hdl-aa.dtb | \
+    append-metadata
   DEVICE_PACKAGES := e2fsprogs fdisk kmod-eeprom-at24 kmod-hwmon-drivetemp \
     kmod-hwmon-gpiofan kmod-hwmon-lm75 kmod-pwm-beeper
 endef
