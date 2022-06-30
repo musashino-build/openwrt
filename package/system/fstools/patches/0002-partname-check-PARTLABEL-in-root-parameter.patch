@@ -1,0 +1,49 @@
+From b510b58d2320565df1abe364e03612953d09268a Mon Sep 17 00:00:00 2001
+From: INAGAKI Hiroshi <musashino.open@gmail.com>
+Date: Mon, 14 Feb 2022 19:48:10 +0900
+Subject: [PATCH 2/2] partname: check "PARTLABEL" in root= parameter
+
+This patch adds "PARTLABEL=" checking of root= parameter to
+partname_volume_find function.
+
+The Linux Kernel supports "root=PARTLABEL=<label>" syntax, but fstools
+doesn't and fail to parse the path to the root device.
+So check the parameter and skip parsing, find partition from all block
+devices if this syntax is used.
+
+Note:
+This change is required for some NAS devices sold by I-O DATA, such as
+HDL2-A and HDL2-AAX series.
+On they, kernel and rootfs are stored in the storage device connected
+to SATA, port1 or port2 and the path to the partition will be assigned
+dynamically.
+So "root=PARTLABEL=<label>" syntax is required instead of "/dev/sdXN".
+
+Signed-off-by: INAGAKI Hiroshi <musashino.open@gmail.com>
+---
+ libfstools/partname.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/libfstools/partname.c b/libfstools/partname.c
+index e282402..8ccf12a 100644
+--- a/libfstools/partname.c
++++ b/libfstools/partname.c
+@@ -131,12 +131,13 @@ static struct volume *partname_volume_find(char *name)
+ 			return NULL;
+ 	}
+ 
+-	if (get_var_from_file("/proc/cmdline", "root", rootparam, sizeof(rootparam), true)) {
++	if (get_var_from_file("/proc/cmdline", "root", rootparam, sizeof(rootparam), true) &&
++	    strncmp(rootparam, "PARTLABEL=", 10)) {
+ 		rootdev = rootdevname(rootparam);
+ 		/* find partition on same device as rootfs */
+ 		snprintf(ueventgstr, sizeof(ueventgstr), "%s/%s/*/uevent", block_dir_name, rootdev);
+ 	} else {
+-		/* no 'root=' kernel cmdline parameter, find on any block device */
++		/* PARTLABEL= is specifed or no 'root=' kernel cmdline parameter, find on any block device */
+ 		snprintf(ueventgstr, sizeof(ueventgstr), "%s/*/uevent", block_dir_name);
+ 	}
+ 
+-- 
+2.36.1.windows.1
+
