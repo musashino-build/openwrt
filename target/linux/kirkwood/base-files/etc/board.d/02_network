@@ -21,6 +21,7 @@ kirkwood_setup_interfaces()
 	ctera,c200-v1|\
 	globalscale,sheevaplug|\
 	iodata,hdl-a|\
+	iodata,hdl2-a|\
 	iom,iconnect-1.1|\
 	iom,ix2-200|\
 	iptime,nas1|\
