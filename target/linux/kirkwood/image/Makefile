@@ -90,6 +90,31 @@ define Build/boot-image
 	$(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
 endef
 
+define Build/disk-image
+	$(RM) -rf $(KDIR)/tmp/$@.root
+
+	( \
+		result=$$(ptgen -o $@ -h 4 -s 63 -l 4096 -g \
+			-t 83 -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
+			-t 83 -p 32M \
+			-t 83 -p 64M); \
+		\
+		echo -e "-----\n$$result\n-----"; \
+		dd if=/dev/zero of=$@.root bs=1k count=64k; \
+		mkfs.ext4 $@.root; \
+		\
+		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 1p); \
+		dd bs=1k if="$@.boot" of=$@ \
+			seek="$$((offset / 1024))" conv=notrunc; \
+		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 3p); \
+		dd bs=1k if="$(IMAGE_ROOTFS)" of=$@ \
+			seek="$$((offset / 1024))" conv=notrunc; \
+		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 5p); \
+		dd bs=1k if="$@.root" of=$@ \
+			seek="$$((offset / 1024))" conv=notrunc; \
+	)
+endef
+
 define Device/kernel-size-migration
   DEVICE_COMPAT_VERSION := 2.0
   DEVICE_COMPAT_MESSAGE := Partition design has changed compared to \
@@ -192,8 +217,8 @@ define Device/iodata_hdl-a
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
-  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a
-  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a
+  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a | disk-image
+  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image
 endef
 TARGET_DEVICES += iodata_hdl-a
 
@@ -205,8 +230,8 @@ define Device/iodata_hdl2-a
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
-  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a
-  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a
+  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a | disk-image
+  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image
 endef
 TARGET_DEVICES += iodata_hdl2-a
 
