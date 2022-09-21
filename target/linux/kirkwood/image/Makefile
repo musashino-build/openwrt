@@ -64,6 +64,32 @@ define Build/ctera-firmware
 	rm -rf $@.tmp
 endef
 
+define Build/boot-image
+	$(eval boot_kernel=$(word 1,$(1)))
+	$(eval boot_initrd=$(word 2,$(1)))
+
+	$(RM) -rf $@.bootdir
+	mkdir -p $@.bootdir
+
+	$(if $(findstring /,$(boot_kernel)), \
+		mkdir $@.bootdir/$(dir $(boot_kernel)))
+	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_kernel)
+
+	$(if $(boot_initrd),\
+		$(if $(findstring /,$(boot_initrd)), \
+			mkdir $@.bootdir/$(dir $(boot_initrd)); ) \
+		$(CP) $(KDIR)/$(DEVICE_NAME).initrd \
+			$@.bootdir/$(boot_initrd))
+
+	genext2fs --block-size $(BLOCKSIZE:%k=%Ki) \
+		--size-in-blocks $$((1024 * $(CONFIG_TARGET_KERNEL_PARTSIZE))) \
+		--root $@.bootdir $@.boot
+
+	# convert it to revision 1 - needed for u-boot ext2load
+	$(STAGING_DIR_HOST)/bin/tune2fs -O filetype $@.boot
+	$(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
+endef
+
 define Device/kernel-size-migration
   DEVICE_COMPAT_VERSION := 2.0
   DEVICE_COMPAT_MESSAGE := Partition design has changed compared to \
@@ -84,6 +110,7 @@ define Device/Default
   PAGESIZE := 2048
   SUBPAGESIZE := 512
   BLOCKSIZE := 128k
+  COMPILE :=
   IMAGES := sysupgrade.bin factory.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/factory.bin := append-ubi
@@ -161,7 +188,12 @@ define Device/iodata_hdl-a
   DEVICE_VENDOR := I-O DATA
   DEVICE_MODEL := HDL-A (1.0/2.0/3.0)
   DEVICE_PACKAGES := e2fsprogs fdisk kmod-fs-ext4 kmod-rtc-rs5c372a
-  IMAGES := sysupgrade.bin
+  BLOCKSIZE := 1k
+  COMPILE := $$(DEVICE_NAME).initrd
+  COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
+  IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
+  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a
+  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a
 endef
 TARGET_DEVICES += iodata_hdl-a
 
@@ -169,7 +201,12 @@ define Device/iodata_hdl2-a
   DEVICE_VENDOR := I-O DATA
   DEVICE_MODEL := HDL2-A (2.0/4.0/6.0)
   DEVICE_PACKAGES := e2fsprogs fdisk kmod-fs-ext4 kmod-rtc-rs5c372a
-  IMAGES := sysupgrade.bin
+  BLOCKSIZE := 1k
+  COMPILE := $$(DEVICE_NAME).initrd
+  COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
+  IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
+  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a
+  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a
 endef
 TARGET_DEVICES += iodata_hdl2-a
 
