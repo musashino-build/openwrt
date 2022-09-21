@@ -95,9 +95,9 @@ define Build/disk-image
 
 	( \
 		result=$$(ptgen -o $@ -h 4 -s 63 -l 4096 -g \
-			-t 83 -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
-			-t 83 -p 32M \
-			-t 83 -p 64M); \
+			-t 83 -N kernel -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
+			-t 83 -N rootfs -p 32M \
+			-t 83 -N rootfs_data -p 64M); \
 		\
 		echo -e "-----\n$$result\n-----"; \
 		dd if=/dev/zero of=$@.root bs=1k count=64k; \
