@@ -216,9 +216,9 @@ define Device/iodata_hdl-a
   BLOCKSIZE := 1k
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
-  IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
-  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a | disk-image
-  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image
+  IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
+  IMAGE/sata.img.gz := boot-image uImage.l2a initrd.l2a | disk-image | gzip
+  IMAGE/usb.img.gz := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image | gzip
 endef
 TARGET_DEVICES += iodata_hdl-a
 
@@ -229,9 +229,9 @@ define Device/iodata_hdl2-a
   BLOCKSIZE := 1k
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
-  IMAGES := sysupgrade.bin sata_boot.img usb_boot.img
-  IMAGE/sata_boot.img := boot-image uImage.l2a initrd.l2a | disk-image
-  IMAGE/usb_boot.img := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image
+  IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
+  IMAGE/sata.img.gz := boot-image uImage.l2a initrd.l2a | disk-image | gzip
+  IMAGE/usb.img.gz := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image | gzip
 endef
 TARGET_DEVICES += iodata_hdl2-a
 
