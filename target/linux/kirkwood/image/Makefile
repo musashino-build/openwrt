@@ -65,21 +65,18 @@ define Build/ctera-firmware
 endef
 
 define Build/boot-image
-	$(eval boot_kernel=$(word 1,$(1)))
-	$(eval boot_initrd=$(word 2,$(1)))
+	$(eval boot_kernel=$(call param_get_default,kernel,$(1),uImage))
+	$(eval boot_initrd=$(call param_get,initrd,$(1)))
+	$(eval boot_dir=$(call param_get,dir,$(1)))
 
 	$(RM) -rf $@.bootdir
-	mkdir -p $@.bootdir
+	mkdir -p $@.bootdir/$(boot_dir)
 
-	$(if $(findstring /,$(boot_kernel)), \
-		mkdir $@.bootdir/$(dir $(boot_kernel)))
-	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_kernel)
+	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_dir)/$(boot_kernel)
 
 	$(if $(boot_initrd),\
-		$(if $(findstring /,$(boot_initrd)), \
-			mkdir $@.bootdir/$(dir $(boot_initrd)); ) \
 		$(CP) $(KDIR)/$(DEVICE_NAME).initrd \
-			$@.bootdir/$(boot_initrd))
+			$@.bootdir/$(boot_dir)/$(boot_initrd))
 
 	genext2fs --block-size $(BLOCKSIZE:%k=%Ki) \
 		--size-in-blocks $$((1024 * $(CONFIG_TARGET_KERNEL_PARTSIZE))) \
@@ -218,8 +215,10 @@ define Device/iodata_hdl-a
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
-  IMAGE/sata.img.gz := boot-image uImage.l2a initrd.l2a | disk-image | gzip
-  IMAGE/usb.img.gz := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image | gzip
+  IMAGE/sata.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a | \
+	disk-image | gzip
+  IMAGE/usb.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a dir=l2a | \
+	disk-image | gzip
 endef
 TARGET_DEVICES += iodata_hdl-a
 
@@ -231,8 +230,10 @@ define Device/iodata_hdl2-a
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
-  IMAGE/sata.img.gz := boot-image uImage.l2a initrd.l2a | disk-image | gzip
-  IMAGE/usb.img.gz := boot-image l2a/uImage.l2a l2a/initrd.l2a | disk-image | gzip
+  IMAGE/sata.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a | \
+	disk-image | gzip
+  IMAGE/usb.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a dir=l2a | \
+	disk-image | gzip
 endef
 TARGET_DEVICES += iodata_hdl2-a
 
