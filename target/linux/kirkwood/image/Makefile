@@ -97,8 +97,9 @@ define Build/disk-image
 			-t 83 -N rootfs_data -p 64M); \
 		\
 		echo -e "-----\n$$result\n-----"; \
-		dd if=/dev/zero of=$@.root bs=1k count=64k; \
-		mkfs.ext4 $@.root; \
+		make_ext4fs -J -L rootfs_data -l 64M \
+			$(if $(SOURCE_DATE_EPOCH),-T $(SOURCE_DATE_EPOCH)) \
+			$@.data; \
 		\
 		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 1p); \
 		dd bs=1k if="$@.boot" of=$@ \
@@ -107,7 +108,7 @@ define Build/disk-image
 		dd bs=1k if="$(IMAGE_ROOTFS)" of=$@ \
 			seek="$$((offset / 1024))" conv=notrunc; \
 		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 5p); \
-		dd bs=1k if="$@.root" of=$@ \
+		dd bs=1k if="$@.data" of=$@ \
 			seek="$$((offset / 1024))" conv=notrunc; \
 	)
 endef
