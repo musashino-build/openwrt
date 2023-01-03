@@ -182,6 +182,22 @@ endef
 $(eval $(call KernelPackage,leds-pwm))
 
 
+define KernelPackage/leds-tca6507
+  SUBMENU:=$(LEDS_MENU)
+  TITLE:=TCA6507 LED support
+  DEPENDS:=+kmod-i2c-core
+  KCONFIG:=CONFIG_LEDS_TCA6507
+  FILES:=$(LINUX_DIR)/drivers/leds/leds-tca6507.ko
+  AUTOLOAD:=$(call AutoLoad,60,leds-tca6507,1)
+endef
+
+define KernelPackage/leds-tca6507/description
+ Driver for the TI TCA6507 I2C LED controllers.
+endef
+
+$(eval $(call KernelPackage,leds-tca6507))
+
+
 define KernelPackage/leds-tlc591xx
   SUBMENU:=$(LEDS_MENU)
   TITLE:=LED driver for TLC59108 and TLC59116 controllers
