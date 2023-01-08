@@ -1,0 +1,11 @@
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -2110,7 +2110,7 @@ static int gpmc_probe_generic_child(stru
+ 		dev_err(&pdev->dev, "cannot request GPMC CS %d\n", cs);
+ 		return ret;
+ 	}
+-	gpmc_cs_set_name(cs, child->full_name);
++	gpmc_cs_set_name(cs, child->name);
+ 
+ 	gpmc_read_settings_dt(child, &gpmc_s);
+ 	gpmc_read_timings_dt(child, &gpmc_t);
