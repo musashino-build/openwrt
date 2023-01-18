@@ -1,4 +1,4 @@
-platform_check_image() {
+omap_mmc_check_image() {
 	local diskdev partdev diff
 
 	export_bootdevice && export_partdevice diskdev 0 || {
@@ -25,7 +25,7 @@ platform_check_image() {
 	fi
 }
 
-platform_copy_config() {
+omap_mmc_copy_config() {
 	local partdev
 
 	if export_partdevice partdev 1; then
@@ -35,7 +35,7 @@ platform_copy_config() {
 	fi
 }
 
-platform_do_upgrade() {
+omap_mmc_do_upgrade() {
 	local diskdev partdev diff
 
 	export_bootdevice && export_partdevice diskdev 0 || {
@@ -85,4 +85,34 @@ platform_do_upgrade() {
 	#copy partition uuid
 	echo "Writing new UUID to /dev/$diskdev..."
 	get_image "$@" | dd of="/dev/$diskdev" bs=1 skip=440 count=4 seek=440 conv=fsync
+}
+
+platform_check_image() {
+	local board=$(board_name)
+
+	case "$board" in
+	*)
+		omap_mmc_check_image "$@"
+		;;
+	esac
+}
+
+platform_copy_config() {
+	local board=$(board_name)
+
+	case "$board" in
+	*)
+		omap_mmc_copy_config
+		;;
+	esac
+}
+
+platform_do_upgrade() {
+	local board=$(board_name)
+
+	case "$board" in
+	*)
+		omap_mmc_do_upgrade "$@"
+		;;
+	esac
 }
