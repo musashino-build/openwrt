@@ -8,6 +8,10 @@ omap_setup_interfaces()
 	local board="$1"
 
 	case $board in
+	centurysystems,ma-e350-n-mmc|\
+	centurysystems,ma-e350-n-nand)
+		ucidef_set_interfaces_lan_wan "eth0" "eth1"
+		;;
 	*)
 		ucidef_set_interface_lan 'eth0'
 		[ -d /sys/class/net/eth1 ] && ucidef_set_interface_wan 'eth1'
