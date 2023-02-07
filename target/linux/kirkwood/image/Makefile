@@ -250,6 +250,16 @@ define Device/netgear_readynas-duo-v2
 endef
 TARGET_DEVICES += netgear_readynas-duo-v2
 
+define Device/plathome_obsa7p
+  DEVICE_VENDOR := Plat'Home
+  DEVICE_MODEL := OpenBlocks A7
+  KERNEL_IN_UBI :=
+  IMAGES := sysupgrade.bin
+  DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
+	kmod-gpio-button-hotplug kmod-hwmon-drivetemp
+endef
+TARGET_DEVICES += plathome_obsa7p
+
 define Device/raidsonic_ib-nas62x0
   DEVICE_VENDOR := RaidSonic
   DEVICE_MODEL := ICY BOX IB-NAS62x0

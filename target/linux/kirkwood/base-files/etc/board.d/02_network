@@ -42,6 +42,9 @@ kirkwood_setup_interfaces()
 	linksys,ea4500)
 		ucidef_set_interfaces_lan_wan "ethernet1 ethernet2 ethernet3 ethernet4" "internet"
 		;;
+	plathome,obsa7p)
+		ucidef_set_interfaces_lan_wan "eth1" "eth0"
+		;;
 	*)
 		ucidef_set_interface_lan "eth0"
 		;;
