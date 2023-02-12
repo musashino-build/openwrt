@@ -64,7 +64,7 @@ define Device/centurysystems_ma-e350-n-mmc
   DEVICE_MODEL := FutureNet MA-E350/N
   DEVICE_VARIANT := (MMC)
   DEVICE_DTS := am335x-ma-e350-n-mmc
-  DEVICE_DTS_DIR := ../dts
+  DEVICE_DTS_DIR := ../dts-$(KERNEL_PATCHVER)
   KERNEL_LOADADDR := 0x80008000
   KERNEL := kernel-bin | append-dtb | uImage none
   IMAGE/sdcard.img.gz := centurysys-sdcard | append-metadata | gzip
@@ -78,7 +78,7 @@ define Device/centurysystems_ma-e350-n-nand
   DEVICE_MODEL := FutureNet MA-E350/N
   DEVICE_VARIANT := (NAND)
   DEVICE_DTS := am335x-ma-e350-n-nand
-  DEVICE_DTS_DIR := ../dts
+  DEVICE_DTS_DIR := ../dts-$(KERNEL_PATCHVER)
   KERNEL_LOADADDR := 0x80008000
   KERNEL := kernel-bin | append-dtb | uImage none
   KERNEL_IN_UBI := 1

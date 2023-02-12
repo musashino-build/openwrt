@@ -357,15 +357,6 @@
 	};
 };
 
-&gpio3 {
-	ethphys-reset {
-		gpio-hog;
-		gpios = <18 GPIO_ACTIVE_HIGH>,
-			<19 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
-};
-
 /* RJ-45 */
 &uart0 {
 	pinctrl-names = "default";
@@ -810,24 +801,31 @@
 	};
 };
 
-&mac_sw {
+&mac {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&pmx_cpsw_default>;
 	pinctrl-1 = <&pmx_cpsw_sleep>;
-
 	status = "okay";
+
+	mac_control = <0x38>;
+	slaves = <2>;
+	dual_emac;
 };
 
-&davinci_mdio_sw {
+&davinci_mdio {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&pmx_davinci_mdio_default>;
 	pinctrl-1 = <&pmx_davinci_mdio_sleep>;
+	status = "okay";
 
 	ethphy2: ethernet-phy@2 {
+		compatible = "ethernet-phy-id0022.1620",
+			     "ethernet-phy-ieee802.3-c22";
 		reg = <2>;
 
 		interrupt-parent = <&gpio0>;
 		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpios = <&gpio3 18 GPIO_ACTIVE_LOW>;
 
 		rxc-skew-ps = <1020>;
 		txc-skew-ps = <1140>;
@@ -844,10 +842,13 @@
 	};
 
 	ethphy3: ethernet-phy@3 {
+		compatible = "ethernet-phy-id0022.1620",
+			     "ethernet-phy-ieee802.3-c22";
 		reg = <3>;
 
 		interrupt-parent = <&gpio0>;
 		interrupts = <20 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
 
 		rxc-skew-ps = <1140>;
 		txc-skew-ps = <1440>;
@@ -864,16 +865,16 @@
 	};
 };
 
-&cpsw_port1 {
+&cpsw_emac0 {
 	phy-handle = <&ethphy2>;
 	phy-mode = "rgmii-txid";
-	ti,dual-emac-pvid = <4000>;
+	dual_emac_res_vlan = <4000>;
 };
 
-&cpsw_port2 {
+&cpsw_emac1 {
 	phy-handle = <&ethphy3>;
 	phy-mode = "rgmii-txid";
-	ti,dual-emac-pvid = <4001>;
+	dual_emac_res_vlan = <4001>;
 };
 
 &mmc1 {
