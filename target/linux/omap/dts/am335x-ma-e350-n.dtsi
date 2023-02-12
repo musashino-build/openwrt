@@ -357,15 +357,6 @@
 	};
 };
 
-&gpio3 {
-	ethphys-reset {
-		gpio-hog;
-		gpios = <18 GPIO_ACTIVE_HIGH>,
-			<19 GPIO_ACTIVE_HIGH>;
-		output-high;
-	};
-};
-
 /* RJ-45 */
 &uart0 {
 	pinctrl-names = "default";
@@ -661,7 +652,7 @@
 		reg-names = "dat";
 
 		gpmc,mux-add-data = <2>;
-		gpmc,device-width = <32>;
+		gpmc,device-width = <2>;
 		gpmc,wait-pin = <1>;
 		gpmc,burst-length = <4>;
 
@@ -824,10 +815,13 @@
 	pinctrl-1 = <&pmx_davinci_mdio_sleep>;
 
 	ethphy2: ethernet-phy@2 {
+		compatible = "ethernet-phy-id0022.1620",
+			     "ethernet-phy-ieee802.3-c22";
 		reg = <2>;
 
 		interrupt-parent = <&gpio0>;
 		interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpios = <&gpio3 18 GPIO_ACTIVE_LOW>;
 
 		rxc-skew-ps = <1020>;
 		txc-skew-ps = <1140>;
@@ -844,10 +838,13 @@
 	};
 
 	ethphy3: ethernet-phy@3 {
+		compatible = "ethernet-phy-id0022.1620",
+			     "ethernet-phy-ieee802.3-c22";
 		reg = <3>;
 
 		interrupt-parent = <&gpio0>;
 		interrupts = <20 IRQ_TYPE_LEVEL_LOW>;
+		reset-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
 
 		rxc-skew-ps = <1140>;
 		txc-skew-ps = <1440>;
