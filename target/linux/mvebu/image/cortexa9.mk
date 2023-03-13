@@ -59,6 +59,14 @@ define Device/buffalo_ls421de
 endef
 TARGET_DEVICES += buffalo_ls421de
 
+define Device/buffalo_ts3400d
+  DEVICE_VENDOR := Buffalo
+  DEVICE_MODEL := TeraStation TS3400D
+  DEVICE_DTS := armada-xp-buffalo-ts3400d
+  DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
+endef
+TARGET_DEVICES += buffalo_ts3400d
+
 define Device/ctera_c200-v2
   PAGESIZE := 2048
   SUBPAGESIZE := 512
