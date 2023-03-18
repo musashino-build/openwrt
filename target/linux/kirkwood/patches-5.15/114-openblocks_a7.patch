@@ -1,0 +1,101 @@
+--- a/arch/arm/boot/dts/kirkwood-openblocks_a7.dts
++++ b/arch/arm/boot/dts/kirkwood-openblocks_a7.dts
+@@ -14,9 +14,16 @@
+ #include "kirkwood-6282.dtsi"
+ 
+ / {
+-	model = "Plat'Home OpenBlocksA7";
++	model = "Plat'Home OpenBlocks A7";
+ 	compatible = "plathome,openblocks-a7", "marvell,kirkwood-88f6283", "marvell,kirkwood";
+ 
++	aliases {
++		led-boot = &led_status_green;
++		led-failsafe = &led_status_red;
++		led-running = &led_status_green;
++		led-upgrade = &led_status_green;
++	};
++
+ 	memory {
+ 		device_type = "memory";
+ 		reg = <0x00000000 0x40000000>; /* 1 GB */
+@@ -116,12 +123,12 @@
+ 		pinctrl-0 = <&pmx_leds>;
+ 		pinctrl-names = "default";
+ 
+-		led-red {
++		led_status_red: led-red {
+ 			label = "obsa7:red:stat";
+ 			gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
+ 		};
+ 
+-		led-green {
++		led_status_green: led-green {
+ 			label = "obsa7:green:stat";
+ 			gpios = <&gpio1 10 GPIO_ACTIVE_LOW>;
+ 		};
+@@ -141,7 +148,7 @@
+ 
+ 		button {
+ 			label = "Init Button";
+-			linux,code = <KEY_POWER>;
++			linux,code = <KEY_RESTART>;
+ 			gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+ 		};
+ 	};
+@@ -154,31 +161,53 @@
+ 	partition@0 {
+ 		label = "uboot";
+ 		reg = <0x0 0x1c0000>;
++		read-only;
+ 	};
+ 
+ 	partition@1c0000 {
+ 		label = "env";
+ 		reg = <0x1c0000 0x2c0000>;
++		read-only;
+ 	};
+ 
+ 	partition@480000 {
+ 		label = "test";
+ 		reg = <0x480000 0x160000>;
++		read-only;
+ 	};
+ 
+ 	partition@5e0000 {
+ 		label = "conf";
+ 		reg = <0x5e0000 0x540000>;
++		read-only;
+ 	};
+ 
+ 	partition@b20000 {
+-		label = "linux";
++		label = "kernel";
+ 		reg = <0xb20000 0x3d40000>;
+ 	};
+ 
+ 	partition@4860000 {
+-		label = "user";
+-		reg = <0x4860000 0xb7a0000>;
++		label = "ubi";
++		reg = <0x4860000 0x9660000>;
++	};
++
++	partition@dec0000 {
++		label = "opt";
++		reg = <0xdec0000 0x2140000>;
++		read-only;
++	};
++};
++
++&usb0 {
++	pinctrl-0 = <&pmx_usb_oc>;
++	pinctrl-names = "default";
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	hub@1 {
++		compatible = "usb424,2514";
++		reg = <1>;
+ 	};
+ };
+ 

@@ -250,15 +250,15 @@ define Device/netgear_readynas-duo-v2
 endef
 TARGET_DEVICES += netgear_readynas-duo-v2
 
-define Device/plathome_obsa7p
+define Device/plathome_openblocks-a7
   DEVICE_VENDOR := Plat'Home
   DEVICE_MODEL := OpenBlocks A7
-  KERNEL_IN_UBI :=
+  DEVICE_DTS := kirkwood-openblocks_a7
   IMAGES := sysupgrade.bin
   DEVICE_PACKAGES := kmod-ata-marvell-sata kmod-fs-ext4 \
-	kmod-gpio-button-hotplug kmod-hwmon-drivetemp
+	kmod-gpio-button-hotplug
 endef
-TARGET_DEVICES += plathome_obsa7p
+TARGET_DEVICES += plathome_openblocks-a7
 
 define Device/raidsonic_ib-nas62x0
   DEVICE_VENDOR := RaidSonic
