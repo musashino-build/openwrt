@@ -652,7 +652,7 @@
 		reg-names = "dat";
 
 		gpmc,mux-add-data = <2>;
-		gpmc,device-width = <32>;
+		gpmc,device-width = <2>;
 		gpmc,wait-pin = <1>;
 		gpmc,burst-length = <4>;
 
