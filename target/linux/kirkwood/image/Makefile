@@ -92,22 +92,15 @@ define Build/disk-image-partlabel
 	( \
 		result=$$(ptgen -o $@ -l 4096 -g \
 			-t 83 -N kernel -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
-			-t 83 -N rootfs -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)M \
-			-t 83 -N rootfs_data -p 64M); \
+			-t 83 -N rootfs -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)M); \
 		\
 		echo -e "-----\n$$result\n-----"; \
-		make_ext4fs -J -L rootfs_data -l 64M \
-			$(if $(SOURCE_DATE_EPOCH),-T $(SOURCE_DATE_EPOCH)) \
-			$@.data; \
 		\
 		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 1p); \
 		dd bs=1k if="$@.boot" of=$@ \
 			seek="$$((offset / 1024))" conv=notrunc; \
 		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 3p); \
 		dd bs=1k if="$(IMAGE_ROOTFS)" of=$@ \
-			seek="$$((offset / 1024))" conv=notrunc; \
-		offset=$$(echo "$$result" | $(STAGING_DIR_HOST)/bin/sed -n 5p); \
-		dd bs=1k if="$@.data" of=$@ \
 			seek="$$((offset / 1024))" conv=notrunc; \
 	)
 endef
