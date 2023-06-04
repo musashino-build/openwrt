@@ -119,25 +119,19 @@
 	/*
 	 * UART1 is used to connect to Renesas R8C/25 MCU
 	 * but there is no driver.
-	 * This MCU has the following functions:
+	 * This MCU provides the following functions:
 	 *
 	 * - LED
 	 *   - Status
-	 *   - HDD
-	 *
+	 *   - HDD (HDL2-A only)
 	 * - Keys
 	 *   - Reset
 	 *   - Power
-	 *
 	 * - Beep Speaker
 	 *   - controlled by MML (Music Macro Language) syntax
-	 *
 	 * - Temperature sensor
-	 *
 	 * - Fan Control
-	 *
 	 * - Power Off
-	 *
 	 * - Reset
 	 */
 };
