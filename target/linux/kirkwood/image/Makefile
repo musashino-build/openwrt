@@ -132,6 +132,7 @@ define Device/Default
   PAGESIZE := 2048
   SUBPAGESIZE := 512
   BLOCKSIZE := 128k
+  FILESYSTEMS := squashfs
   COMPILE :=
   IMAGES := sysupgrade.bin factory.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
