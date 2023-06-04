@@ -87,11 +87,11 @@ define Build/boot-image
 	$(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
 endef
 
-define Build/disk-image
+define Build/disk-image-partlabel
 	$(RM) -rf $(KDIR)/tmp/$@.root
 
 	( \
-		result=$$(ptgen -o $@ -h 4 -s 63 -l 4096 -g \
+		result=$$(ptgen -o $@ -l 4096 -g \
 			-t 83 -N kernel -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
 			-t 83 -N rootfs -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)M \
 			-t 83 -N rootfs_data -p 64M); \
@@ -216,9 +216,9 @@ define Device/iodata_hdl-a
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
   IMAGE/sata.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a | \
-	disk-image | gzip
+	disk-image-partlabel | gzip
   IMAGE/usb.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a dir=l2a | \
-	disk-image | gzip
+	disk-image-partlabel | gzip
 endef
 TARGET_DEVICES += iodata_hdl-a
 
@@ -231,9 +231,9 @@ define Device/iodata_hdl2-a
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz usb.img.gz
   IMAGE/sata.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a | \
-	disk-image | gzip
+	disk-image-partlabel | gzip
   IMAGE/usb.img.gz := boot-image kernel=uImage.l2a initrd=initrd.l2a dir=l2a | \
-	disk-image | gzip
+	disk-image-partlabel | gzip
 endef
 TARGET_DEVICES += iodata_hdl2-a
 
