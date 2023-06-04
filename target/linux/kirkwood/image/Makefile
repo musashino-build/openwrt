@@ -67,16 +67,15 @@ endef
 define Build/boot-image
 	$(eval boot_kernel=$(call param_get_default,kernel,$(1),uImage))
 	$(eval boot_initrd=$(call param_get,initrd,$(1)))
-	$(eval boot_dir=$(call param_get,dir,$(1)))
 
 	$(RM) -rf $@.bootdir
-	mkdir -p $@.bootdir/$(boot_dir)
+	mkdir $@.bootdir
 
-	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_dir)/$(boot_kernel)
+	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_kernel)
 
 	$(if $(boot_initrd),\
 		$(CP) $(KDIR)/$(DEVICE_NAME).initrd \
-			$@.bootdir/$(boot_dir)/$(boot_initrd))
+			$@.bootdir/$(boot_initrd))
 
 	genext2fs --block-size $(BLOCKSIZE:%k=%Ki) \
 		--size-in-blocks $$((1024 * $(CONFIG_TARGET_KERNEL_PARTSIZE))) \
