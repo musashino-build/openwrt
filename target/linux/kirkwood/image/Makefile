@@ -211,6 +211,7 @@ define Device/iodata_hdl-a
   DEVICE_MODEL := HDL-A (1.0/2.0/3.0)
   DEVICE_PACKAGES := e2fsprogs fdisk kmod-fs-ext4 kmod-rtc-rs5c372a
   BLOCKSIZE := 1k
+  FILESYSTEMS := ext4
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz
@@ -224,6 +225,7 @@ define Device/iodata_hdl2-a
   DEVICE_MODEL := HDL2-A (2.0/4.0/6.0)
   DEVICE_PACKAGES := e2fsprogs fdisk kmod-fs-ext4 kmod-rtc-rs5c372a
   BLOCKSIZE := 1k
+  FILESYSTEMS := ext4
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
   IMAGES := sysupgrade.bin sata.img.gz
