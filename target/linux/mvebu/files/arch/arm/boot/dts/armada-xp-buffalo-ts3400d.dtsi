@@ -8,11 +8,7 @@
 #include "armada-xp-mv78230.dtsi"
 
 / {
-	model = "Buffalo TeraStation TS3400D";
-	compatible = "buffalo,ts3400d", "marvell,armadaxp-mv78230", "marvell,armadaxp", "marvell,armada-370-xp";
-
 	chosen {
-		bootargs-append = " 8250.nr_uarts=3";
 		stdout-path = "serial0:115200n8";
 	};
 

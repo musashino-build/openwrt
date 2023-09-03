@@ -12,7 +12,8 @@ mvebu_setup_interfaces()
 	local board="$1"
 
 	case "$board" in
-	buffalo,ts3400d|\
+	buffalo,ts3400d-hdd|\
+	buffalo,ts3400d-usb|\
 	iptime,nas1dual)
 		ucidef_set_interface_lan "eth0 eth1" "dhcp"
 		;;
@@ -69,7 +70,8 @@ mvebu_setup_macs()
 	buffalo,ls421de)
 		lan_mac=$(mtd_get_mac_ascii u-boot-env eth1addr)
 		;;
-	buffalo,ts3400d)
+	buffalo,ts3400d-hdd|\
+	buffalo,ts3400d-usb)
 		lan_mac=$(mtd_get_mac_ascii u-boot-env ethaddr)
 		;;
 	ctera,c200-v2)
