@@ -3,6 +3,17 @@
 # Copyright (C) 2012-2016 OpenWrt.org
 # Copyright (C) 2016 LEDE-project.org
 
+define Build/boot-img-fat
+  $(eval kern_name=$(word 1,$(1)))
+  $(eval initrd_name=$(word 2,$(1)))
+
+  rm -f $@.boot
+  mkfs.fat -C $@.boot $$(( $(CONFIG_TARGET_KERNEL_PARTSIZE) * 1024 ))
+  mcopy -i $@.boot $(IMAGE_KERNEL) ::$(kern_name)
+  $(if $(initrd_name),\
+      mcopy -i $@.boot $(KDIR)/$(DEVICE_NAME).initrd ::$(initrd_name))
+endef
+
 define Build/fortigate-header
   ( \
     dd if=/dev/zero bs=384 count=1 2>/dev/null; \
@@ -73,6 +84,12 @@ define Device/buffalo_ts3400d-usb
   DEVICE_MODEL := TeraStation TS3400D
   DEVICE_VARIANT := (USB)
   DEVICE_DTS := armada-xp-buffalo-ts3400d-usb
+  FILESYSTEMS := ext4
+  COMPILE := $(1).initrd
+  COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
+  IMAGES += usb.img.gz
+  IMAGE/usb.img.gz := boot-img-fat uImage.buffalo initrd.buffalo | \
+    sdcard-img 5452574F | gzip | append-metadata
   DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += buffalo_ts3400d-usb
