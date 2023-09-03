@@ -3,6 +3,10 @@
 # Copyright (C) 2012-2016 OpenWrt.org
 # Copyright (C) 2016 LEDE-project.org
 
+define Build/append-file
+  cat "$(1)" >> "$@"
+endef
+
 define Build/boot-img-fat
   $(eval kern_name=$(word 1,$(1)))
   $(eval initrd_name=$(word 2,$(1)))
@@ -12,6 +16,23 @@ define Build/boot-img-fat
   mcopy -i $@.boot $(IMAGE_KERNEL) ::$(kern_name)
   $(if $(initrd_name),\
       mcopy -i $@.boot $(KDIR)/$(DEVICE_NAME).initrd ::$(initrd_name))
+endef
+
+define Build/boot-img-ext3
+  $(eval kern_name=$(word 1,$(1)))
+  $(eval initrd_name=$(word 2,$(1)))
+
+  rm -rf $@.bootdir
+  mkdir $@.bootdir
+  $(CP) $(IMAGE_KERNEL) $@.bootdir/$(kern_name)
+  $(if $(initrd_name),\
+      $(CP) $(KDIR)/$(DEVICE_NAME).initrd $@.bootdir/$(initrd_name))
+  genext2fs --block-size $(BLOCKSIZE:%k=%Ki) \
+    --size-in-blocks $$((1024 * $(CONFIG_TARGET_KERNEL_PARTSIZE) )) \
+    --root $@.bootdir $@.boot
+  # convert it to revision 1 - needed for u-boot ext2load
+  $(STAGING_DIR_HOST)/bin/tune2fs -O filetype $@.boot
+  $(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
 endef
 
 define Build/fortigate-header
@@ -24,6 +45,28 @@ define Build/fortigate-header
     dd if=/dev/zero bs=112 count=1 2>/dev/null; \
     cat $@; \
   ) > $@.new
+  mv $@.new $@
+endef
+
+define Build/hdd-img-gptlabel
+  ptgen -o $@ -l 1024 -g -S 0x$(IMG_PART_SIGNATURE) \
+    -t 83 -N kernel -p $(CONFIG_TARGET_KERNEL_PARTSIZE)m \
+    -t 83 -N rootfs -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)m
+endef
+
+define Build/pad-with-basesizes
+  $(eval padlen=$(word 1,$(1)))
+  $(eval base_sizes=$(wordlist 2,$(words $(1)),$(1)))
+
+  ( \
+    for bsize in $(base_sizes); do \
+      bsize=$${bsize//m/k*1024}; \
+      bsize=$${bsize//k/*1024}; \
+      PADLEN=$$(( PADLEN + $$bsize)); \
+    done; \
+    PADLEN=$$(( PADLEN + $(patsubst %k,1024*%,$(padlen:%m=1024*%k)) )); \
+    dd if=$@ of=$@.new bs=$$PADLEN conv=sync; \
+  )
   mv $@.new $@
 endef
 
@@ -75,6 +118,19 @@ define Device/buffalo_ts3400d-hdd
   DEVICE_MODEL := TeraStation TS3400D
   DEVICE_VARIANT := (HDD)
   DEVICE_DTS := armada-xp-buffalo-ts3400d-hdd
+  BLOCKSIZE := 1k
+  FILESYSTEMS := ext4
+  COMPILE := $(1).initrd
+  COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
+  IMAGES += hdd.img.gz
+  IMAGE/hdd.img.gz := boot-img-ext3 uImage.buffalo initrd.buffalo | \
+    hdd-img-gptlabel | pad-to 1024k | \
+    append-file $$$$@.boot | \
+    pad-with-basesizes $(CONFIG_TARGET_KERNEL_PARTSIZE)m 1024k | \
+    append-rootfs | \
+    pad-with-basesizes $(CONFIG_TARGET_ROOTFS_PARTSIZE)m 1024k \
+      $(CONFIG_TARGET_KERNEL_PARTSIZE)m | \
+    gzip | append-metadata
   DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += buffalo_ts3400d-hdd
