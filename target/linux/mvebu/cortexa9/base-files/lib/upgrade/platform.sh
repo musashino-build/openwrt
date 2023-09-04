@@ -11,6 +11,7 @@ REQUIRE_IMAGE_METADATA=1
 
 platform_check_image() {
 	case "$(board_name)" in
+	buffalo,ts3400d-usb|\
 	cznic,turris-omnia|\
 	kobol,helios4|\
 	solidrun,clearfog-base-a1|\
@@ -35,6 +36,13 @@ platform_do_upgrade() {
 	buffalo,ls421de)
 		nand_do_upgrade "$1"
 		;;
+	buffalo,ts3400d-usb|\
+	cznic,turris-omnia|\
+	kobol,helios4|\
+	solidrun,clearfog-base-a1|\
+	solidrun,clearfog-pro-a1)
+		legacy_sdcard_do_upgrade "$1"
+		;;
 	ctera,c200-v2)
 	part=$(find_mtd_part "active_bank")
 
@@ -46,12 +54,6 @@ platform_do_upgrade() {
 		return 1
 	fi
 	;;
-	cznic,turris-omnia|\
-	kobol,helios4|\
-	solidrun,clearfog-base-a1|\
-	solidrun,clearfog-pro-a1)
-		legacy_sdcard_do_upgrade "$1"
-		;;
 	fortinet,fg-50e)
 		fortinet_do_upgrade "$1"
 		;;
@@ -70,6 +72,7 @@ platform_do_upgrade() {
 }
 platform_copy_config() {
 	case "$(board_name)" in
+	buffalo,ts3400d-usb|\
 	cznic,turris-omnia|\
 	kobol,helios4|\
 	solidrun,clearfog-base-a1|\
