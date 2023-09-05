@@ -81,7 +81,9 @@ platform_copy_config() {
 	buffalo,ts3400d-hdd)
 		buffalo_terastation_copy_config
 		;;
-	buffalo,ts3400d-usb|\
+	buffalo,ts3400d-usb)
+		legacy_sdcard_copy_config "2"
+		;;
 	cznic,turris-omnia|\
 	kobol,helios4|\
 	solidrun,clearfog-base-a1|\
