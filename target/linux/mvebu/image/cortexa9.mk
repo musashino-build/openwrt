@@ -144,7 +144,7 @@ define Device/buffalo_ts3400d-usb
   FILESYSTEMS := ext4
   COMPILE := $(1).initrd
   COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
-  IMAGES += usb.img.gz
+  IMAGES := usb.img.gz
   IMAGE/usb.img.gz := boot-img-fat uImage.buffalo initrd.buffalo | \
     sdcard-img 5452574F | gzip | append-metadata
   DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
