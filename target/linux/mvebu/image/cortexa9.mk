@@ -153,7 +153,7 @@ define Device/buffalo_ts3400d-usb
   IMAGES := usb.img.gz
   IMAGE/usb.img.gz := boot-img-fat uImage.buffalo initrd.buffalo | \
     sdcard-img 5452574F | gzip | append-metadata
-  DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
+  DEVICE_PACKAGES := kmod-fs-vfat kmod-rtc-rs5c372a kmod-usb3 partx-utils
 endef
 TARGET_DEVICES += buffalo_ts3400d-usb
 
