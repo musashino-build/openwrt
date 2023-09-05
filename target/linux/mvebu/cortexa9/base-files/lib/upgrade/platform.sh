@@ -3,7 +3,7 @@
 # Copyright (C) 2016 LEDE-Project.org
 #
 
-RAMFS_COPY_BIN='fw_printenv fw_setenv strings'
+RAMFS_COPY_BIN='fw_printenv fw_setenv readlink strings'
 RAMFS_COPY_DATA='/etc/fw_env.config /var/lock/fw_printenv.lock'
 
 PART_NAME=firmware
@@ -11,6 +11,9 @@ REQUIRE_IMAGE_METADATA=1
 
 platform_check_image() {
 	case "$(board_name)" in
+	buffalo,ts3400d-hdd)
+		buffalo_terastation_check_image "$1"
+		;;
 	buffalo,ts3400d-usb|\
 	cznic,turris-omnia|\
 	kobol,helios4|\
@@ -35,6 +38,9 @@ platform_do_upgrade() {
 		;;
 	buffalo,ls421de)
 		nand_do_upgrade "$1"
+		;;
+	buffalo,ts3400d-hdd)
+		buffalo_terastation_do_upgrade "$1"
 		;;
 	buffalo,ts3400d-usb|\
 	cznic,turris-omnia|\
@@ -72,6 +78,9 @@ platform_do_upgrade() {
 }
 platform_copy_config() {
 	case "$(board_name)" in
+	buffalo,ts3400d-hdd)
+		buffalo_terastation_copy_config
+		;;
 	buffalo,ts3400d-usb|\
 	cznic,turris-omnia|\
 	kobol,helios4|\
