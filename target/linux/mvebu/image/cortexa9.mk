@@ -16,6 +16,9 @@ define Build/boot-img-fat
   mcopy -i $@.boot $(IMAGE_KERNEL) ::$(kern_name)
   $(if $(initrd_name),\
       mcopy -i $@.boot $(KDIR)/$(DEVICE_NAME).initrd ::$(initrd_name))
+
+  # remove initrd to prevent size increase
+  rm -f $(KDIR)/$(DEVICE_NAME).initrd
 endef
 
 define Build/boot-img-ext3
@@ -33,6 +36,9 @@ define Build/boot-img-ext3
   # convert it to revision 1 - needed for u-boot ext2load
   $(STAGING_DIR_HOST)/bin/tune2fs -O filetype $@.boot
   $(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
+
+  # remove initrd to prevent size increase
+  rm -f $(KDIR)/$(DEVICE_NAME).initrd
 endef
 
 define Build/fortigate-header
