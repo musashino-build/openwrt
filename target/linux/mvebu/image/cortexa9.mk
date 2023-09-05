@@ -122,7 +122,8 @@ define Device/buffalo_ts3400d-hdd
   FILESYSTEMS := ext4
   COMPILE := $(1).initrd
   COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
-  IMAGES += hdd.img.gz
+  IMAGES := sysupgrade.tgz hdd.img.gz
+  IMAGE/sysupgrade.tgz := sysupgrade-tar | gzip | append-metadata
   IMAGE/hdd.img.gz := boot-img-ext3 uImage.buffalo initrd.buffalo | \
     hdd-img-gptlabel | pad-to 1024k | \
     append-file $$$$@.boot | \
