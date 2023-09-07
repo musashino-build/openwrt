@@ -7,20 +7,6 @@ define Build/append-file
   cat "$(1)" >> "$@"
 endef
 
-define Build/boot-img-fat
-  $(eval kern_name=$(word 1,$(1)))
-  $(eval initrd_name=$(word 2,$(1)))
-
-  rm -f $@.boot
-  mkfs.fat -C $@.boot $$(( $(CONFIG_TARGET_KERNEL_PARTSIZE) * 1024 ))
-  mcopy -i $@.boot $(IMAGE_KERNEL) ::$(kern_name)
-  $(if $(initrd_name),\
-      mcopy -i $@.boot $(KDIR)/$(DEVICE_NAME).initrd ::$(initrd_name))
-
-  # remove initrd to prevent size increase
-  rm -f $(KDIR)/$(DEVICE_NAME).initrd
-endef
-
 define Build/boot-img-ext3
   $(eval kern_name=$(word 1,$(1)))
   $(eval initrd_name=$(word 2,$(1)))
@@ -36,9 +22,10 @@ define Build/boot-img-ext3
   # convert it to revision 1 - needed for u-boot ext2load
   $(STAGING_DIR_HOST)/bin/tune2fs -O filetype $@.boot
   $(STAGING_DIR_HOST)/bin/e2fsck -pDf $@.boot > /dev/null
+endef
 
-  # remove initrd to prevent size increase
-  rm -f $(KDIR)/$(DEVICE_NAME).initrd
+define Build/cleanup-files
+  rm -f $(1)
 endef
 
 define Build/fortigate-header
@@ -127,7 +114,8 @@ define Device/buffalo_ts3400d-hdd
   BLOCKSIZE := 1k
   FILESYSTEMS := ext4
   COMPILE := $(1).initrd
-  COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
+  COMPILE/$(1).initrd := cleanup-files $$$$@ | pad-extra 4 | \
+    uImage none -T ramdisk -a 0 -e 0
   IMAGES := sysupgrade.tgz hdd.img.gz
   IMAGE/sysupgrade.tgz := sysupgrade-tar | gzip | append-metadata
   IMAGE/hdd.img.gz := boot-img-ext3 uImage.buffalo initrd.buffalo | \
@@ -149,9 +137,10 @@ define Device/buffalo_ts3400d-usb
   DEVICE_DTS := armada-xp-buffalo-ts3400d-usb
   FILESYSTEMS := ext4
   COMPILE := $(1).initrd
-  COMPILE/$(1).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
+  COMPILE/$(1).initrd := cleanup-files $$$$@ | pad-extra 4 | \
+    uImage none -T ramdisk -a 0 -e 0
   IMAGES := usb.img.gz
-  IMAGE/usb.img.gz := boot-img-fat uImage.buffalo initrd.buffalo | \
+  IMAGE/usb.img.gz := boot-img-nodtb uImage.buffalo initrd.buffalo | \
     sdcard-img 5452574F | gzip | append-metadata
   DEVICE_PACKAGES := kmod-fs-vfat kmod-rtc-rs5c372a kmod-usb3 partx-utils
 endef
