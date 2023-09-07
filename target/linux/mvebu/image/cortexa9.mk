@@ -126,6 +126,8 @@ define Device/buffalo_ts3400d-hdd
     pad-with-basesizes $(CONFIG_TARGET_ROOTFS_PARTSIZE)m 1024k \
       $(CONFIG_TARGET_KERNEL_PARTSIZE)m | \
     gzip
+  ARTIFACTS := fake-initrd.buffalo
+  ARTIFACT/fake-initrd.buffalo := copy-file $(KDIR)/$(1).initrd
   DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += buffalo_ts3400d-hdd
@@ -142,6 +144,8 @@ define Device/buffalo_ts3400d-usb
   IMAGES := usb.img.gz
   IMAGE/usb.img.gz := boot-img-nodtb uImage.buffalo initrd.buffalo | \
     sdcard-img 5452574F | gzip | append-metadata
+  ARTIFACTS := fake-initrd.buffalo
+  ARTIFACT/fake-initrd.buffalo := copy-file $(KDIR)/$(1).initrd
   DEVICE_PACKAGES := kmod-fs-vfat kmod-rtc-rs5c372a kmod-usb3 partx-utils
 endef
 TARGET_DEVICES += buffalo_ts3400d-usb
