@@ -125,7 +125,7 @@ define Device/buffalo_ts3400d-hdd
     append-rootfs | \
     pad-with-basesizes $(CONFIG_TARGET_ROOTFS_PARTSIZE)m 1024k \
       $(CONFIG_TARGET_KERNEL_PARTSIZE)m | \
-    gzip | append-metadata
+    gzip
   DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += buffalo_ts3400d-hdd
