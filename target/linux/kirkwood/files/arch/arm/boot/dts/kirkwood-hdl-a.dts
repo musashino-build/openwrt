@@ -8,6 +8,8 @@
 };
 
 &sata {
+	pinctrl-0 = <&pmx_sata0>;
+	pinctrl-names = "default";
 	status = "okay";
 	nr-ports = <1>;
 };
