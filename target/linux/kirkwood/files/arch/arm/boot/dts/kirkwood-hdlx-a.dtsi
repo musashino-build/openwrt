@@ -72,7 +72,15 @@
 	status = "okay";
 
 	ethphy0: ethernet-phy@0 {
+		compatible = "ethernet-phy-id0141,0e90",
+			     "ethernet-phy-ieee802.3-c22";
 		reg = <0>;
+		/*
+		 * SPEED 1000M (Amber): LED[0]
+		 * SPEED 100M  (Green): LED[1]
+		 * LINK/ACT    (Green): LED[2]
+		 */
+		marvell,reg-init = <3 16 0 0x177>;
 	};
 };
 
