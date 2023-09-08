@@ -25,6 +25,9 @@
 };
 
 &pinctrl {
+	pinctrl-0 = <&pmx_board_model>;
+	pinctrl-names = "default";
+
 	pmx_sata0: pmx-sata0 {
 		marvell,pins = "mpp15";
 		marvell,function = "sata0";
@@ -57,9 +60,6 @@
 	 *   1: HDL-A
 	 */
 	board-model {
-		pinctrl-0 = <&pmx_board_model>;
-		pinctrl-names = "default";
-
 		gpio-hog;
 		gpios = <7 GPIO_ACTIVE_HIGH>, <8 GPIO_ACTIVE_HIGH>,
 			<9 GPIO_ACTIVE_HIGH>, <10 GPIO_ACTIVE_HIGH>,
