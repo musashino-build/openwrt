@@ -25,6 +25,16 @@
 };
 
 &pinctrl {
+	pmx_sata0: pmx-sata0 {
+		marvell,pins = "mpp15";
+		marvell,function = "sata0";
+	};
+
+	pmx_sata1: pmx-sata1 {
+		marvell,pins = "mpp16";
+		marvell,function = "sata1";
+	};
+
 	pmx_board_model: pmx-board-model {
 		marvell,pins = "mpp39", "mpp40", "mpp41", "mpp42", "mpp43";
 		marvell,function = "gpio";
