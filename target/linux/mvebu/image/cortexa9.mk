@@ -128,7 +128,7 @@ define Device/buffalo_ts3400d-hdd
     gzip
   ARTIFACTS := fake-initrd.buffalo
   ARTIFACT/fake-initrd.buffalo := copy-file $(KDIR)/$(1).initrd
-  DEVICE_PACKAGES := kmod-rtc-rs5c372a kmod-usb3
+  DEVICE_PACKAGES := kmod-hwmon-lm75 kmod-rtc-rs5c372a kmod-usb3
 endef
 TARGET_DEVICES += buffalo_ts3400d-hdd
 
@@ -146,7 +146,8 @@ define Device/buffalo_ts3400d-usb
     sdcard-img 5452574F | gzip | append-metadata
   ARTIFACTS := fake-initrd.buffalo
   ARTIFACT/fake-initrd.buffalo := copy-file $(KDIR)/$(1).initrd
-  DEVICE_PACKAGES := kmod-fs-vfat kmod-rtc-rs5c372a kmod-usb3 partx-utils
+  DEVICE_PACKAGES := kmod-fs-vfat kmod-hwmon-lm75 kmod-rtc-rs5c372a kmod-usb3 \
+    partx-utils
 endef
 TARGET_DEVICES += buffalo_ts3400d-usb
 

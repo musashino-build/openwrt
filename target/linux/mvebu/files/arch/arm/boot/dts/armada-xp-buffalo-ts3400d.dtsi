@@ -122,6 +122,12 @@
 		compatible = "ricoh,rs5c372a";
 		reg = <0x32>;
 	};
+
+	thermal-sensor@48 {
+		compatible = "g751";
+		reg = <0x48>;
+		#thermal-sensor-cells = <0>;
+	};
 };
 
 /* Front D-Sub 9pin */
