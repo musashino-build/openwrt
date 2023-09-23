@@ -146,6 +146,9 @@
 };
 
 &pinctrl {
+	pinctrl-0 = <&pmx_mcu_irq_pin>;
+	pinctrl-names = "default";
+
 	pmx_hdd_power_pins: hdd-power-pins {
 		marvell,pins = "mpp26",	/* hdd1 */
 			       "mpp27",	/* hdd2 */
@@ -159,6 +162,11 @@
 			       "mpp33",	/* hdd2 */
 			       "mpp34",	/* hdd3 */
 			       "mpp35";	/* hdd4 */
+		marvell,function = "gpio";
+	};
+
+	pmx_mcu_irq_pin: mcu_irq_pin {
+		marvell,pins = "mpp40";
 		marvell,function = "gpio";
 	};
 };
