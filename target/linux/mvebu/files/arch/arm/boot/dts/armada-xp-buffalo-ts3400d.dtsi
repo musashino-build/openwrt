@@ -21,7 +21,8 @@
 		ranges = <MBUS_ID(0xf0, 0x01) 0 0 0xd0000000 0x100000
 			  MBUS_ID(0x01, 0x1d) 0 0 0xfff00000 0x100000
 			  MBUS_ID(0x09, 0x09) 0 0 0xf1100000 0x10000
-			  MBUS_ID(0x09, 0x05) 0 0 0xf1110000 0x10000>;
+			  MBUS_ID(0x09, 0x05) 0 0 0xf1110000 0x10000
+			  MBUS_ID(0x0c, 0x04) 0 0 0xd1200000 0x100000>;
 	};
 
 	keys {
@@ -179,6 +180,14 @@
 	status = "okay";
 };
 
+&bm {
+	status = "okay";
+};
+
+&bm_bppi {
+	status = "okay";
+};
+
 &eth0 {
 	pinctrl-0 = <&ge0_rgmii_pins>;
 	pinctrl-names = "default";
@@ -186,6 +195,9 @@
 
 	phy-handle = <&ethphy0>;
 	phy-connection-type = "rgmii-id";
+	buffer-manager = <&bm>;
+	bm,pool-long = <0>;
+	bm,pool-short = <1>;
 };
 
 &eth1 {
@@ -195,6 +207,9 @@
 
 	phy-handle = <&ethphy1>;
 	phy-connection-type = "rgmii-id";
+	buffer-manager = <&bm>;
+	bm,pool-long = <2>;
+	bm,pool-short = <3>;
 };
 
 &mdio {
