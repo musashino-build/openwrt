@@ -1,0 +1,325 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "cn71xx.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	compatible = "alliedtelesis,at-ar3050s", "cavium,cn7020";
+	model = "Allied Telesis AT-AR3050S";
+
+	aliases {
+/*		led-boot =
+		led-failsafe =
+		led-running =
+		led-upgrade =
+*/	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x00000000>,
+		      <0x0 0x10000000>,
+		      <0x0 0x20000000>,
+		      <0x0 0x30000000>;
+	};
+
+	soc {
+		bootbus@1180000000000 {
+			ranges = <0 0 0x0 0x80000000 0xffffffff>,
+				 <1 0 0x0 0x20000000 0x0>,
+				 <2 0 0x0 0x40000000 0x0>,
+				 <3 0 0x0 0x10000000 0x80000>,
+				 <4 0 0x0 0x60000000 0x0>,
+				 <5 0 0x0 0x70000000 0x0>,
+				 <6 0 0x0 0x0 0x0>,
+				 <7 0 0x0 0x90000000 0x0>;
+
+			cavium,cs-config@3 {
+				compatible = "cavium,octeon-3860-bootbus-config";
+				cavium,cs-index = <0x3>;
+				cavium,t-adr = <0x10>;
+				cavium,t-ce = <0x10>;
+				cavium,t-oe = <0x3f>;
+				cavium,t-we = <0x3f>;
+				cavium,t-rd-hld = <0x20>;
+				cavium,t-wr-hld = <0x20>;
+				cavium,t-pause = <0x10>;
+				cavium,t-wait = <0x0>;
+				cavium,t-page = <0x0>;
+				cavium,t-rd-dly = <0x0>;
+				cavium,pages = <0x0>;
+				cavium,bus-width = <0x8>;
+			};
+
+			sram@3,0 {
+				compatible = "mtd-ram";
+				reg = <0x03 0x00 0x80000>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+				bank-width = <1>;
+
+				/* "Non-Volatile Storage" of Allied Telesis */
+				partition@0 {
+					reg = <0x0 0x70000>;
+					label = "nvs";
+				};
+
+				partition@70000 {
+					reg = <0x70000 0x10000>;
+					label = "errlog";
+				};
+			};
+		};
+	};
+/*
+	leds {
+		compatible = "gpio-leds";
+
+	};
+
+	keys {
+		compatible = "gpio-keys";
+
+	};
+*/
+	sfp1: sfp1 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c0>;
+		tx-disable-gpio = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio1 14 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+	};
+
+	sfp2: sfp2 {
+		compatible = "sff,sfp";
+		i2c-bus = <&i2c1>;
+		tx-disable-gpio = <&gpio1 4 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpio = <&gpio1 11 GPIO_ACTIVE_LOW>;
+		los-gpio = <&gpio1 9 GPIO_ACTIVE_HIGH>;
+	};
+
+	reg_usb_vbus: regulator-usb-vbus {
+		compatible = "fixed-regulator";
+		regulator-name = "usb-vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio1 7 (GPIO_ACTIVE_HIGH | GPIO_OPEN_SOURCE)>;
+		regulator-always-on;
+	};
+
+	gpio-restart {
+		compatible = "gpio-restart";
+		gpios = <&gpio 2 GPIO_ACTIVE_LOW>;
+	};
+};
+
+&dma0 {
+	status = "okay";
+};
+
+&dma1 {
+	status = "okay";
+};
+
+&gpio {
+	factory-boot {
+		gpio-hog;
+		gpios = <1 GPIO_ACTIVE_LOW>;
+		input;
+	};
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&usb0 {
+	status = "okay";
+};
+
+&xhci0 {
+	status = "okay";
+	dr_mode = "host";
+
+	vbus-supply = <&reg_usb_vbus>;
+};
+
+&twsi0 {
+	status = "okay";
+
+	gpio1: gpio@21 {
+		compatible = "nxp,pca9555";
+		reg = <0x21>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		interrupt-parent = <&gpio>;
+		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
+	};
+
+	gpio2: gpio@22 {
+		compatible = "nxp,pca9555";
+		reg = <0x22>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	gpio3: gpio@23 {
+		compatible = "nxp,pca9555";
+		reg = <0x23>;
+		gpio-controller;
+		#gpio-cells = <2>;
+	};
+
+	sensor@2c {
+		compatible = "lm81";
+		reg = <0x2c>;
+		#thermal-sensor-cells = <0>;
+	};
+
+	rtc@68 {
+		compatible = "dallas,ds1340";
+		reg = <0x68>;
+	};
+};
+
+&twsi1 {
+	status = "okay";
+
+	i2c-mux@70 {
+		compatible = "nxp,pca9546";
+		reg = <0x70>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		i2c-mux-idle-disconnect;
+
+		i2c0: i2c@0 {
+			reg = <0x0>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		i2c1: i2c@1 {
+			reg = <0x1>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+	};
+};
+
+&spi {
+	status = "okay";
+
+	/* unknown chip */
+	switch@1 {
+		//compatible = "brcm,bcm53128";
+		reg = <1>;
+		spi-max-frequency = <20000000>;
+		reset-gpio = <&gpio2 1 GPIO_ACTIVE_LOW>;
+		interrupt-parent = <&gpio>;
+		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
+	};
+};
+
+&mmc {
+	status = "okay";
+
+	mmc-slot@0 {
+		compatible = "mmc-slot";
+		reg = <0>;
+		max-frequency = <52000000>;
+//		voltage-ranges = <3300 3300>;
+		bus-width = <8>;
+		non-removable;
+	};
+
+	mmc-slot@1 {
+		compatible = "mmc-slot";
+		reg = <1>;
+		max-frequency = <20000000>;
+//		voltage-ranges = <3300 3300>;
+		bus-width = <4>;
+		cd-gpios = <&gpio1 15 GPIO_ACTIVE_LOW>;
+		wp-gpios = <&gpio2 9 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+&smi0 {
+	status = "okay";
+	reset-gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
+	reset-delay-us = <10>;
+
+	ethphy1: ethernet-phy@1 {
+		compatible = "ethernet-phy-id0143.bcb2",
+			     "ethernet-phy-ieee802.3-c22";
+		reg = <0x1>;
+		interrupt-parent = <&gpio>;
+		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
+		sfp = <&sfp1>;
+	};
+
+	ethphy2: ethernet-phy@2 {
+		compatible = "ethernet-phy-id0143.bcb2",
+			     "ethernet-phy-ieee802.3-c22";
+		reg = <0x2>;
+		interrupt-parent = <&gpio>;
+		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
+		sfp = <&sfp2>;
+	};
+};
+
+&pip {
+	status = "okay";
+
+	interface@0 {
+		status = "okay";
+
+		ethernet@0 {
+			status = "okay";
+			phy-connection-type = "sgmii";
+			phy-handle = <&ethphy2>;
+			label = "eth2";
+//			nvmem-cells = <&macaddr_eeprom_0>;
+//			nvmem-cell-names = "mac-address";
+//			mac-address-increment = <(1)>;
+		};
+	};
+
+	interface@1 {
+		status = "okay";
+
+		ethernet@0 {
+			status = "okay";
+			phy-connection-type = "sgmii";
+			phy-handle = <&ethphy1>;
+			label = "eth1";
+//			nvmem-cells = <&macaddr_eeprom_0>;
+//			nvmem-cell-names = "mac-address";
+//			mac-address-increment = <(2)>;
+		};
+	};
+
+	interface@4 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "cavium,octeon-3860-pip-interface";
+		reg = <4>; /* Interface */
+
+		ethernet@0 {
+			compatible = "cavium,octeon-3860-pip-port";
+			reg = <0>;
+			phy-mode = "rgmii";
+			label = "eth0";
+//			nvmem-cells = <&macaddr_eeprom_0>;
+//			nvmem-cell-names = "mac-address";
+//			mac-address-increment = <(3)>;
+
+			fixed-link {
+				speed = <1000>;
+				full-duplex;
+			};
+		};
+	};
+};
+
