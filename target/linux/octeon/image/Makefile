@@ -33,6 +33,21 @@ define Device/generic
 endef
 TARGET_DEVICES += generic
 
+define Device/alliedtelesis_at-ar3050s
+  DEVICE_VENDOR := Allied Telesis
+  DEVICE_MODEL := AT-AR3050S
+  DEVICE_DTS := cn7020_alliedtelesis_at-ar3050s
+  DEVICE_DTS_CONFIG := ar3050s
+  CMDLINE := console=ttyS0,9600
+  KERNEL_NAME := vmlinux
+  KERNEL_INITRAMFS_NAME := vmlinux-initramfs
+  KERNEL_LOADADDR := 0x81100000
+  KERNEL := kernel-bin | patch-cmdline | gzip | \
+	fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd
+  DEVICE_PACKAGES := kmod-i2c-mux-pca954x kmod-sfp
+endef
+TARGET_DEVICES += alliedtelesis_at-ar3050s
+
 ITUSROUTER_CMDLINE:=console=ttyS0,115200 root=/dev/mmcblk1p2 rootfstype=squashfs,ext4,f2fs rootwait
 define Device/itus_shield-router
   DEVICE_VENDOR := Itus Networks
