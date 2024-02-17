@@ -9,6 +9,23 @@ define Build/append-dtb-to-elf
 	$(TARGET_CROSS)objcopy --update-section .appended_dtb=$(KDIR)/image-$(DEVICE_DTS).dtb $@
 endef
 
+define Build/fit-at
+	./mkits-alliedtelesis.sh \
+		-D $(DEVICE_NAME) -o $@.its -k $@ \
+		-C $(word 1,$(1)) \
+		-d $(word 2,$(1)) \
+		$(if $(findstring with-initrd,$(word 3,$(1))), \
+			$(if $(CONFIG_TARGET_ROOTFS_INITRAMFS_SEPARATE), \
+				-i $(KERNEL_BUILD_DIR)/initrd.cpio$(strip $(call Build/initrd_compression)))) \
+		-a $(KERNEL_LOADADDR) -e $(if $(KERNEL_ENTRY),$(KERNEL_ENTRY),$(KERNEL_LOADADDR)) \
+		$(if $(DEVICE_FDT_NUM),-n $(DEVICE_FDT_NUM)) \
+		-c $(if $(DEVICE_DTS_CONFIG),$(DEVICE_DTS_CONFIG),"config-1") \
+		-A $(LINUX_KARCH) -v $(LINUX_VERSION)
+	PATH=$(LINUX_DIR)/scripts/dtc:$(PATH) mkimage $(if $(findstring external,$(word 3,$(1))),\
+		-E -B 0x1000 $(if $(findstring static,$(word 3,$(1))),-p 0x1000)) -f $@.its $@.new
+	@mv $@.new $@
+endef
+
 define Build/strip-kernel
 	# Workaround pre-SDK-1.9.0 u-boot versions not handling the .notes section
 	$(TARGET_CROSS)strip -R .notes $@ -o $@.stripped && mv $@.stripped $@
@@ -38,12 +55,13 @@ define Device/alliedtelesis_at-ar3050s
   DEVICE_MODEL := AT-AR3050S
   DEVICE_DTS := cn7020_alliedtelesis_at-ar3050s
   DEVICE_DTS_CONFIG := ar3050s
-  CMDLINE := console=ttyS0,9600
+  DEVICE_FDT_NUM := 3050S
+  CMDLINE := console=ttyS0,9600 earlycon
   KERNEL_NAME := vmlinux
   KERNEL_INITRAMFS_NAME := vmlinux-initramfs
   KERNEL_LOADADDR := 0x81100000
   KERNEL := kernel-bin | patch-cmdline | gzip | \
-	fit gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd
+	fit-at gzip $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb with-initrd
   DEVICE_PACKAGES := kmod-i2c-mux-pca954x kmod-sfp
 endef
 TARGET_DEVICES += alliedtelesis_at-ar3050s
