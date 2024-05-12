@@ -286,7 +286,6 @@
 	#size-cells = <0>;
 
 	dr_mode = "host";
-	vbus-supply = <&reg_usb_vbus>;
 
 	/delete-node/ port@1;
 
