@@ -1,4 +1,4 @@
-From b351d94e65606d76cd1f093a93815661a3f25d61 Mon Sep 17 00:00:00 2001
+From f7b37647177f30f13586bc09a85ab2fe7249ae17 Mon Sep 17 00:00:00 2001
 From: INAGAKI Hiroshi <musashino.open@gmail.com>
 Date: Wed, 24 Apr 2024 23:54:46 +0900
 Subject: [PATCH] ath79: add support for NEC AR9344 Aterm series
@@ -74,10 +74,10 @@ index 0000000000..0992ef8f06
 +/delete-node/ &gmac1;
 +/delete-node/ &spi0;
 diff --git a/arch/mips/mach-ath79/Kconfig b/arch/mips/mach-ath79/Kconfig
-index 830f1b3b5b..e9197ff6c3 100644
+index cd85d1b6c3..ac2f4e3a6e 100644
 --- a/arch/mips/mach-ath79/Kconfig
 +++ b/arch/mips/mach-ath79/Kconfig
-@@ -64,6 +64,10 @@ config TARGET_AP152
+@@ -58,6 +58,10 @@ config TARGET_AP152
  	bool "AP152 Reference Board"
  	select SOC_QCA956X
  
@@ -87,8 +87,8 @@ index 830f1b3b5b..e9197ff6c3 100644
 +
  config BOARD_TPLINK_WDR4300
  	bool "TP-Link WDR4300 Board"
- 	select SOC_QCA955X
-@@ -73,6 +77,7 @@ endchoice
+ 	select SOC_AR934X
+@@ -67,6 +71,7 @@ endchoice
  source "board/qca/ap121/Kconfig"
  source "board/qca/ap143/Kconfig"
  source "board/qca/ap152/Kconfig"
@@ -279,7 +279,7 @@ index 0000000000..94069150d0
 +# CONFIG_GZIP is not set
 diff --git a/include/configs/nec_ar9344_aterm.h b/include/configs/nec_ar9344_aterm.h
 new file mode 100644
-index 0000000000..a4e556a376
+index 0000000000..f1366331e2
 --- /dev/null
 +++ b/include/configs/nec_ar9344_aterm.h
 @@ -0,0 +1,28 @@
@@ -288,8 +288,8 @@ index 0000000000..a4e556a376
 + * Copyright (C) 2024 INAGAKI Hiroshi <musashino.open@gmail.com>
 + */
 +
-+#ifndef __CONFIG_H
-+#define __CONFIG_H
++#ifndef __NEC_AR9344_ATERM_H
++#define __NEC_AR9344_ATERM_H
 +
 +#define CFG_SYS_SDRAM_BASE		0x80000000
 +
@@ -310,7 +310,7 @@ index 0000000000..a4e556a376
 + * Diagnostics
 + */
 +
-+#endif  /* __CONFIG_H */
++#endif  /* __NEC_AR9344_ATERM_H */
 -- 
-2.25.1
+2.42.0.windows.2
 
