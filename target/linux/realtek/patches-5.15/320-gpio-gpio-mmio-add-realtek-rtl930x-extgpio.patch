@@ -1,0 +1,10 @@
+--- a/drivers/gpio/gpio-mmio.c
++++ b/drivers/gpio/gpio-mmio.c
+@@ -686,6 +686,7 @@ static const struct of_device_id bgpio_o
+ 	{ .compatible = "brcm,bcm6345-gpio" },
+ 	{ .compatible = "wd,mbl-gpio" },
+ 	{ .compatible = "ni,169445-nand-gpio" },
++	{ .compatible = "realtek,rtl930x-extgpio" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, bgpio_of_match);
