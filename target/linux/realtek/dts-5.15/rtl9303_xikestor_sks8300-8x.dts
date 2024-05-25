@@ -76,12 +76,18 @@
 		led_set2 = <0x0a20 0x0a01>; // LED set 2: 1000MBit, 10GBit
 	};
 #endif
-	rtl8231-gpio {
-		compatible = "realtek,rtl8231-gpio";
-		gpio-controller;
-		indirect-access-bus-id = <0>;
-		#gpio-cells = <2>;
-	};
+};
+
+&pinmux_ext_gpio_glb {
+	status = "okay";
+};
+
+&gpio1 {
+	status = "okay";
+};
+
+&gpio2 {
+	status = "okay";
 };
 
 &spi0 {
