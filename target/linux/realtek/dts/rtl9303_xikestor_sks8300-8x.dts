@@ -16,24 +16,34 @@
 		reg = <0x00000000 0x10000000>, /* first 256 MiB */
 		      <0x20000000 0x10000000>; /* remaining 256 MiB */
 	};
-#if 0
+
 	aliases {
-		led-boot = &led_pwr_sys;
-		led-failsafe = &led_pwr_sys;
-		led-running = &led_pwr_sys;
-		led-upgrade = &led_pwr_sys;
+		led-boot = &led_sys;
+		led-failsafe = &led_sys;
+		led-running = &led_sys;
+		led-upgrade = &led_sys;
 	};
 
 	keys {
 		compatible = "gpio-keys";
 
-		mode {
+		button-reset {
 			label = "reset";
 			gpios = <&gpio0 22 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
 	};
 
+	leds {
+		compatible = "gpio-leds";
+
+		led_sys: led-0 {
+			gpios = <&gpio0 23 GPIO_ACTIVE_HIGH>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
+		};
+	};
+#if 0
 	/* i2c of the SFP cage: port 12 */
 	i2c0: i2c-rtl9300@1b00036c {
 		compatible = "realtek,rtl9300-i2c";
@@ -43,19 +53,6 @@
 		sda-pin = <10>;
 		scl-pin = <8>;
 		clock-frequency = <100000>;
-	};
-
-	leds {
-		compatible = "gpio-leds";
-
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinmux_disable_sys_led>;
-
-		led_pwr_sys: led-0 {
-			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_POWER;
-			gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
-		};
 	};
 
 	sfp0: sfp-p12 {
