@@ -10,6 +10,11 @@
 / {
 	compatible = "xikestor,sks8300-8x", "realtek,rtl930x-soc";
 	model = "XikeStor SKS8300-8X";
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x0 0x20000000>;
+	};
 #if 0
 	aliases {
 		led-boot = &led_pwr_sys;
@@ -116,6 +121,8 @@
 				compatible = "fixed-partitions";
 				label = "firmware";
 				reg = <0x200000 0x1e00000>;
+				#address-cells = <1>;
+				#size-cells = <1>;
 
 				partition@0 {
 					label = "kernel";
