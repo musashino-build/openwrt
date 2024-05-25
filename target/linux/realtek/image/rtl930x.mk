@@ -12,13 +12,17 @@ define Build/xikestor-nosimg
              8ED7770055D00DAC0155807EEFBC7EE6F16C5200331698CC0101010100007988"; \
     i=0; \
     for ptn in $$pattern; do \
-      dd if=/dev/zero of=$@.z$${i} bs=$${#ptn} count=1 2>/dev/null; \
+      echo "$$i: $$ptn"; \
+      dd if=/dev/zero of=$@.z$${i} bs=$$(($${#ptn} / 2)) count=1 2>/dev/null; \
       $(STAGING_DIR_HOST)/bin/xorimage -i $@.z$${i} -o $@.z$${i}.xor -p $$ptn -x; \
+      i=$$((i + 1)); \
     done; \
     i=0; \
     for ptn in $$pattern; do \
-      dd if=$@ of=$@.blk$${i} bs=$${#ptn} count=1 2>/dev/null; \
+      echo "$$i: $$ptn"; \
+      dd if=$@ of=$@.blk$${i} bs=$$(($${#ptn} / 2)) count=1 2>/dev/null; \
       $(STAGING_DIR_HOST)/bin/xorimage -i $@.blk$${i} -o $@.blk$${i}.xor -p $$ptn -x; \
+      i=$$((i + 1)); \
     done; \
   )
   cat $@.z*.xor $@.blk*.xor > $@.new
@@ -34,9 +38,10 @@ define Device/xikestor_sks8300-8x
   BLOCKSIZE := 64k
   KERNEL_SIZE := 8192k
   IMAGE_SIZE := 30720k
-  IMAGE/sysupgrade.bin := append-kernel | xikestor-nosimg | \
-	jffs2 nos.img | pad-to $$$$(KERNEL_SIZE) | append-rootfs | \
-	append-metadata | check-size
+  IMAGE/sysupgrade.bin := append-kernel | xikestor-nosimg | jffs2 nos.img | \
+	pad-to $$$$(KERNEL_SIZE) | append-rootfs | append-metadata | check-size
+  ARTIFACTS := nos.img
+  ARTIFACT/nos.img := append-image-stage initramfs-kernel.bin | xikestor-nosimg
 endef
 TARGET_DEVICES += xikestor_sks8300-8x
 
