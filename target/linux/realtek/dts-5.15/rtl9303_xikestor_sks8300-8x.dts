@@ -24,6 +24,10 @@
 		led-upgrade = &led_sys;
 	};
 
+	chosen {
+		stdout-path = "serial0:9600n8";
+	};
+
 	i2c_master: i2c@1b00036c {
 		compatible = "realtek,rtl9300-i2c";
 		reg = <0x1b00036c 0x3c>;
