@@ -189,7 +189,7 @@
 	 * Pericom PT7A7514WE
 	 * handled by System LED output of RTL9303 on stock FW
 	 */
-	watchdog {
+/*	watchdog {
 		compatible = "linux,wdt-gpio";
 		gpios = <&gpio0 0 GPIO_ACTIVE_LOW>;
 		always-running;
@@ -197,7 +197,7 @@
 		hw_margin_ms = <100>;
 		pinctrl-0 = <&pinmux_disable_sys_led>;
 		pinctrl-names = "default";
-	};
+	};*/
 };
 
 &pinmux_ext_gpio_glb {
