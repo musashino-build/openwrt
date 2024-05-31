@@ -277,7 +277,7 @@
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <0>;
 			phy-is-integrated;
-			rtl9300,smi-address = <0 0>;
+			rtl9300,smi-address = <4 0>;
 			sds = <2>;
 		};
 
@@ -285,7 +285,7 @@
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <8>;
 			phy-is-integrated;
-			rtl9300,smi-address = <0 8>;
+			rtl9300,smi-address = <4 8>;
 			sds = <3>;
 		};
 
@@ -293,7 +293,7 @@
 			reg = <16>;
 			compatible = "ethernet-phy-ieee802.3-c22";
 			phy-is-integrated;
-			rtl9300,smi-address = <0 16>;
+			rtl9300,smi-address = <4 16>;
 			sds = <4>;
 		};
 
@@ -301,31 +301,31 @@
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <20>;
 			phy-is-integrated;
-			rtl9300,smi-address = <0 3>;
+			rtl9300,smi-address = <4 20>;
 			sds = <5>;
 		};
 
 		phy24: ethernet-phy@24 {
-			compatible = "ethernet-phy-ieee802.3-c45";
+			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <24>;
 			phy-is-integrated;
-			rtl9300,smi-address = <1 8>;
+			rtl9300,smi-address = <4 24>;
 			sds = <6>;
 		};
 
 		phy25: ethernet-phy@25 {
-			compatible = "ethernet-phy-ieee802.3-c45";
+			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <25>;
 			phy-is-integrated;
-			rtl9300,smi-address = <2 8>;
+			rtl9300,smi-address = <4 25>;
 			sds = <7>;
 		};
 
 		phy26: ethernet-phy@26 {
-			compatible = "ethernet-phy-ieee802.3-c45";
+			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <26>;
 			phy-is-integrated;
-			rtl9300,smi-address = <3 8>;
+			rtl9300,smi-address = <4 26>;
 			sds = <8>;
 		};
 
@@ -333,7 +333,7 @@
 			compatible = "ethernet-phy-ieee802.3-c22";
 			phy-is-integrated;
 			reg = <27>;
-			rtl9300,smi-address = <4 0>;
+			rtl9300,smi-address = <4 27>;
 			sds = <9>;
 		};
 	};
@@ -382,7 +382,7 @@
 
 		port@24 {
 			reg = <24>;
-			label = "lan9";
+			label = "lan5";
 			phy-handle = <&phy24>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp4>;
@@ -391,7 +391,7 @@
 
 		port@25 {
 			reg = <25>;
-			label = "lan10";
+			label = "lan6";
 			phy-handle = <&phy25>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp5>;
@@ -400,7 +400,7 @@
 
 		port@26 {
 			reg = <26>;
-			label = "lan11";
+			label = "lan7";
 			phy-handle = <&phy26>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp6>;
@@ -409,7 +409,7 @@
 
 		port@27 {
 			reg = <27>;
-			label = "lan12";
+			label = "lan8";
 			phy-handle = <&phy27>;
 			phy-mode = "10gbase-r";
 			sfp = <&sfp7>;
