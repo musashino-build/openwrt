@@ -2053,6 +2053,7 @@ define Device/nec_wg1400hp
   NEC_FW_TYPE := H040b
   $(Device/nec-netbsd-aterm)
   DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  ARTIFACTS := initramfs-factory.bin
 endef
 TARGET_DEVICES += nec_wg1400hp
 
@@ -2063,6 +2064,7 @@ define Device/nec_wg1800hp
   NEC_FW_TYPE := H040a
   $(Device/nec-netbsd-aterm)
   DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  ARTIFACTS := initramfs-factory.bin
 endef
 TARGET_DEVICES += nec_wg1800hp
 
@@ -2073,6 +2075,7 @@ define Device/nec_wg1800hp2
   NEC_FW_TYPE := H049
   $(Device/nec-netbsd-aterm)
   DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  ARTIFACTS := initramfs-factory.bin
 endef
 TARGET_DEVICES += nec_wg1800hp2
 
