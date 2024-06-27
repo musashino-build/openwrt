@@ -256,8 +256,8 @@ static inline void nec_aterm_init(void)
 	WRITEREG(reg + AR71XX_RESET_REG_WDOG, 0xffffffff);
 
 	/*
-	 * deassert some RESET bits that are not handled
-	 * by drivers and mainline U-Boot
+	 * deassert some RESET bits not handled by drivers
+	 * and mainline U-Boot
 	 *
 	 * - ETH_SWITCH(_ANALOG): eth0
 	 * - RTC                : wmac
