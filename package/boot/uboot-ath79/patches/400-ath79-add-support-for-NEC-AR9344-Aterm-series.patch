@@ -20,11 +20,9 @@ Subject: [PATCH] ath79: add support for NEC AR9344 Aterm series
  create mode 100644 configs/nec_ar9344_aterm_defconfig
  create mode 100644 include/configs/nec_ar9344_aterm.h
 
-diff --git a/arch/mips/dts/Makefile b/arch/mips/dts/Makefile
-index 14fbce597b..6734fde805 100644
 --- a/arch/mips/dts/Makefile
 +++ b/arch/mips/dts/Makefile
-@@ -24,6 +24,7 @@ dtb-$(CONFIG_BOARD_GARDENA_SMART_GATEWAY_MT7688) += gardena-smart-gateway-mt7688
+@@ -24,6 +24,7 @@ dtb-$(CONFIG_BOARD_GARDENA_SMART_GATEWAY
  dtb-$(CONFIG_BOARD_LINKIT_SMART_7688) += linkit-smart-7688.dtb
  dtb-$(CONFIG_TARGET_OCTEON_EBB7304) += mrvl,octeon-ebb7304.dtb
  dtb-$(CONFIG_TARGET_OCTEON_NIC23) += mrvl,octeon-nic23.dtb
@@ -32,9 +30,6 @@ index 14fbce597b..6734fde805 100644
  dtb-$(CONFIG_BOARD_NETGEAR_CG3100D) += netgear,cg3100d.dtb
  dtb-$(CONFIG_BOARD_NETGEAR_DGND3700V2) += netgear,dgnd3700v2.dtb
  dtb-$(CONFIG_BOARD_SAGEM_FAST1704) += sagem,f@st1704.dtb
-diff --git a/arch/mips/dts/nec,ar9344-aterm.dts b/arch/mips/dts/nec,ar9344-aterm.dts
-new file mode 100644
-index 0000000000..0992ef8f06
 --- /dev/null
 +++ b/arch/mips/dts/nec,ar9344-aterm.dts
 @@ -0,0 +1,35 @@
@@ -73,8 +68,6 @@ index 0000000000..0992ef8f06
 +/delete-node/ &gmac0;
 +/delete-node/ &gmac1;
 +/delete-node/ &spi0;
-diff --git a/arch/mips/mach-ath79/Kconfig b/arch/mips/mach-ath79/Kconfig
-index cd85d1b6c3..ac2f4e3a6e 100644
 --- a/arch/mips/mach-ath79/Kconfig
 +++ b/arch/mips/mach-ath79/Kconfig
 @@ -58,6 +58,10 @@ config TARGET_AP152
@@ -96,9 +89,6 @@ index cd85d1b6c3..ac2f4e3a6e 100644
  source "board/tplink/wdr4300/Kconfig"
  
  endmenu
-diff --git a/board/nec/ar9344_aterm/Kconfig b/board/nec/ar9344_aterm/Kconfig
-new file mode 100644
-index 0000000000..b1dba68788
 --- /dev/null
 +++ b/board/nec/ar9344_aterm/Kconfig
 @@ -0,0 +1,30 @@
@@ -132,18 +122,12 @@ index 0000000000..b1dba68788
 +	default 32
 +
 +endif
-diff --git a/board/nec/ar9344_aterm/Makefile b/board/nec/ar9344_aterm/Makefile
-new file mode 100644
-index 0000000000..2730e4fb90
 --- /dev/null
 +++ b/board/nec/ar9344_aterm/Makefile
 @@ -0,0 +1,3 @@
 +# SPDX-License-Identifier: GPL-2.0+
 +
 +obj-y	= ar9344_aterm.o
-diff --git a/board/nec/ar9344_aterm/ar9344_aterm.c b/board/nec/ar9344_aterm/ar9344_aterm.c
-new file mode 100644
-index 0000000000..bced48b6b7
 --- /dev/null
 +++ b/board/nec/ar9344_aterm/ar9344_aterm.c
 @@ -0,0 +1,60 @@
@@ -207,9 +191,6 @@ index 0000000000..bced48b6b7
 +	return 0;
 +}
 +#endif
-diff --git a/configs/nec_ar9344_aterm_defconfig b/configs/nec_ar9344_aterm_defconfig
-new file mode 100644
-index 0000000000..874cd2a7cb
 --- /dev/null
 +++ b/configs/nec_ar9344_aterm_defconfig
 @@ -0,0 +1,63 @@
@@ -276,9 +257,6 @@ index 0000000000..874cd2a7cb
 +CONFIG_DM_SERIAL=y
 +CONFIG_SYS_NS16550=y
 +# CONFIG_GZIP is not set
-diff --git a/include/configs/nec_ar9344_aterm.h b/include/configs/nec_ar9344_aterm.h
-new file mode 100644
-index 0000000000..f1366331e2
 --- /dev/null
 +++ b/include/configs/nec_ar9344_aterm.h
 @@ -0,0 +1,28 @@
@@ -310,6 +288,3 @@ index 0000000000..f1366331e2
 + */
 +
 +#endif  /* __NEC_AR9344_ATERM_H */
--- 
-2.25.1
-
