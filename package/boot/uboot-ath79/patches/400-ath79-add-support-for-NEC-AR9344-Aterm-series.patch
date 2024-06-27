@@ -1,4 +1,4 @@
-From f7b37647177f30f13586bc09a85ab2fe7249ae17 Mon Sep 17 00:00:00 2001
+From e13892ff5a08ac151e96f34dcc2c1ed8163447c3 Mon Sep 17 00:00:00 2001
 From: INAGAKI Hiroshi <musashino.open@gmail.com>
 Date: Wed, 24 Apr 2024 23:54:46 +0900
 Subject: [PATCH] ath79: add support for NEC AR9344 Aterm series
@@ -10,9 +10,9 @@ Subject: [PATCH] ath79: add support for NEC AR9344 Aterm series
  board/nec/ar9344_aterm/Kconfig        | 30 +++++++++++++
  board/nec/ar9344_aterm/Makefile       |  3 ++
  board/nec/ar9344_aterm/ar9344_aterm.c | 60 +++++++++++++++++++++++++
- configs/nec_ar9344_aterm_defconfig    | 64 +++++++++++++++++++++++++++
+ configs/nec_ar9344_aterm_defconfig    | 63 +++++++++++++++++++++++++++
  include/configs/nec_ar9344_aterm.h    | 28 ++++++++++++
- 8 files changed, 226 insertions(+)
+ 8 files changed, 225 insertions(+)
  create mode 100644 arch/mips/dts/nec,ar9344-aterm.dts
  create mode 100644 board/nec/ar9344_aterm/Kconfig
  create mode 100644 board/nec/ar9344_aterm/Makefile
@@ -143,7 +143,7 @@ index 0000000000..2730e4fb90
 +obj-y	= ar9344_aterm.o
 diff --git a/board/nec/ar9344_aterm/ar9344_aterm.c b/board/nec/ar9344_aterm/ar9344_aterm.c
 new file mode 100644
-index 0000000000..ed9523007c
+index 0000000000..bced48b6b7
 --- /dev/null
 +++ b/board/nec/ar9344_aterm/ar9344_aterm.c
 @@ -0,0 +1,60 @@
@@ -172,9 +172,9 @@ index 0000000000..ed9523007c
 +	/* Disable JTAG */
 +	writel(0x2, regs + AR934X_GPIO_REG_FUNC);
 +
-+	/* Configure default GPIO OE/OUT regs */
++	/* Configure default GPIO OE/SET regs */
 +	writel(0x3db1f, regs + AR71XX_GPIO_REG_OE);
-+	writel(0x40000, regs + AR71XX_GPIO_REG_OUT);
++	writel(0x142000, regs + AR71XX_GPIO_REG_SET);
 +
 +	/* Configure pin multiplexing */
 +	writel(0x00000000, regs + AR934X_GPIO_REG_OUT_FUNC0);
@@ -209,12 +209,11 @@ index 0000000000..ed9523007c
 +#endif
 diff --git a/configs/nec_ar9344_aterm_defconfig b/configs/nec_ar9344_aterm_defconfig
 new file mode 100644
-index 0000000000..94069150d0
+index 0000000000..874cd2a7cb
 --- /dev/null
 +++ b/configs/nec_ar9344_aterm_defconfig
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,63 @@
 +CONFIG_MIPS=y
-+CONFIG_TEXT_BASE=0x9F000000
 +CONFIG_SYS_MALLOC_LEN=0x40000
 +CONFIG_HAS_CUSTOM_SYS_INIT_SP_ADDR=y
 +CONFIG_CUSTOM_SYS_INIT_SP_ADDR=0xbd007fff
@@ -312,5 +311,5 @@ index 0000000000..f1366331e2
 +
 +#endif  /* __NEC_AR9344_ATERM_H */
 -- 
-2.42.0.windows.2
+2.25.1
 
