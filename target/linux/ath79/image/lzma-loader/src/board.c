@@ -207,7 +207,7 @@ static inline void ap5030dn_init(void)
 static inline void ap5030dn_init(void) { }
 #endif
 
-#ifdef CONFIG_BOARD_NEC_WR8750N
+#if defined(CONFIG_BOARD_NEC_WR8750N)
 
 #define AR934X_PLL_SWITCH_CLK_CTRL_REG			0x24
 #define AR934X_PLL_SWITCH_CLK_CTRL_SWITCHCLK_SEL	BIT(0)
