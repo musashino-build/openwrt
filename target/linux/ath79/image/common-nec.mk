@@ -26,7 +26,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
   ARTIFACTS += initramfs-factory.bin initramfs-necboot.bin
   ARTIFACT/initramfs-factory.bin := append-image-stage initramfs-kernel.bin | \
 	remove-uimage-header | \
-	nec-usbaterm-fw -f 0x0003 -d $$$$@ -d $$(KDIR)/loader-$(1).bin | check-size
+	nec-usbaterm-fw -f 0x0003 -d $$(KDIR)/loader-$(1).bin -d $$$$@ | check-size
   ARTIFACT/initramfs-necboot.bin := append-image-stage initramfs-kernel.bin | \
 	remove-uimage-header | nec-usbaterm-fw -d $$$$@
 endif

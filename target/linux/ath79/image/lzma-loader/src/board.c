@@ -228,13 +228,13 @@ static inline void nec_aterm_init(void)
 #ifndef LOADADDR
 	/*
 	 * This is for initramfs-factory image.
-	 * When the system was reset by watchdog and started from the
-	 * OEM bootloader with a dummy firmware (this loader), reset
-	 * again by FULL_CHIP_RESET bit in the RESET register to
-	 * load an actual OpenWrt initramfs image in TP (Test Program?)
-	 * block in a factory image.
-	 * On the stock firmware, TP block contains a POST function and
-	 * sub commands of "tp" command.
+	 * When the system was reset by power source or FULL_CHIP_RESET
+	 * and started from the OEM bootloader with a dummy tp data
+	 * (this loader), reset again by timeout of the watchdog timer
+	 * to load an actual OpenWrt initramfs image in firmware block
+	 * in a factory image.
+	 * Note: On the stock firmware, TP block contains a POST function
+	 *       and sub commands of "tp" command.
 	 *
 	 * Behaviors of OEM bootloader:
 	 *
@@ -244,10 +244,10 @@ static inline void nec_aterm_init(void)
 	 * - reset by FULL_CHIP_RESET (or powering on):
 	 *   called as "HARD-RESET", run POST and boot a firmware
 	 */
-	printf("\n## booted with dummy firmware (lzma-loader), resetting... ##\n");
-	val = READREG(reg + AR934X_RESET_REG_RESET_MODULE);
-	val |= AR934X_RESET_FULL_CHIP;
-	WRITEREG(reg + AR934X_RESET_REG_RESET_MODULE, val);
+	printf("\n## booted with dummy tp (lzma-loader),"
+	       " waiting reset... (count: 0x%08x) ##\n",
+	       READREG(reg + AR71XX_RESET_REG_WDOG));
+	while (1);
 #endif
 	/*
 	 * set maximum watchdog count to avoid reset while
