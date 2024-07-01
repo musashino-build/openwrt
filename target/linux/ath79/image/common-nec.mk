@@ -14,12 +14,10 @@ define Device/nec-netbsd-aterm
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
   COMPILE := loader-$(1).bin
   COMPILE/loader-$(1).bin := loader-okli-compile
-  ARTIFACTS += initramfs-factory.bin initramfs-necboot.bin
+  ARTIFACTS += initramfs-factory.bin
   ARTIFACT/initramfs-factory.bin := append-image-stage initramfs-kernel.bin | \
 	pad-to 4 skip=16 | \
 	nec-usbaterm-fw -f 0x0003 -d $$(KDIR)/loader-$(1).bin -d $$$$@ | check-size
-  ARTIFACT/initramfs-necboot.bin := append-image-stage initramfs-kernel.bin | \
-	pad-to 4 skip=16 | nec-usbaterm-fw -d $$$$@
 endif
   UBOOT_PATH := $$(STAGING_DIR_IMAGE)/$$(SOC)_nec_aterm-u-boot.bin
   ARTIFACT/uboot.bin := append-uboot | check-size 128k
