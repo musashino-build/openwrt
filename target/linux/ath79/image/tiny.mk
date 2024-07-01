@@ -122,12 +122,12 @@ endef
 TARGET_DEVICES += engenius_enh202-v1
 
 define Device/nec_wr8750n
-  $(Device/nec-netbsd-aterm)
   SOC := ar9344
   DEVICE_MODEL := Aterm WR8750N
   BLOCKSIZE := 4k
   IMAGE_SIZE := 7936k
   NEC_FW_TYPE := H033a
+  $(Device/nec-netbsd-aterm)
 endef
 TARGET_DEVICES += nec_wr8750n
 

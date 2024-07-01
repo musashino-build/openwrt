@@ -1,9 +1,5 @@
 DEVICE_VARS += NEC_FW_TYPE
 
-define Build/nec-append-uboot
-  cat $(STAGING_DIR_IMAGE)/$(SOC)_nec_aterm-u-boot.bin >> $@
-endef
-
 define Build/nec-usbaterm-fw
   $(STAGING_DIR_HOST)/bin/nec-usbatermfw $@.new -t $(NEC_FW_TYPE) $(1)
   mv $@.new $@
@@ -30,6 +26,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
   ARTIFACT/initramfs-necboot.bin := append-image-stage initramfs-kernel.bin | \
 	remove-uimage-header | nec-usbaterm-fw -d $$$$@
 endif
-  ARTIFACT/uboot.bin := nec-append-uboot | check-size 128k
+  UBOOT_PATH := $$(STAGING_DIR_IMAGE)/$$(SOC)_nec_aterm-u-boot.bin
+  ARTIFACT/uboot.bin := append-uboot | check-size 128k
   DEVICE_PACKAGES := kmod-usb2 -uboot-envtools
 endef
