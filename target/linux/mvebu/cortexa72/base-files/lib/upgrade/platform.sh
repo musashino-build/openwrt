@@ -62,12 +62,11 @@ platform_do_upgrade() {
 			legacy_sdcard_do_upgrade "$1"
 			;;
 		*)                    # initramfs or eMMC
-			[ -n "$(identify_if_gzip "$1")" ] && gzip -d "$1"
 			CI_ROOTDEV="mmcblk1"
 			CI_KERNPART="kernel-1"
 			CI_ROOTPART="rootfs-1"
 			CI_DTBPART="dtb-1"
-			emmc_do_upgrade "${1%%.gz}"
+			emmc_do_upgrade "$1"
 			;;
 		esac
 		;;
