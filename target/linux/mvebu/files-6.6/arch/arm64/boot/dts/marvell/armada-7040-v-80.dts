@@ -361,6 +361,7 @@
 
 	pinctrl-names = "default";
 	pinctrl-0 = <&pmx_cp0_sdhci0_pins>;
+	bus-width = <4>;
 	non-removable;
 };
 
