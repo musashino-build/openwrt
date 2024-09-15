@@ -87,7 +87,7 @@
 		};
 	};
 
-	reg_usb_vbus: regulator-usb-vbus {
+	regulator-usb-vbus {
 		compatible = "regulator-fixed";
 		pinctrl-0 = <&pmx_reg_usb_vbus_pins>;
 		pinctrl-names = "default";
@@ -386,5 +386,4 @@
 	dr_mode = "host";
 	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
 	phy-names = "cp0-usb3h0-comphy", "utmi";
-	vbus-supply = <&reg_usb_vbus>;
 };
