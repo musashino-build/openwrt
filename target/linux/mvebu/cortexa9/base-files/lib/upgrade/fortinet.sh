@@ -1,5 +1,42 @@
 . /lib/functions.sh
 
+fortinet_get_active() {
+	local fwinfo_mtd="$(find_mtd_part firmware-info)"
+
+	if [ -z "$fwinfo_mtd" ]; then
+		echo "WARN: MTD device \"firmware-info\" not found"
+		return 1
+	fi
+
+	hexdump -n 1 -s $((0x170)) -e '1/1 "%d"' $fwinfo_mtd
+}
+
+fortinet_parse_metadata() {
+	local key value output
+
+	[ ! -r "/tmp/sysupgrade.meta" ] && \
+		return 1
+
+	sed -e 's/, \{1,3\}\"/\n"/g' \
+	    -e 's/{ \{1,2\}/\n/g' \
+	    -e 's/ \{1,2\}}/\n/g' < /tmp/sysupgrade.meta \
+		> /tmp/sysupgrade.meta.tmp
+
+	while read key value; do
+		key="${key//\"/}"
+		value="${value//\"/}"
+
+		[ -z "$value" ] && continue
+		[ -z "$1" ] && break
+		if [ "$key" = "${1}:" ]; then
+			output="${output:+$output }$value"
+			shift
+		fi
+	done < /tmp/sysupgrade.meta.tmp
+
+	echo "$output"
+}
+
 fortinet_bswap32() {
 	local val="$(printf %08x $(($1)))"
 
@@ -120,67 +157,65 @@ fortinet_update_fwinfo() {
 
 fortinet_do_upgrade() {
 	local board_dir="$(tar tf "$1" | grep -m 1 '^sysupgrade-.*/$')"
-	local kern_mtd="$(find_mtd_part kernel)"
-	local root_mtd="$(find_mtd_part rootfs)"
-	local kern_len kern_ofs root_len root_ofs
-	local imgname
+	local fw_mtd
+	local kern_len kern_ofs
+	local fwpart_erase
+	local imgname ver="1.0" msg
+	local active
+	local kern_padlen
 
 	board_dir="${board_dir%/}"
+	active=$(fortinet_get_active)
+	case "$active" in
+	0) PART_NAME="firmware" ;;
+	1) PART_NAME="firmware2" ;;
+	*) echo "ERROR: invalid active partition is set in \"firmware-info\""
+	   umount -a
+	   reboot -f ;;
+	esac
 
-	if [ -z "$kern_mtd" ] || [ -z "$root_mtd" ]; then
-		echo "ERROR: MTD device \"kernel\" or \"rootfs\" not found"
+	fw_mtd="$(find_mtd_part $PART_NAME)"
+	if [ -z "$fw_mtd" ]; then
+		echo "ERROR: MTD device \"$PART_NAME\" not found"
 		umount -a
 		reboot -f
 	fi
-	kern_ofs=$(cat /sys/class/mtd/${kern_mtd//\/dev\/mtdblock/mtd}/offset)
-	root_ofs=$(cat /sys/class/mtd/${root_mtd//\/dev\/mtdblock/mtd}/offset)
 
-	if [ -z "$kern_ofs" ] || [ -z "$root_ofs" ]; then
-		echo "ERROR: failed to get offset of kernel or rootfs"
-		umount -a
-		reboot -f
-	fi
-
+	kern_ofs=$(cat /sys/class/mtd/${fw_mtd//\/dev\/mtdblock/mtd}/offset)
 	kern_len=$( (tar xOf "$1" "$board_dir/kernel" | wc -c) 2> /dev/null)
-	root_len=$( (tar xOf "$1" "$board_dir/root" | wc -c) 2> /dev/null)
-
-	if [ -z "$kern_len" ] || [ -z "$root_len" ]; then
-		echo "ERROR: failed to get length of new kernel or rootfs"
+	if [ -z "$kern_ofs" ] || [ -z "$kern_len" ]; then
+		echo "ERROR: failed to get offset or length of new kernel"
 		umount -a
 		reboot -f
 	fi
 
-	# try to load and parse /tmp/sysupgrade.meta for image name
-	if [ -r "/tmp/sysupgrade.meta" ]; then
-		local key value
+	fwpart_erase=$(cat /sys/class/mtd/${fw_mtd//\/dev\/mtdblock/mtd}/erasesize)
 
-		sed -e 's/, \{1,2\}\"/\n"/g' \
-		    -e 's/{ \{1,2\}/\n/g' \
-		    -e 's/ \{1,2\}}/\n/g' < /tmp/sysupgrade.meta \
-			> /tmp/sysupgrade.meta.tmp
-		while read key value; do
-			key="${key//\"/}"
-			value="${value//\"/}"
+	# try to load and parse /tmp/sysupgrade.meta
+	# for image name and rootfs offset
+	imgname="$(fortinet_parse_metadata dist version revision)"
+	[ -z "$imgname" ] && imgname="OpenWrt"
+	ver="$(fortinet_parse_metadata compat_version)"
+	msg="$(fortinet_parse_metadata compat_message)"
 
-			[ -z "$value" ] && continue
-			case "$key" in
-			dist:|\
-			version:|\
-			revision:) imgname="${imgname}$value " ;;
-			esac
-		done < /tmp/sysupgrade.meta.tmp
-	else
-		imgname="OpenWrt"
-	fi
-
-	fortinet_update_fwinfo 0 "${imgname%% }" \
-		"${kern_len}@${kern_ofs}" "${root_len}@${root_ofs}" || {
+	fortinet_update_fwinfo "$active" "${imgname%% }" \
+		"${kern_len}@${kern_ofs}" "" || {
 		umount -a
 		reboot -f
 	}
 
-	tar xOf "$1" "$board_dir/kernel" | \
-		mtd write - "kernel"
-	tar xOf "$1" "$board_dir/root" | \
-		mtd ${UPGRADE_BACKUP:+-j "${UPGRADE_BACKUP}"} write - "rootfs"
+	# for downgrading to older firmware that
+	# has fixed kernel/rootfs partitions
+	if [ "$msg" != "mtdsplit" ] && [ "$ver" = "1.0" ]; then
+		echo "older firmware image detected, using 0x600000 as rootfs offset"
+		kern_padlen="0x600000"
+	fi
+
+	tar xOf "$1" "$board_dir/kernel" > "${1}.kernel"
+	# pad with the erase size or fixed size
+	dd if="${1}.kernel" of="${1}.concat" \
+		bs=$((${kern_padlen:-$fwpart_erase})) conv=sync
+	tar xOf "$1" "$board_dir/root" >> "${1}.concat"
+
+	default_do_upgrade "${1}.concat"
 }
