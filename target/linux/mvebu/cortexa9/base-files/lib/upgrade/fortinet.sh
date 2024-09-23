@@ -37,6 +37,77 @@ fortinet_parse_metadata() {
 	echo "$output"
 }
 
+fortinet_align_length() {
+	local orig="$1"
+	local blksz="$2"
+	local align
+
+	align=$((orig / blksz))
+	[ $((orig % blksz)) -gt 0 ] && \
+		align=$((align + 1))
+	align=$((align * blksz))
+
+	echo $align
+}
+
+fortinet_check_image() {
+	local board_dir="$(tar tf "$1" | grep -m 1 '^sysupgrade-.*/$')"
+	local fw_mtd
+	local kern_len root_len fwpart_len fwpart_erase
+	local tmp ver="1.0" msg
+	local active
+
+	board_dir="${board_dir%/}"
+	active=$(fortinet_get_active)
+	case "$active" in
+	0) PART_NAME="firmware" ;;
+	1) PART_NAME="firmware2" ;;
+	*) echo "ERROR: invalid active partition is set in \"firmware-info\""
+	   umount -a
+	   reboot -f ;;
+	esac
+
+	fw_mtd="$(find_mtd_part $PART_NAME)"
+	if [ -z "$fw_mtd" ]; then
+		echo "ERROR: MTD device \"$PART_NAME\" not found"
+		return 1
+	fi
+
+	kern_len=$( (tar xOf "$1" "$board_dir/kernel" | wc -c) 2> /dev/null)
+	root_len=$( (tar xOf "$1" "$board_dir/root" | wc -c) 2> /dev/null)
+	if [ -z "$kern_len" ] || [ -z "$root_len" ]; then
+		echo "ERROR: failed to get kernel/rootfs length of new firmware"
+		return 1
+	fi
+
+	fwpart_len=$(cat /sys/class/mtd/${fw_mtd//\/dev\/mtdblock/mtd}/size)
+	fwpart_erase=$(cat /sys/class/mtd/${fw_mtd//\/dev\/mtdblock/mtd}/erasesize)
+	if [ -z "$fwpart_len" ] || [ -z "$fwpart_erase" ]; then
+		echo "ERROR: failed to get partition size or erasesize of \"$PART_NAME\" partition"
+		return 1
+	fi
+
+	ver="$(fortinet_parse_metadata compat_version)"
+	msg="$(fortinet_parse_metadata compat_message)"
+
+	# calculate kernel length if the image has "mtdsplit" in
+	# compat_version or something of compat_version other than "1.0"
+	if [ "$msg" = "mtdsplit" ] || [ "$ver" != "1.0" ]; then
+		kern_len="$(fortinet_align_length $kern_len $fwpart_erase)"
+	else
+		# for downgrading to older firmware that
+		# has fixed kernel/rootfs partitions
+		kern_len=0x600000
+	fi
+	root_len="$(fortinet_align_length $root_len $fwpart_erase)"
+	if [ $((kern_len + root_len)) -gt $fwpart_len ]; then
+		echo "ERROR: new kernel+rootfs is larger than the current $PART_NAME partition"
+		return 1
+	fi
+
+	return 0
+}
+
 fortinet_bswap32() {
 	local val="$(printf %08x $(($1)))"
 
