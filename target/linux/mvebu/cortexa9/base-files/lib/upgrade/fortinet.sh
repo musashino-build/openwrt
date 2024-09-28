@@ -95,6 +95,13 @@ fortinet_check_image() {
 	if [ "$msg" = "mtdsplit" ] || [ "$ver" != "1.0" ]; then
 		kern_len="$(fortinet_align_length $kern_len $fwpart_erase)"
 	else
+		# older firmware supports only the 1st partition ("firmware")
+		if [ "$active" = "1" ]; then
+			echo "older firmware doesn't support booting from $PART_NAME"
+			echo "please switch to the 1st partition on the bootmenu and perform sysupgrade on that image,"
+			echo "or perform sysupgrade with '-F' option to flash the firmware to the 1st partition instead of 2nd"
+			return 1
+		fi
 		# for downgrading to older firmware that
 		# has fixed kernel/rootfs partitions
 		kern_len=0x600000
