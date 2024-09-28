@@ -242,8 +242,28 @@ fortinet_do_upgrade() {
 	local active
 	local kern_padlen
 
+	# try to load and parse /tmp/sysupgrade.meta
+	# for image name and rootfs offset
+	imgname="$(fortinet_parse_metadata dist version revision)"
+	[ -z "$imgname" ] && imgname="OpenWrt"
+	ver="$(fortinet_parse_metadata compat_version)"
+	msg="$(fortinet_parse_metadata compat_message)"
+
+	# for downgrading to older firmware that
+	# has fixed kernel/rootfs partitions
+	if [ "$msg" != "mtdsplit" ] && [ "$ver" = "1.0" ]; then
+		# use the 1st partition
+		active="0"
+		echo -e "\n##### older firmware image detected #####"
+		echo -e "using the 1st partition and 0x600000 as rootfs offset"
+		echo -e "please switch active partition on the bootmenu when rebooting"
+		echo -e "(\"[B]: Boot with backup firmware and set as default.\")\n"
+		kern_padlen="0x600000"
+	fi
+
 	board_dir="${board_dir%/}"
-	active=$(fortinet_get_active)
+	[ -z "$active" ] && \
+		active=$(fortinet_get_active)
 	case "$active" in
 	0) PART_NAME="firmware" ;;
 	1) PART_NAME="firmware2" ;;
@@ -269,25 +289,11 @@ fortinet_do_upgrade() {
 
 	fwpart_erase=$(cat /sys/class/mtd/${fw_mtd//\/dev\/mtdblock/mtd}/erasesize)
 
-	# try to load and parse /tmp/sysupgrade.meta
-	# for image name and rootfs offset
-	imgname="$(fortinet_parse_metadata dist version revision)"
-	[ -z "$imgname" ] && imgname="OpenWrt"
-	ver="$(fortinet_parse_metadata compat_version)"
-	msg="$(fortinet_parse_metadata compat_message)"
-
 	fortinet_update_fwinfo "$active" "${imgname%% }" \
 		"${kern_len}@${kern_ofs}" "" || {
 		umount -a
 		reboot -f
 	}
-
-	# for downgrading to older firmware that
-	# has fixed kernel/rootfs partitions
-	if [ "$msg" != "mtdsplit" ] && [ "$ver" = "1.0" ]; then
-		echo "older firmware image detected, using 0x600000 as rootfs offset"
-		kern_padlen="0x600000"
-	fi
 
 	tar xOf "$1" "$board_dir/kernel" > "${1}.kernel"
 	# pad with the erase size or fixed size
