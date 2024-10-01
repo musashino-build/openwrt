@@ -9,7 +9,7 @@ BOARD:=kirkwood
 BOARDNAME:=Marvell Kirkwood
 FEATURES:=rtc usb nand squashfs ramdisk
 CPU_TYPE:=xscale
-SUBTARGETS:=generic
+SUBTARGETS:=generic nas
 
 KERNEL_PATCHVER:=6.12
 
@@ -17,6 +17,6 @@ include $(INCLUDE_DIR)/target.mk
 
 KERNELNAME:=zImage dtbs
 
-DEFAULT_PACKAGES += uboot-envtools kmod-usb2
+DEFAULT_PACKAGES += uboot-envtools
 
 $(eval $(call BuildTarget))
