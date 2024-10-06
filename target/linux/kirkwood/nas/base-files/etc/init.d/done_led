@@ -1,0 +1,12 @@
+#!/bin/sh /etc/rc.common
+
+START=96
+boot() {
+	case "$(board_name)" in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		# green, on
+		echo ":sts on" > /dev/ttyS1
+		;;
+	esac
+}

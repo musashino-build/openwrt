@@ -1,0 +1,24 @@
+. /lib/functions.sh
+
+kirkwood_preinit_led() {
+	case "$(board_name)" in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		# green, blink (fast)
+		echo ":sts blink" > /dev/ttyS1
+		;;
+	esac
+}
+
+kirkwood_failsafe_led() {
+	case "$(board_name)" in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		# red, blink
+		echo ":sts serious_err" > /dev/ttyS1
+		;;
+	esac
+}
+
+boot_hook_add preinit_main kirkwood_preinit_led
+boot_hook_add failsafe kirkwood_failsafe_led

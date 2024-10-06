@@ -1,0 +1,15 @@
+. /lib/functions.sh
+
+kirkwood_preinit_regular_led() {
+	case "$(board_name)" in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		# green, on (blink->notify doesn't work)
+		echo ":sts on" > /dev/ttyS1
+		# green, blink (slow)
+		echo ":sts notify" > /dev/ttyS1
+		;;
+	esac
+}
+
+boot_hook_add preinit_main kirkwood_preinit_regular_led

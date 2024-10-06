@@ -2,14 +2,14 @@ define Build/boot-image-ext3
 	$(eval boot_kernel=$(if $(word 1,$(1)),$(word 1,$(1)),uImage))
 	$(eval boot_initrd=$(word 2,$(1)))
 
-	$(RM) -rf $@.bootdir
+	$(RM) -rf $@.bootdir $@.boot
 	mkdir -p $@.bootdir/$(dir $(boot_kernel))
 
 	$(CP) $(IMAGE_KERNEL) $@.bootdir/$(boot_kernel)
 	$(if $(boot_initrd),\
 		$(CP) $(KDIR)/$(DEVICE_NAME).initrd $@.bootdir/$(boot_initrd))
 
-	genext2fs --block-size $(BLOCKSIZE:%k=%Ki) \
+	genext2fs --block-size 1Ki \
 		--size-in-blocks $$((1024 * $(CONFIG_TARGET_KERNEL_PARTSIZE))) \
 		--root $@.bootdir $@.boot
 
@@ -25,21 +25,53 @@ define Build/boot-image-fat
 	rm -f $@.boot
 	mkfs.fat -C $@.boot $$(( $(CONFIG_TARGET_KERNEL_PARTSIZE) * 1024 ))
 
-	mmd -i $@.boot ::$(patsubst %/,%,$(dir $(boot_kernel))) || true
+	mmd -i $@.boot ::$(patsubst %/,%,$(dir $(boot_kernel))) || :
 	mcopy -i $@.boot $(IMAGE_KERNEL) ::$(boot_kernel)
 	$(if $(boot_initrd),\
 		-mcopy -i $@.boot $(KDIR)/$(DEVICE_NAME).initrd ::$(boot_initrd))
 endef
 
 define Build/disk-image
-	$(eval result=$(shell ptgen $(filter-out disk-image,$(1)) -o $@.new -l 1024 \
-		-t 0x83 -N kernel -r -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
-		-t 0x83 -N rootfs -r -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)M))
-
-	mv $@.new $@
-
-	dd if=$@.boot of=$@ bs=1k \
-		seek=$$(($(word 1,$(result)) / 1024)) conv=notrunc
-	dd if=$(IMAGE_ROOTFS) of=$@ bs=1k \
-		seek=$$(($(word 3,$(result)) / 1024)) conv=notrunc
+	( \
+		set $$(ptgen -o $@.new \
+			-l 1024 -h 16 -s 63 $(1) \
+			-t 0x83 -N kernel -r -p $(CONFIG_TARGET_KERNEL_PARTSIZE)M \
+			-t 0x83 -N rootfs -r -p $(CONFIG_TARGET_ROOTFS_PARTSIZE)M);\
+		\
+		mv $@.new $@; \
+		\
+		dd if=/dev/zero of=$@ bs=1k seek=$$(( $$3 / 1024)) \
+			count=$$(( $$4 / 1024)) conv=notrunc; \
+		dd if=$@.boot of=$@ bs=1k \
+			seek=$$(( $$1 / 1024)) conv=notrunc; \
+		dd if=$(IMAGE_ROOTFS) of=$@ bs=1k \
+			seek=$$(( $$3 / 1024)) conv=notrunc; \
+	)
 endef
+
+define Device/iodata_landisk
+  DEVICE_VENDOR := I-O DATA
+  DEVICE_PACKAGES := kmod-rtc-rs5c372a
+  FILESYSTEMS := ext4
+  COMPILE := $$(DEVICE_NAME).initrd
+  COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
+  IMAGES := disk.img.gz
+endef
+
+define Device/iodata_hdl2-a-sata
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL2-A
+  DEVICE_VARIANT := (SATA)
+  IMAGE/disk.img.gz := boot-image-ext3 uImage.l2a initrd.l2a | \
+	disk-image -g | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl2-a-sata
+
+define Device/iodata_hdl2-a-usb
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL2-A
+  DEVICE_VARIANT := (USB)
+  IMAGE/disk.img.gz := boot-image-fat l2a/uImage.l2a l2a/initrd.l2a | \
+	disk-image | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl2-a-usb
