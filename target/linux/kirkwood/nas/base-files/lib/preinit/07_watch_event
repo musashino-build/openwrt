@@ -1,0 +1,62 @@
+. /lib/functions.sh
+
+iodata_handle_button() {
+	local code="$1"
+	local name="$2"
+	local rcname="$name"
+	local action="released"
+	local sec_cur=$(cut -d' ' -f1 /proc/uptime)
+	local seen=0
+
+	[[ "$code" = "[A-Z]" ]] &&
+		action="pressed"
+
+	sec_cur=${sec_cur%.*}
+	if [ -r "/var/run/hdlbtn_${name}.sec" ]; then
+		local sec_old=$(cat /var/run/hdlbtn_${name}.sec)
+		# MCU sends the same event code when the button is held in 2 secs
+		# ex.: @P (pressed) -> @P (held) -> @p (released)
+		[ "${sec_old%:*}" = "$code" ] &&
+			return
+		sec_old="${sec_old#*:}"
+		[ -n "$sec_old" ] &&
+			seen=$((sec_cur - sec_old))
+	fi
+	echo "$code:$sec_cur" > /var/run/hdlbtn_${name}.sec
+
+	# for failsafe
+	[ -f "/tmp/.preinit" ] && [ ! -f "/tmp/.failsafe" ] &&
+		rcname="failsafe"
+
+	[ -x "/etc/rc.button/${rcname}" ] &&
+		BUTTON=$name ACTION=$action SEEN=$seen /etc/rc.button/${rcname}
+}
+
+iodata_parse_event() {
+	local line="$1"
+
+	# prefixes:
+	# - '@': event from MCU
+	# - ';': answer for commands received from SoC
+	case "$line" in
+	@[pP]) iodata_handle_button "${line#@}" "power" ;;
+	@[rR]) iodata_handle_button "${line#@}" "reset" ;;
+	@T)    logger -p err -t iodata "temperature error!" ;;
+	@F)    logger -p err -t iodata "fan error!" ;;
+	esac
+}
+
+preinit_watch_event() {
+	local line
+
+	case $(board_name) in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		while read line; do
+			iodata_parse_event "$line"
+		done < /dev/ttyS1 &
+		;;
+	esac
+}
+
+boot_hook_add preinit_main preinit_watch_event
