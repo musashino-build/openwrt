@@ -43,3 +43,31 @@ define Build/disk-image
 	dd if=$(IMAGE_ROOTFS) of=$@ bs=1k \
 		seek=$$(($(word 3,$(result)) / 1024)) conv=notrunc
 endef
+
+define Device/iodata_landisk
+  DEVICE_VENDOR := I-O DATA
+  DEVICE_PACKAGES := kmod-rtc-rs5c372a
+  BLOCKSIZE := 1k
+  FILESYSTEMS := ext4
+  COMPILE := $$(DEVICE_NAME).initrd
+  COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
+  IMAGES := disk.img.gz
+endef
+
+define Device/iodata_hdl2-a-sata
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL2-A
+  DEVICE_VARIANT := (SATA)
+  IMAGE/disk.img.gz := boot-image-ext3 uImage.l2a initrd.l2a | \
+	disk-image -g | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl2-a-sata
+
+define Device/iodata_hdl2-a-usb
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL2-A
+  DEVICE_VARIANT := (USB)
+  IMAGE/disk.img.gz := boot-image-fat l2a/uImage.l2a l2a/initrd.l2a | \
+	disk-image -h 16 -s 63 | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl2-a-usb
