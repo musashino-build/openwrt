@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "kirkwood-hdlx-a.dtsi"
+
+/ {
+	model = "I-O DATA HDL2-A (USB)";
+	compatible = "iodata,hdl2-a-usb", "marvell,kirkwood-88f6282", "marvell,kirkwood";
+
+	chosen {
+		/*
+		 * Kernel and rootfs are stored to the storage connected to the
+		 * SATA port (port1 or port2) or USB port.
+		 * The path to the partition (/dev/sdXN) which contains rootfs
+		 * data will be assigned dynamically, so GPT partition UUID or
+		 * MSDOS signature is required instead.
+		 */
+		bootargs-append = " earlycon root=PARTUUID=5452574f-02 rootwait=20";
+	};
+};
+
+&sata {
+	status = "okay";
+	nr-ports = <2>;
+};
