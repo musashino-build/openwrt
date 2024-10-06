@@ -1,0 +1,92 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+#include "kirkwood-hdlx-a.dtsi"
+
+/ {
+	model = "I-O DATA HDL2-A (USB)";
+	compatible = "iodata,hdl2-a-usb", "marvell,kirkwood-88f6282", "marvell,kirkwood";
+
+	chosen {
+		/*
+		 * Kernel and rootfs are stored to the storage connected to the
+		 * SATA ports (port1 or port2) or USB port.
+		 * The path to the partition (/dev/sdXN) which contains rootfs
+		 * data will be assigned dynamically, so GPT partition UUID or
+		 * MSDOS signature is required instead.
+		 */
+		bootargs-append = " earlycon root=PARTUUID=5452574f-02 rootwait=20";
+	};
+
+	thermal-zones {
+		hdd0-thermal {
+			polling-delay = <20000>;
+			polling-delay-passive = <2000>;
+
+			thermal-sensors = <&sata_port0>;
+
+			trips {
+				passive {
+					temperature = <45000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				hot {
+					temperature = <50000>;
+					hysteresis = <2000>;
+					type = "hot";
+				};
+
+				critical {
+					temperature = <60000>;
+					hysteresis = <6000>;
+					type = "critical";
+				};
+			};
+		};
+
+		hdd1-thermal {
+			polling-delay = <20000>;
+			polling-delay-passive = <2000>;
+
+			thermal-sensors = <&sata_port1>;
+
+			trips {
+				passive {
+					temperature = <45000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+
+				hot {
+					temperature = <50000>;
+					hysteresis = <2000>;
+					type = "hot";
+				};
+
+				critical {
+					temperature = <60000>;
+					hysteresis = <6000>;
+					type = "critical";
+				};
+			};
+		};
+	};
+};
+
+&sata {
+	status = "okay";
+	nr-ports = <2>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	sata_port0: sata-port@0 {
+		reg = <0>;
+		#thermal-sensor-cells = <0>;
+	};
+
+	sata_port1: sata-port@1 {
+		reg = <1>;
+		#thermal-sensor-cells = <0>;
+	};
+};
