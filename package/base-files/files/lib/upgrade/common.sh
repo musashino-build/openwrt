@@ -170,6 +170,9 @@ export_bootdevice() {
 	local MAJOR MINOR DEVNAME DEVTYPE
 	local rootpart="$(cmdline_get_var root)"
 
+	# use the last device when multiple root= parameters exist
+	rootpart="${rootpart##*$'\n'}"
+
 	case "$rootpart" in
 		PARTUUID=[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9])
 			uuid="${rootpart#PARTUUID=}"
