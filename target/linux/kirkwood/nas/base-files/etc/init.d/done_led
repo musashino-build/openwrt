@@ -3,6 +3,8 @@
 START=96
 boot() {
 	case "$(board_name)" in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# green, on
