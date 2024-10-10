@@ -2,6 +2,8 @@
 
 kirkwood_preinit_led() {
 	case "$(board_name)" in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# green, blink (fast)
@@ -12,6 +14,8 @@ kirkwood_preinit_led() {
 
 kirkwood_failsafe_led() {
 	case "$(board_name)" in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# red, blink

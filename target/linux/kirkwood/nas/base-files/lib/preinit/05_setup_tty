@@ -2,6 +2,8 @@
 
 preinit_setup_tty() {
 	case $(board_name) in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		stty -F /dev/ttyS1 57600
