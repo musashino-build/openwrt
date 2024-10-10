@@ -58,6 +58,24 @@ define Device/iodata_landisk
   IMAGES := disk.img.gz
 endef
 
+define Device/iodata_hdl-a-sata
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL-A
+  DEVICE_VARIANT := (SATA)
+  IMAGE/disk.img.gz := boot-image-ext3 uImage.l2a initrd.l2a | \
+	disk-image -g | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl-a-sata
+
+define Device/iodata_hdl-a-usb
+  $(Device/iodata_landisk)
+  DEVICE_MODEL := HDL-A
+  DEVICE_VARIANT := (USB)
+  IMAGE/disk.img.gz := boot-image-fat l2a/uImage.l2a l2a/initrd.l2a | \
+	disk-image | gzip | append-metadata
+endef
+TARGET_DEVICES += iodata_hdl-a-usb
+
 define Device/iodata_hdl2-a-sata
   $(Device/iodata_landisk)
   DEVICE_MODEL := HDL2-A
