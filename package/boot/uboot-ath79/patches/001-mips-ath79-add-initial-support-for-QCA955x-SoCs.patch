@@ -109,7 +109,7 @@ index 2fa628568a..21ac4b9f95 100644
 +config SOC_QCA955X
 +	bool
 +	select MIPS_TUNE_74KC
-+	select SUPPORTS_BIG_ENDIAN
++	select SUPPORT_BIG_ENDIAN
 +	select SUPPORTS_CPU_MIPS32_R1
 +	select SUPPORTS_CPU_MIPS32_R2
 +	help
