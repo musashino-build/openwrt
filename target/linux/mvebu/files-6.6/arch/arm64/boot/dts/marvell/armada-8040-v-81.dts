@@ -98,7 +98,7 @@
 		regulator-always-on;
 	};
 
-	sfp {
+	sfp: sfp {
 		/*
 		 * Note: port LEDs on RJ45/SFP are switched
 		 *       by pin7 on &cp0_gpio2
@@ -106,8 +106,12 @@
 		 * - HIGH: RJ45
 		 * - LOW : SFP
 		 */
-//		compatible = "sff,sfp";
+		compatible = "sff,sfp";
 		i2c-bus = <&cp0_i2c1>;
+		los-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
+		mod-def0-gpios = <&gpio3 14 GPIO_ACTIVE_LOW>; // or 15?
+		tx-disable-gpios = <&gpio3 10 GPIO_ACTIVE_HIGH>;
+		//tx-fault-gpios = <&gpio3 15 GPIO_ACTIVE_HIGH>;
 	};
 };
 
@@ -417,6 +421,7 @@
 		 * LED[1] (Amber): SPEED 100/1000M
 		 */
 		marvell,reg-init = <3 16 0 0x61>;
+		sfp = <&sfp>;
 	};
 
 	/* Marvell 88E1512 */
