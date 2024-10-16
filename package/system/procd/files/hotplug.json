@@ -52,6 +52,14 @@
 			[ "if",
 				[ "regex", "DEVNAME", "^ttyGS" ],
 				[ "start-console", "%DEVNAME%" ]
+			],
+			[ "if",
+				[ "and",
+					[ "eq", "SUBSYSTEM", "platform" ],
+					[ "regex", "DEVNAME", "^sfp" ]
+				],
+				[ "isdir", "/etc/hotplug.d/%SUBSYSTEM%" ],
+				[ "exec", "/sbin/hotplug-call", "%SUBSYSTEM" ]
 			]
 		],
 		"remove" : [
