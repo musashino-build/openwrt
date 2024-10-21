@@ -1,0 +1,23 @@
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -2333,5 +2333,13 @@ config MFD_RSMU_SPI
+ 	  Additional drivers must be enabled in order to use the functionality
+ 	  of the device.
+ 
++config MFD_LANDISK_R8C
++	bool "Renesas R8C MCU on I-O DATA LAN DISK series"
++	depends on SERIAL_DEV_CTRL_TTYPORT
++	help
++	  This option enables common support for the Renesas R8C MCU on
++	  I-O DATA LAN DISK series NAS. It has several functions, such as
++	  LEDs, keys, temperature sensor, fan controller, and others.
++
+ endmenu
+ endif
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -282,3 +282,4 @@ obj-$(CONFIG_MFD_ATC260X_I2C)	+= atc260x
+ 
+ obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu_i2c.o rsmu_core.o
+ obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu_spi.o rsmu_core.o
++obj-$(CONFIG_MFD_LANDISK_R8C)	+= landisk-r8c.o
