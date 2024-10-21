@@ -123,24 +123,37 @@
 &uart1 {
 	status = "okay";
 
-	/*
-	 * UART1 is used to connect to Renesas R8C/25 MCU
-	 * but there is no driver.
-	 * This MCU provides the following functions:
-	 *
-	 * - LED
-	 *   - Status
-	 *   - HDD (HDL2-A only)
-	 * - Keys
-	 *   - Reset
-	 *   - Power
-	 * - Beep Speaker
-	 *   - controlled by MML (Music Macro Language) syntax
-	 * - Temperature sensor
-	 * - Fan Control
-	 * - Power Off
-	 * - Reset
-	 */
+	mcu: mcu {
+		compatible = "iodata,landisk-r8c";
+
+		keys {
+			compatible = "iodata,landisk-r8c-keys";
+
+			key-power { /* 'p' */
+				label = "power";
+				iodata,landisk-r8c-evcode = /bits/ 8 <0x70>;
+				linux,code = <KEY_POWER>;
+			};
+
+			key-reset { /* 'r' */
+				label = "reset";
+				iodata,landisk-r8c-evcode = /bits/ 8 <0x72>;
+				linux,code = <KEY_RESTART>;
+			};
+		};
+
+		leds: leds {
+			compatible = "iodata,landisk-r8c-leds";
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+
+		reset {
+			compatible = "iodata,landisk-r8c-reset";
+
+			phy-handle = <&ethphy0>;
+		};
+	};
 };
 
 &usb0 {
