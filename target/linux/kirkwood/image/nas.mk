@@ -46,7 +46,8 @@ endef
 
 define Device/iodata_landisk
   DEVICE_VENDOR := I-O DATA
-  DEVICE_PACKAGES := kmod-rtc-rs5c372a
+  DEVICE_PACKAGES := kmod-button-hotplug \
+	kmod-input-landisk-r8c-keys kmod-leds-landisk-r8c kmod-rtc-rs5c372a
   BLOCKSIZE := 1k
   FILESYSTEMS := ext4
   COMPILE := $$(DEVICE_NAME).initrd
