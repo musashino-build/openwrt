@@ -1,6 +1,8 @@
 indicate_failsafe_led_landisk() {
 	. /lib/functions.sh
 	case $(board_name) in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# set red/blink
