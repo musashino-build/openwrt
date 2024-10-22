@@ -18,6 +18,10 @@
 	};
 };
 
+&mcu {
+	iodata,landisk-r8c-model = "HDL-A";
+};
+
 &sata {
 	status = "okay";
 	nr-ports = <1>;
