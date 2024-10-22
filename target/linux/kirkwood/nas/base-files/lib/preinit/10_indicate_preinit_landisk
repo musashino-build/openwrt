@@ -1,0 +1,13 @@
+pi_indicate_preinit_landisk() {
+	. /lib/functions.sh
+	case $(board_name) in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		local ledpath="/sys/bus/serial/devices/serial0-0/f1012100.serial:mcu:leds/status_mode"
+		# set green/blink
+		echo "blink" > $ledpath
+		;;
+	esac
+}
+
+boot_hook_add preinit_main pi_indicate_preinit_landisk
