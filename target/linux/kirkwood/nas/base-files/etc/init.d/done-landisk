@@ -1,0 +1,16 @@
+#!/bin/sh /etc/rc.common
+# SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+START=95
+boot() {
+	[ "$FAILSAFE" = "1" ] && return
+
+	. /lib/functions.sh
+	case $(board_name) in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		# set green/on
+		echo "on" > "/sys/bus/serial/devices/serial0-0/f1012100.serial:mcu:leds/status_mode"
+		;;
+	esac
+}
