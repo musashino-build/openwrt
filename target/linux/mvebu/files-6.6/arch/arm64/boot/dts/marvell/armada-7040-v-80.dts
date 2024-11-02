@@ -138,6 +138,9 @@
 };
 
 &cp0_pinctrl {
+	pinctrl-0 = <&pmx_board_id_pins>;
+	pinctrl-names = "default";
+
 	pmx_ap_sdhci0_pins: ap-sdhci0-pins {
 		marvell,pins = "mpp6";
 		marvell,function = "gpio";
@@ -164,8 +167,7 @@
 	};
 
 	pmx_cp0_sdhci0_pins: cp0-sdhci0-pins {
-		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59", "mpp60", "mpp61",
-			       "mpp62";
+		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59", "mpp60", "mpp61";
 		marvell,function = "sdio";
 	};
 
@@ -182,6 +184,11 @@
 
 	pmx_reg_usb_vbus_pins: reg-usb-vbus-pins {
 		marvell,pins = "mpp24";
+		marvell,function = "gpio";
+	};
+
+	pmx_board_id_pins: board-id-pins {
+		marvell,pins = "mpp4", "mpp10", "mpp62";
 		marvell,function = "gpio";
 	};
 };
