@@ -129,7 +129,7 @@
 &ap_sdhci0 {
 	status = "okay";
 
-	pinctrl-0 = <&pmx_sd_pins>;
+	pinctrl-0 = <&pmx_ap_sdhci0_pins>;
 	pinctrl-names = "default";
 	bus-width = <4>;
 	/delete-property/ marvell,xenon-phy-slow-mode;
@@ -138,6 +138,11 @@
 };
 
 &cp0_pinctrl {
+	pmx_ap_sdhci0_pins: ap-sdhci0-pins {
+		marvell,pins = "mpp6";
+		marvell,function = "gpio";
+	};
+
 	pmx_cp0_mdio_pins: cp0-mdio-pins {
 		marvell,pins = "mpp27", "mpp28";
 		marvell,function = "ge";
@@ -177,11 +182,6 @@
 
 	pmx_reg_usb_vbus_pins: reg-usb-vbus-pins {
 		marvell,pins = "mpp24";
-		marvell,function = "gpio";
-	};
-
-	pmx_sd_pins: sd-pins {
-		marvell,pins = "mpp6";
 		marvell,function = "gpio";
 	};
 };
