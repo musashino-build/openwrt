@@ -191,6 +191,11 @@
 		marvell,pins = "mpp4", "mpp10", "mpp62";
 		marvell,function = "gpio";
 	};
+
+	pmx_eeprom_wp_pins: eeprom-wp-pins {
+		marvell,pins = "mpp55";
+		marvell,function = "gpio";
+	};
 };
 
 &cp0_mdio {
@@ -358,7 +363,10 @@
 	/* Giantec GT24C04A */
 	eeprom@54 {
 		compatible = "atmel,24c04";
+		pinctrl-0 = <&pmx_eeprom_wp_pins>;
+		pinctrl-names = "default";
 		reg = <0x54>;
+		wp-gpios = <&cp0_gpio2 23 GPIO_ACTIVE_HIGH>;
 		read-only;
 	};
 };
