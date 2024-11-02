@@ -159,7 +159,7 @@
 	};
 
 	pmx_cp0_sdhci0_pins: cp0-sdhci0-pins {
-		marvell,pins = "mpp56", "mpp57","mpp58", "mpp59", "mpp60", "mpp61",
+		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59", "mpp60", "mpp61",
 			       "mpp62";
 		marvell,function = "sdio";
 	};
