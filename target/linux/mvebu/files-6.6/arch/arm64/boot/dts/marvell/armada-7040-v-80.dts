@@ -50,37 +50,51 @@
 		pinctrl-0 = <&pmx_gpio_leds_pins>;
 		pinctrl-names = "default";
 
-		led_power_red: led-0 {
+		/* populated but no hole on the case */
+		led-0 {
+			gpios = <&cp0_gpio1 13 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_BLUE>;
+			function = LED_FUNCTION_WLAN;
+		};
+
+		led_power_red: led-1 {
 			gpios = <&cp0_gpio1 23 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_RED>;
 			function = LED_FUNCTION_POWER;
 		};
 
-		led-1 {
+		led-2 {
 			gpios = <&cp0_gpio1 26 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_WAN_ONLINE;
 		};
 
-		led_power_blue: led-2 {
+		/* populated but no hole on the case */
+		led-3 {
+			gpios = <&cp0_gpio2 1 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_RED>;
+			function = LED_FUNCTION_WLAN;
+		};
+
+		led_power_blue: led-4 {
 			gpios = <&cp0_gpio2 2 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_POWER;
 		};
 
-		led-3 {
+		led-5 {
 			gpios = <&cp0_gpio2 19 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_RED>;
 			function = "management";
 		};
 
-		led-4 {
+		led-6 {
 			gpios = <&cp0_gpio2 20 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_BLUE>;
 			function = "management";
 		};
 
-		led-5 {
+		led-7 {
 			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_RED>;
 			function = LED_FUNCTION_WAN_ONLINE;
@@ -156,7 +170,8 @@
 	};
 
 	pmx_gpio_leds_pins: gpio-leds-pins {
-		marvell,pins = "mpp23", "mpp26", "mpp34", "mpp51", "mpp52", "mpp54";
+		marvell,pins = "mpp13", "mpp23", "mpp26", "mpp33", "mpp34", "mpp51",
+			       "mpp52", "mpp54";
 		marvell,function = "gpio";
 	};
 
