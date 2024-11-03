@@ -21,13 +21,11 @@ define Device/checkpoint_v-80
   DEVICE_MODEL := V-80
   SOC := armada-7040
   BOOT_SCRIPT := v-80
-  IMAGES += sysupgrade.gz usb.img.gz
+  IMAGES += sysupgrade.gz
   IMAGE/sysupgrade.gz := boot-scr 654d4d43 | append-bootscript | pad-to 2048 | \
 	append-kernel | \
 	sysupgrade-tar kernel=$$$$@ dtb=$$(KDIR)/image-$$(DEVICE_DTS).dtb | \
 	gzip | append-metadata
-  IMAGE/usb.img.gz := boot-scr 55575254 | boot-img-ext4 | \
-	sdcard-img-ext4 55575254 | gzip | append-metadata
   ARTIFACTS := initramfs.dtb initramfs.scr
   ARTIFACT/initramfs.dtb := append-dtb
   ARTIFACT/initramfs.scr := boot-scr 494e4954 | append-bootscript
