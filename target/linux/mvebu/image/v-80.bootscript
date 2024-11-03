@@ -39,6 +39,11 @@ else
 	load ${devtype} 0:1 ${kernel_addr_r} Image
 fi
 
+# remove "quiet" option from bootargs
+setenv cp_quiet
+# set bootargs with "blkdevparts" option
+run set_bootargs_vx
+
 test -n "${ow_root}" && setenv bootargs "${bootargs} root=${ow_root} rw rootwait"
 
 booti ${kernel_addr_r} - ${fdt_addr_r}
