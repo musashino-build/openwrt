@@ -37,6 +37,7 @@
 	keys {
 		compatible = "gpio-keys";
 		pinctrl-0 = <&pmx_gpio_keys_pins>;
+		pinctrl-names = "default";
 
 		button-reset {
 			label = "reset";
