@@ -148,6 +148,7 @@
 		mod-def0-gpios = <&gpio3 15 GPIO_ACTIVE_LOW>;
 		tx-disable-gpios = <&gpio3 10 GPIO_ACTIVE_HIGH>;
 		tx-fault-gpios = <&gpio3 14 GPIO_ACTIVE_HIGH>;
+		maximum-power-milliwatt = <2000>;
 	};
 };
 
