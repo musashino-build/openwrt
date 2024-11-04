@@ -129,7 +129,7 @@ define Build/sdcard-img
 endef
 
 define Build/sdcard-img-ext4
-	SIGNATURE="$(if $(1),$(1),$(IMG_PART_SIGNATURE))" \
+	SIGNATURE="$(IMG_PART_SIGNATURE)" \
 	./gen_mvebu_sdcard_img.sh $@ \
 		$(if $(UBOOT),$(STAGING_DIR_IMAGE)/$(UBOOT)) \
 		83 $(CONFIG_TARGET_KERNEL_PARTSIZE) $@.bootimg \
