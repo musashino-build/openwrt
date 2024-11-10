@@ -1,16 +1,16 @@
 # Bootscript for Check Point V-80 (eMMC/USB/SD)
 setenv ow_root "@ROOT@-02"
 
-# ROOT is 654d4d43 ("eMMC")
-if test "${ow_root}" = "654d4d43-02"; then
+# ROOT is "eMMC"
+if test "${ow_root}" = "eMMC-02"; then
 	mmc read ${fdt_addr_r} ${prim_dtb_dest_mmc_blk} ${dtb_partition_block_count}
 	mmc read ${kernel_addr_r} 0x5004 ${kernel_partition_block_count}
 
 	setenv ow_root "/dev/mmcblk1p3"
 # ROOT is other value (USB/SD)
 else
-	# ROOT is 494e4954 ("INIT"), try USB storage (initramfs)
-	if test "${ow_root}" = "494e4954-02"; then
+	# ROOT is "INIT", try USB storage (initramfs)
+	if test "${ow_root}" = "INIT-02"; then
 		setenv devtype usb
 		setenv ow_root
 	else
