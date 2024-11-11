@@ -1,0 +1,146 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+/dts-v1/;
+
+#include "kirkwood.dtsi"
+#include "kirkwood-6281.dtsi"
+
+/ {
+	model = "I-O DATA HDL-XV";
+	compatible = "iodata,hdl-xv", "marvell,kirkwood-88f6281", "marvell,kirkwood";
+
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x10000000>;
+	};
+};
+
+&i2c0 {
+	status = "okay";
+
+	rtc@32 {
+		compatible = "ricoh,rs5c372a";
+		reg = <0x32>;
+		wakeup-source;
+	};
+};
+
+&pciec {
+	status = "okay";
+};
+
+&pcie0 {
+	status = "okay";
+
+	/* Intel 82574L */
+	ethernet@0,0 {
+		compatible = "pci8086,10d3";
+		reg = <0x0000 0 0 0 0>;
+	};
+};
+
+&rtc {
+	status = "disabled";
+};
+
+&sata {
+	status = "okay";
+	nr-ports = <2>;
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	/* 4x ports are provided by Port Multiplier (88SM4140) */
+	sata-port@1 {
+		reg = <1>;
+	};
+};
+
+&spi0 {
+	status = "okay";
+
+	flash@0 {
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <40000000>;
+		reg = <0>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				label = "u-boot";
+				reg = <0x00000 0x70000>;
+				read-only;
+			};
+
+			partition@70000 {
+				label = "u-boot-env";
+				reg = <0x70000 0x10000>;
+				read-only;
+			};
+
+			partition@80000 {
+				label = "jffs2";
+				reg = <0x80000 0x780000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&uart0 {
+	status = "okay";
+};
+
+&uart1 {
+	status = "okay";
+	/*
+	 * UART1 is used to connect to Renesas R8C/24 MCU
+	 * but there is no driver.
+	 * This MCU provides the following functions:
+	 *
+	 * - LED
+	 *   - Status
+	 *   - HDD
+	 * - Keys
+	 *   - Reset
+	 *   - Power
+	 * - Beep Speaker
+	 *   - controlled by MML (Music Macro Language) syntax
+	 * - Temperature sensor
+	 * - Fan Control
+	 * - Power Off
+	 * - Reset
+	 */
+};
+
+&usb0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	status = "okay";
+
+	hub@1 {
+		compatible = "usb409,005a";
+		reg = <1>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+		};
+
+		port@2 {
+			reg = <2>;
+		};
+	};
+};
