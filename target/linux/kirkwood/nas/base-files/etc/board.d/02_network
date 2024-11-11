@@ -12,6 +12,7 @@ kirkwood_setup_interfaces()
 	case "$board" in
 	iodata,hdl-a-sata|\
 	iodata,hdl-a-usb|\
+	iodata,hdl-xv|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		ucidef_set_interface_lan "eth0" "dhcp"
