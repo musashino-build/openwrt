@@ -2,6 +2,7 @@
 
 /dts-v1/;
 
+#include <dt-bindings/leds/common.h>
 #include "kirkwood.dtsi"
 #include "kirkwood-6281.dtsi"
 
@@ -114,24 +115,106 @@
 
 &uart1 {
 	status = "okay";
-	/*
-	 * UART1 is used to connect to Renesas R8C/24 MCU
-	 * but there is no driver.
-	 * This MCU provides the following functions:
-	 *
-	 * - LED
-	 *   - Status
-	 *   - HDD
-	 * - Keys
-	 *   - Reset
-	 *   - Power
-	 * - Beep Speaker
-	 *   - controlled by MML (Music Macro Language) syntax
-	 * - Temperature sensor
-	 * - Fan Control
-	 * - Power Off
-	 * - Reset
-	 */
+
+	mcu {
+		compatible = "iodata,landisk-r8c";
+		iodata,landisk-r8c-model = "HDL-XV";
+
+		buttons {
+			compatible = "iodata,landisk-r8c-keys-event";
+
+			/* 'c' */
+			key-function {
+				label = "func.";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x63>;
+				linux,code = <KEY_COPY>;
+			};
+
+			/* 'p' */
+			key-power {
+				label = "power";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x70>;
+				linux,code = <KEY_POWER>;
+			};
+
+			/* 'r' */
+			key-reset {
+				label = "reset";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x72>;
+				linux,code = <KEY_RESTART>;
+			};
+		};
+
+		hdds {
+			compatible = "iodata,landisk-r8c-keys-polled";
+
+			/* 'w' */
+			switch-hdd1 {
+				label = "hdd1";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x77>;
+				linux,code = <BTN_1>;
+			};
+
+			/* 'x' */
+			switch-hdd2 {
+				label = "hdd2";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x78>;
+				linux,code = <BTN_2>;
+			};
+
+			/* 'y' */
+			switch-hdd3 {
+				label = "hdd3";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x79>;
+				linux,code = <BTN_3>;
+			};
+
+			/* 'z' */
+			switch-hdd4 {
+				label = "hdd4";
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x7a>;
+				linux,code = <BTN_4>;
+			};
+		};
+
+		leds {
+			compatible = "iodata,landisk-r8c-leds";
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			led@0 {
+				reg = <0>;
+				color = <LED_COLOR_ID_MULTI>;
+				function = LED_FUNCTION_DISK_ACTIVITY;
+				function-enumerator = <1>;
+			};
+
+			led@1 {
+				reg = <1>;
+				color = <LED_COLOR_ID_MULTI>;
+				function = LED_FUNCTION_DISK_ACTIVITY;
+				function-enumerator = <2>;
+			};
+
+			led@2 {
+				reg = <2>;
+				color = <LED_COLOR_ID_MULTI>;
+				function = LED_FUNCTION_DISK_ACTIVITY;
+				function-enumerator = <3>;
+			};
+
+			led@3 {
+				reg = <3>;
+				color = <LED_COLOR_ID_MULTI>;
+				function = LED_FUNCTION_DISK_ACTIVITY;
+				function-enumerator = <4>;
+			};
+		};
+
+		reset {
+			compatible = "iodata,landisk-r8c-reset";
+		};
+	};
 };
 
 &usb0 {
