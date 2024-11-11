@@ -1,7 +1,7 @@
 SUBTARGET:=nas
 DEVICE_TYPE:=nas
 BOARDNAME:=Devices which boot from SATA (NAS)
-FEATURES+=boot-part ext4 rootfs-part
+FEATURES+=boot-part ext4 pcie rootfs-part
 DEFAULT_PACKAGES+=e2fsprogs kmod-hwmon-drivetemp partx-utils
 
 define Target/Description
