@@ -10,6 +10,7 @@ platform_check_image() {
 	case "$board" in
 	iodata,hdl-a-sata|\
 	iodata,hdl-a-usb|\
+	iodata,hdl-xv|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		iodata_disk_check_image "$1"
@@ -26,6 +27,7 @@ platform_do_upgrade() {
 	case "$board" in
 	iodata,hdl-a-sata|\
 	iodata,hdl-a-usb|\
+	iodata,hdl-xv|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		iodata_disk_do_upgrade "$1"
@@ -42,6 +44,7 @@ platform_copy_config() {
 	case "$board" in
 	iodata,hdl-a-sata|\
 	iodata,hdl-a-usb|\
+	iodata,hdl-xv|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		iodata_disk_copy_config
