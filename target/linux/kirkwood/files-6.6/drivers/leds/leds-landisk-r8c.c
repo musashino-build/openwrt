@@ -6,7 +6,9 @@
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/of_platform.h>
+#include <linux/bitfield.h>
 #include <linux/leds.h>
+#include <linux/led-class-multicolor.h>
 #include <linux/reboot.h>
 
 #include <linux/mfd/landisk-r8c.h>
@@ -15,7 +17,36 @@
 #define R8C_LED_BRNS_MAX	100
 #define R8C_LED_BRNS_MIN	0
 
-#define R8C_HDD_LEDS_MAX	2
+#define R8C_HDD_LEDS_MAX	4
+#define R8C_HDD_COLORS		2
+#define R8C_HDD_SUB_BNK(x)	FIELD_GET(0xf0, x)
+#define R8C_HDD_SUB_ON(x)	FIELD_GET(0xf, x)
+#define R8C_HDD_SUB_CH(bnk,on)	(bnk << 4 | on)
+
+/*
+ * HDD LED
+ *
+ * - Red (indicates errors, HDL-A/HDL2-A)
+ *   - 0  : turned off (no error)
+ *   - 1-4: blink (any errors)
+ *   - 5  : turned on (not connected)
+ *
+ * - Blue/Red (indicates normal/errors, HDL-XV)
+ *   - 0  : Blue, turned on/blink (connected/access)
+ *   - 1  : Red, turned on (failure)
+ *   - 2  : Red, blink (error)
+ *   - 3  : Blue, blink (plugged)
+ *   - 4  : Blue, blink (unplugged)
+ *   - 5  : turned off (not connected)
+ */
+enum {
+	R8C_HDD_NORMAL = 0,
+	R8C_HDD_FAIL,
+	R8C_HDD_ERROR,
+	R8C_HDD_PLUG,
+	R8C_HDD_UNPLUG,
+	R8C_HDD_NC,
+};
 
 /*
  * commands
@@ -34,13 +65,15 @@
 struct r8c_leds;
 
 struct r8c_led_data {
-	struct led_classdev cdev;
+	struct led_classdev_mc mccdev;
+	struct mc_subled subled_info[R8C_HDD_COLORS];
 	struct r8c_leds *l;
 	int port;
 };
 
 struct r8c_leds {
 	struct r8c_mcu *r8c;
+	int brns_div;
 	int ledcnt;
 	struct r8c_led_data *leds[0];
 };
@@ -50,46 +83,118 @@ struct r8c_status_mode {
 	char *name;
 };
 
-static int r8c_led_mode_set(struct led_classdev *cdev,
-			     enum led_brightness brns, bool blink)
+static int r8c_led_mode_set(struct led_classdev *cdev, int mode)
 {
-	struct r8c_led_data *data = container_of(cdev, struct r8c_led_data, cdev);
+	struct led_classdev_mc *mccdev = lcdev_to_mccdev(cdev);
+	struct r8c_led_data *data = container_of(mccdev, struct r8c_led_data,
+						 mccdev);
 	char arg[8];
 
 	scnprintf(arg, sizeof(arg),
-		  "%d %d", data->port, blink ? 1 : (brns ? 5 : 0));
+		  "%d %d", data->port, mode);
 	return landisk_r8c_exec_cmd(data->l->r8c, CMD_HDD, arg, NULL, 0);
+}
+
+static int r8c_led_mc_intensity_update(struct led_classdev_mc *mccdev)
+{
+	struct r8c_led_data *data = container_of(mccdev, struct r8c_led_data,
+						 mccdev);
+	char buf[8];
+	int ret, i;
+
+	ret = landisk_r8c_exec_cmd(data->l->r8c, CMD_HDD, NULL, buf, sizeof(buf));
+	if (ret < 0)
+		return ret;
+	/* example: "<hdd0><hdd1><hdd2><hdd3>" */
+	if (ret <= data->port)
+		return -EINVAL;
+	for (i = 0; i < mccdev->num_colors; i++) {
+		struct mc_subled *sub = &mccdev->subled_info[i];
+		int cur = buf[data->port] - '0';
+
+		if (R8C_HDD_SUB_ON(sub->channel) == cur ||
+		    R8C_HDD_SUB_BNK(sub->channel) == cur)
+			sub->intensity = 1;
+		else
+			sub->intensity = 0;
+	}
+
+	return 0;
+}
+
+static int r8c_led_mc_common_set(struct led_classdev *cdev,
+				 enum led_brightness brns)
+{
+	struct led_classdev_mc *mccdev = lcdev_to_mccdev(cdev);
+	int ret, i, mode = R8C_HDD_NC;
+
+	for (i = 0; i < mccdev->num_colors; i++)
+		if (mccdev->subled_info[i].intensity > LED_OFF)
+			break;
+
+	/* intensities of all LEDs are 0 */
+	if (i >= mccdev->num_colors)
+		goto set_mode;
+
+	mode = mccdev->subled_info[i].channel;
+	mode = R8C_HDD_SUB_ON(mode);
+
+set_mode:
+	ret = r8c_led_mode_set(cdev, mode);
+	if (ret < 0)
+		return ret;
+
+	return r8c_led_mc_intensity_update(mccdev);
+}
+
+static void r8c_led_mc_brightness_set(struct led_classdev *cdev,
+				      enum led_brightness brns)
+{
+	r8c_led_mc_common_set(cdev, brns);
 }
 
 static void r8c_led_brightness_set(struct led_classdev *cdev,
 				    enum led_brightness brns)
 {
-	r8c_led_mode_set(cdev, brns, false);
+	r8c_led_mode_set(cdev, brns ? R8C_HDD_NC : R8C_HDD_NORMAL);
 }
 
 static int r8c_led_blink_set(struct led_classdev *cdev,
 			      unsigned long *delay_on,
 			      unsigned long *delay_off)
 {
-	if (*delay_on == 0 && *delay_off == 0)
-		return 0;
-
-	return r8c_led_mode_set(cdev, LED_ON, true);
+	return r8c_led_mode_set(cdev,
+				(*delay_on == 0 && *delay_off == 0) ?
+					R8C_HDD_NORMAL : R8C_HDD_ERROR);
 }
+
+static const struct mc_subled r8c_hdd_subleds[] = {
+	{ LED_COLOR_ID_BLUE, 0, 0, R8C_HDD_SUB_CH(R8C_HDD_PLUG,  R8C_HDD_NORMAL) },
+	{ LED_COLOR_ID_RED,  0, 0, R8C_HDD_SUB_CH(R8C_HDD_ERROR, R8C_HDD_FAIL) },
+};
 
 static int r8c_leds_register(struct r8c_leds *l, struct device *dev)
 {
 	struct r8c_led_data *data;
 	struct fwnode_handle *child;
-	int ret = 0;
+	int ret = 0, i;
 
 	device_for_each_child_node(dev, child) {
 		struct led_init_data init_data = { .fwnode = child };
-		int port;
+		struct led_classdev *cdev;
+		int port, color;
 
 		ret = fwnode_property_read_u32(child, "reg", &port);
 		if (ret)
 			break;
+		ret = fwnode_property_read_u32(child, "color", &color);
+		if (ret)
+			continue;
+		if (color != LED_COLOR_ID_RED && color != LED_COLOR_ID_MULTI) {
+			dev_warn(dev,
+				 "only Red or Multi color LEDs are supported\n");
+			continue;
+		}
 
 		if (port > R8C_HDD_LEDS_MAX - 1) {
 			dev_warn(dev,
@@ -104,12 +209,34 @@ static int r8c_leds_register(struct r8c_leds *l, struct device *dev)
 
 		data->l = l;
 		data->port = port;
-		data->cdev.brightness = LED_OFF;
-		data->cdev.brightness_set = r8c_led_brightness_set;
-		data->cdev.blink_set = r8c_led_blink_set;
+
+		cdev = &data->mccdev.led_cdev;
+		cdev->brightness = LED_OFF;
+		cdev->max_brightness = LED_ON;
 		l->leds[l->ledcnt] = data;
 
-		ret = devm_led_classdev_register_ext(dev, &data->cdev, &init_data);
+		if (color == LED_COLOR_ID_MULTI) {
+			for (i = 0; i < R8C_HDD_COLORS; i++) {
+				data->subled_info[i].color_index
+					= r8c_hdd_subleds[i].color_index;
+				data->subled_info[i].channel
+					= r8c_hdd_subleds[i].channel;
+			}
+			data->mccdev.subled_info = data->subled_info;
+			data->mccdev.num_colors = R8C_HDD_COLORS;
+			ret = r8c_led_mc_intensity_update(&data->mccdev);
+			if (ret)
+				continue;
+			cdev->brightness_set = r8c_led_mc_brightness_set;
+			ret = devm_led_classdev_multicolor_register_ext(
+					dev, &data->mccdev, &init_data);
+		} else {
+			cdev->brightness_set = r8c_led_brightness_set;
+			cdev->blink_set = r8c_led_blink_set;
+			ret = devm_led_classdev_register_ext(
+					dev, cdev, &init_data);
+		}
+
 		if (ret) {
 			dev_err(dev, "failed to register HDD LED, index %d\n",
 				l->ledcnt);
@@ -123,11 +250,11 @@ static int r8c_leds_register(struct r8c_leds *l, struct device *dev)
 	return ret;
 }
 
-/* HDL-XR/XV seems to have "notice" mode (id=4) */
 static const struct r8c_status_mode status_mode_list[] = {
 	{ .id = 0, .name = "on" },
 	{ .id = 1, .name = "blink" },
 	{ .id = 2, .name = "err" },
+	{ .id = 4, .name = "notice" },
 	{ .id = 5, .name = "notify" },
 	{ .id = 8, .name = "serious_err" },
 };
@@ -225,7 +352,7 @@ static ssize_t leds_brightness_show(struct device *dev,
 		return 0;
 	}
 
-	return scnprintf(buf, 10, "%ld %%\n", brightness);
+	return scnprintf(buf, 10, "%ld %%\n", brightness * l->brns_div);
 }
 
 static ssize_t leds_brightness_store(struct device *dev,
@@ -236,6 +363,7 @@ static ssize_t leds_brightness_store(struct device *dev,
 	ssize_t ret;
 	/* brightness (%) */
 	long brightness;
+	char __buf[4];
 
 	ret = kstrtol(buf, 0, &brightness);
 	if (ret)
@@ -245,7 +373,8 @@ static ssize_t leds_brightness_store(struct device *dev,
 	    R8C_LED_BRNS_MAX < brightness)
 		return -EINVAL;
 
-	ret = landisk_r8c_exec_cmd(l->r8c, CMD_LED, buf, NULL, 0);
+	scnprintf(__buf, 4, "%ld", DIV_ROUND_UP(brightness, l->brns_div));
+	ret = landisk_r8c_exec_cmd(l->r8c, CMD_LED, __buf, NULL, 0);
 
 	return ret ? ret : len;
 }
@@ -261,6 +390,25 @@ static struct attribute *r8c_leds_attrs[] = {
 static const struct attribute_group r8c_leds_attr_group = {
 	.attrs = r8c_leds_attrs,
 };
+
+static int landisk_r8c_get_brightness_div(struct r8c_mcu *r8c)
+{
+	char buf[8] = "100";
+	int ret;
+
+	ret = landisk_r8c_exec_cmd(r8c, CMD_LED, buf, NULL, 0);
+	if (ret >= 0)
+		ret = landisk_r8c_exec_cmd(r8c, CMD_LED, NULL, buf, sizeof(buf));
+	if (ret < 0)
+		return ret;
+
+	if (!strncmp(buf, "0a", 2))	/* 0-10 (HDL-XV) */
+		return 10;
+	else if (!strncmp(buf, "64", 2))/* 0-100 (HDL-A, HDL2-A) */
+		return 1;
+	else
+		return -EINVAL;
+}
 
 static int landisk_r8c_leds_probe(struct platform_device *pdev)
 {
@@ -284,6 +432,9 @@ static int landisk_r8c_leds_probe(struct platform_device *pdev)
 	dev_set_drvdata(dev, l);
 
 	l->r8c = r8c;
+	l->brns_div = landisk_r8c_get_brightness_div(r8c);
+	if (l->brns_div < 0)
+		return l->brns_div;
 
 	ret = sysfs_create_group(&dev->kobj, &r8c_leds_attr_group);
 	if (ret)
@@ -319,7 +470,7 @@ static void landisk_r8c_leds_shutdown(struct platform_device *pdev)
 	int i;
 
 	for (i = 0; i < l->ledcnt; i++)
-		led_set_brightness(&l->leds[i]->cdev, LED_OFF);
+		led_set_brightness(&l->leds[i]->mccdev.led_cdev, LED_OFF);
 }
 
 static const struct of_device_id landisk_r8c_leds_ids[] = {
