@@ -3,6 +3,7 @@ pi_indicate_preinit_landisk() {
 	case $(board_name) in
 	iodata,hdl-a-sata|\
 	iodata,hdl-a-usb|\
+	iodata,hdl-xv|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# set green/blink
