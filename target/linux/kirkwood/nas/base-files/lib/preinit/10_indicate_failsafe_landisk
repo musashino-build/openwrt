@@ -8,6 +8,10 @@ indicate_failsafe_led_landisk() {
 		# set red/blink
 		echo "serious_err" > "/sys/bus/serial/devices/serial0-0/f1012100.serial:mcu:leds/status_mode"
 		;;
+	iodata,hdl-xv)
+		# set red/blink
+		echo "err" > "/sys/bus/serial/devices/serial0-0/f1012100.serial:mcu:leds/status_mode"
+		;;
 	esac
 }
 
