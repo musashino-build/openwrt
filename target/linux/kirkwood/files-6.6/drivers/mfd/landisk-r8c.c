@@ -33,7 +33,7 @@ struct r8c_mcu {
 
 	char ev_code;
 	char buf[R8C_RCV_MAX_LEN];
-	int cur_ofs;
+	ssize_t cur_ofs;
 
 	char *dbgbuf;
 
@@ -104,7 +104,8 @@ static int landisk_r8c_exec(struct r8c_mcu *r8c, const char *buf, size_t len,
 
 	jiffies_left = wait_for_completion_timeout(&r8c->rpl_recv, HZ);
 	if (!jiffies_left) {
-		dev_err(&r8c->serdev->dev, "command timeout\n");
+		dev_dbg(&r8c->serdev->dev, "command timeout (buf=\"%s\")\n",
+			r8c->buf);
 		ret = -ETIMEDOUT;
 	} else {
 		ret = strscpy(rpl_buf, r8c->buf, rpl_len);
@@ -180,8 +181,22 @@ static int landisk_r8c_receive_buf(struct serdev_device *serdev,
 				   const unsigned char *buf, size_t count)
 {
 	struct r8c_mcu *r8c = dev_get_drvdata(&serdev->dev);
+	const unsigned char *lf_pre;
 	char *lf;
+	size_t copy_len;
 	int ret;
+
+	/*
+	 * lookup the first '\n' and pass the remaining characters
+	 * after '\n' to the next transaction
+	 * (example):
+	 *   "CrpwXyz\n
+	 *    @c\n
+	 *    "
+	 */
+	lf_pre = strnchr(buf, '\n', count);
+	if (unlikely(lf_pre && (lf_pre - buf + 1) < count && lf_pre[1]))
+		count = (lf_pre - buf) + 1;
 
 	switch (buf[0]) {
 	case R8C_MSG_TYPE_EV:
@@ -190,36 +205,41 @@ static int landisk_r8c_receive_buf(struct serdev_device *serdev,
 		mod_delayed_work(system_wq, &r8c->ev_work, 0);
 		return count;
 	case R8C_MSG_TYPE_REPL:
-		ret = strscpy(r8c->buf, buf + 1, R8C_RCV_MAX_LEN);
-		if (ret >= 0)
-			r8c->cur_ofs = ret;
+		/*
+		 * buf (example):
+		 * - ";something\n" (count=11, cur_ofs=10): finish
+		 * - ";somet"       (count=6,  cur_ofs=5) : continue (default:)
+		 * - ";"            (count=1,  cur_ofs=0) : continue (default:)
+		 */
+		copy_len = (count > R8C_RCV_MAX_LEN)
+				? R8C_RCV_MAX_LEN : count;
+		ret = strscpy(r8c->buf, buf + 1, copy_len);
+		r8c->cur_ofs = (ret >= 0) ? ret : count - 1;
 		break;
 	default:
 		/* return when not waiting */
-		if (r8c->cur_ofs == 0)
+		if (r8c->cur_ofs == -1)
 			return count;
-		/* handle remaining data */
+		/* buffer is full (with last nul) */
 		if (r8c->cur_ofs + 1 >= R8C_RCV_MAX_LEN)
-			ret = -E2BIG;
-		else
-			ret = strscpy(r8c->buf + r8c->cur_ofs, buf,
-				      R8C_RCV_MAX_LEN - r8c->cur_ofs);
-		if (ret >= 0)
-			r8c->cur_ofs += ret;
+			return count;
+
+		/* handle remaining data */
+		copy_len = (count + 1 > R8C_RCV_MAX_LEN - r8c->cur_ofs)
+				? R8C_RCV_MAX_LEN - r8c->cur_ofs :
+				  count + 1;
+		ret = strscpy(r8c->buf + r8c->cur_ofs, buf, copy_len);
+		r8c->cur_ofs += (ret >= 0) ? ret : count;
 		break;
 	}
 
-	if (ret < 0)
-		pr_debug("response data is too long!\n");
-
 	/* wait remaining data if no '\n' */
 	lf = strchr(r8c->buf, '\n');
-	if (!lf && ret >= 0)
+	if (!lf)
 		return count;
-	else if (ret >= 0)
-		*lf = '\0';
+	*lf = '\0';
 	pr_debug("buf: \"%s\"\n", r8c->buf);
-	r8c->cur_ofs = 0;
+	r8c->cur_ofs = -1;
 	complete(&r8c->rpl_recv);
 
 	return count;
@@ -270,6 +290,7 @@ static int landisk_r8c_probe(struct serdev_device *serdev)
 	}
 
 	r8c->serdev = serdev;
+	r8c->cur_ofs = -1;
 	serdev_device_set_drvdata(serdev, r8c);
 
 	ret = devm_mutex_init(dev, &r8c->lock);
