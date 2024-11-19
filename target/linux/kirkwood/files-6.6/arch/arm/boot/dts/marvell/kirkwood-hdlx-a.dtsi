@@ -126,18 +126,20 @@
 	mcu: mcu {
 		compatible = "iodata,landisk-r8c";
 
-		keys {
-			compatible = "iodata,landisk-r8c-keys";
+		buttons {
+			compatible = "iodata,landisk-r8c-keys-event";
 
-			key-power { /* 'p' */
+			/* 'p' */
+			key-power {
 				label = "power";
-				iodata,landisk-r8c-evcode = /bits/ 8 <0x70>;
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x70>;
 				linux,code = <KEY_POWER>;
 			};
 
-			key-reset { /* 'r' */
+			/* 'r' */
+			key-reset {
 				label = "reset";
-				iodata,landisk-r8c-evcode = /bits/ 8 <0x72>;
+				iodata,landisk-r8c-keycode = /bits/ 8 <0x72>;
 				linux,code = <KEY_RESTART>;
 			};
 		};
