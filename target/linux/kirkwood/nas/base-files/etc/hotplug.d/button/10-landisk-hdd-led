@@ -1,0 +1,22 @@
+. /lib/functions.sh
+
+case "$BUTTON" in
+BTN_[1-4]) ;;
+*) exit 1 ;;
+esac
+
+case "$(board_name)" in
+iodata,hdl-xv)
+	led="/sys/class/leds/multicolor:disk-activity-${BUTTON//BTN_/}"
+	[ -d "$led" ] || exit 1
+
+	sleep 1
+	# stop blinking
+	# pressed: turn on (blue), released: turn off
+	if [ "$ACTION" = "pressed" ]; then
+		echo "1 0" > $led/multi_intensity
+	else
+		echo "0 0" > $led/multi_intensity
+	fi
+	;;
+esac
