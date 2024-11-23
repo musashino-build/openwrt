@@ -15,6 +15,7 @@
 	};
 
 	chosen {
+		bootargs-append = " earlycon root=PARTUUID=5452574f-2211-4433-5566-778899aabb02 rootwait=20";
 		stdout-path = "serial0:115200n8";
 	};
 
