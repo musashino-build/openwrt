@@ -31,6 +31,7 @@
 	rtc@32 {
 		compatible = "ricoh,rs5c372a";
 		reg = <0x32>;
+		/* enable alarm for powering on by R8C MCU */
 		wakeup-source;
 	};
 };
