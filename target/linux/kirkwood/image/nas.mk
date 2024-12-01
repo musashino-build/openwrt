@@ -78,6 +78,8 @@ define Device/iodata_hdl-xv
   COMPILE/$$(DEVICE_NAME).initrd += | uImage none -T ramdisk -a 0 -e 0
   IMAGE/disk.img.gz := boot-image-fat uImage.xv initrd.xv | \
 	disk-image -g | gzip | append-metadata
+  ARTIFACTS := initramfs-initrd.xv
+  ARTIFACT/initramfs-initrd.xv := copy-file $(KDIR)/$$(DEVICE_NAME).initrd
   DEVICE_PACKAGES += kmod-e1000e
 endef
 TARGET_DEVICES += iodata_hdl-xv
