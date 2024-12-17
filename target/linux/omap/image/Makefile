@@ -78,12 +78,15 @@ define Device/centurysystems_ma-e350-n-nand
   DEVICE_DTS_DIR := ../dts
   KERNEL_LOADADDR := 0x80008000
   KERNEL := kernel-bin | append-dtb | uImage none
-  KERNEL_IN_UBI := 1
   BLOCKSIZE := 128k
   PAGESIZE := 2048
   SUBPAGESIZE := 512
   UBINIZE_OPTS := -E 5
+  UBINIZE_PARTS := initramfs.0=$(KDIR)/$$(DEVICE_NAME).initrd \
+	kernel.0=$(KDIR)/$$(DEVICE_NAME)-kernel.bin
   FILESYSTEMS := squashfs
+  COMPILE := $$(DEVICE_NAME).initrd
+  COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4 | uImage none -T ramdisk -a 0 -e 0
   IMAGES := sysupgrade.bin nand.ubi
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/nand.ubi := append-ubi
