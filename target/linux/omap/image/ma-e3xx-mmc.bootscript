@@ -1,0 +1,23 @@
+#!/bin/sh
+
+echo -e "\n== OpenWrt bootscript for MMC ==\n"
+echo -e -n "\nHit any key to stop autoboot: "
+
+# $login_cmd: login prompt if password is set
+[ -n ${login_cmd} ] && global.console.input_allow=1
+
+timeout -a $global.autoboot_timeout -v key
+autoboot="$?"
+
+[ -n ${login_cmd} ] && global.console.input_allow=0
+
+# show login prompt (or move to the shell if no password is set)
+if [ "$autoboot" != 0 ]; then
+	${login_cmd}
+	exit
+fi
+
+# setup environment variables
+bootsource="mmc"
+/env/boot/mmc
+bootm ${global.bootm.image}
