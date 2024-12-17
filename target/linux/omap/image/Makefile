@@ -32,14 +32,10 @@ endef
 define Build/centurysys-sdcard
 	rm -f $@.boot
 
-	echo "#!/bin/sh" > $@.autoexec
-	echo "global.linux.bootargs.base=\"\"" >> $@.autoexec
-	echo "bootm /boot/uImage" >> $@.autoexec
-
 	mkfs.fat $@.boot -C $(FAT32_BLOCKS)
 
 	mcopy -i $@.boot $(IMAGE_KERNEL) ::/uImage
-	mcopy -i $@.boot $@.autoexec ::/autoexec.sh
+	mcopy -i $@.boot ma-e3xx-mmc.bootscript ::/autoexec.sh
 	./gen_omap_sdcard_img.sh $@ \
 		$@.boot \
 		$(IMAGE_ROOTFS) \
