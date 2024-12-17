@@ -466,8 +466,6 @@
 		reg = <0x50>;
 		label = "hw_param";
 		num-addresses = <8>;
-		#address-cells = <1>;
-		#size-cells = <1>;
 
 		/*
 		 * Hardware Parameters
@@ -481,6 +479,19 @@
 		 *        0x1f: Board Revision (text)
 		 * 0x20 - 0x23: Customer Code (text)
 		 */
+		nvmem-layout {
+			compatible = "fixed-layout";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			macaddr_eeprom50_0: mac-address@0 {
+				reg = <0x0 0x6>;
+			};
+
+			macaddr_eeprom50_6: mac-address@6 {
+				reg = <0x6 0x6>;
+			};
+		};
 	};
 
 	rtc@68 {
@@ -862,12 +873,16 @@
 };
 
 &cpsw_port1 {
+	nvmem-cells = <&macaddr_eeprom50_0>;
+	nvmem-cell-names = "mac-address";
 	phy-handle = <&ethphy2>;
 	phy-mode = "rgmii-txid";
 	ti,dual-emac-pvid = <4000>;
 };
 
 &cpsw_port2 {
+	nvmem-cells = <&macaddr_eeprom50_6>;
+	nvmem-cell-names = "mac-address";
 	phy-handle = <&ethphy3>;
 	phy-mode = "rgmii-txid";
 	ti,dual-emac-pvid = <4001>;
