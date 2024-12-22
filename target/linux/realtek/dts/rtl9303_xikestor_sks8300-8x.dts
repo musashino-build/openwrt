@@ -275,65 +275,57 @@
 
 		phy0: ethernet-phy@0 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 0>;
+			reg = <0>;
 			sds = <2>;
 		};
 
 		phy8: ethernet-phy@8 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <8>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 8>;
+			reg = <8>;
 			sds = <3>;
 		};
 
-		phy16: ethernet-phy@16 {
-			reg = <16>;
+		phy16: ethernet-phy@10 {
 			compatible = "ethernet-phy-ieee802.3-c22";
 			phy-is-integrated;
-			rtl9300,smi-address = <4 16>;
+			reg = <16>;
 			sds = <4>;
 		};
 
-		phy20: ethernet-phy@20 {
+		phy20: ethernet-phy@14 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <20>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 20>;
+			reg = <20>;
 			sds = <5>;
 		};
 
-		phy24: ethernet-phy@24 {
+		phy24: ethernet-phy@18 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <24>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 24>;
+			reg = <24>;
 			sds = <6>;
 		};
 
-		phy25: ethernet-phy@25 {
+		phy25: ethernet-phy@19 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <25>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 25>;
+			reg = <25>;
 			sds = <7>;
 		};
 
-		phy26: ethernet-phy@26 {
+		phy26: ethernet-phy@1a {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <26>;
 			phy-is-integrated;
-			rtl9300,smi-address = <4 26>;
+			reg = <26>;
 			sds = <8>;
 		};
 
-		phy27: ethernet-phy@27 {
+		phy27: ethernet-phy@1b {
 			compatible = "ethernet-phy-ieee802.3-c22";
 			phy-is-integrated;
 			reg = <27>;
-			rtl9300,smi-address = <4 27>;
 			sds = <9>;
 		};
 	};
@@ -362,7 +354,7 @@
 			managed = "in-band-status";
 		};
 
-		port@16 {
+		port@10 {
 			reg = <16>;
 			label = "lan3";
 			phy-handle = <&phy16>;
@@ -371,7 +363,7 @@
 			managed = "in-band-status";
 		};
 
-		port@20 {
+		port@14 {
 			reg = <20>;
 			label = "lan4";
 			phy-handle = <&phy20>;
@@ -380,7 +372,7 @@
 			managed = "in-band-status";
 		};
 
-		port@24 {
+		port@18 {
 			reg = <24>;
 			label = "lan5";
 			phy-handle = <&phy24>;
@@ -389,7 +381,7 @@
 			managed = "in-band-status";
 		};
 
-		port@25 {
+		port@19 {
 			reg = <25>;
 			label = "lan6";
 			phy-handle = <&phy25>;
@@ -398,7 +390,7 @@
 			managed = "in-band-status";
 		};
 
-		port@26 {
+		port@1a {
 			reg = <26>;
 			label = "lan7";
 			phy-handle = <&phy26>;
@@ -407,7 +399,7 @@
 			managed = "in-band-status";
 		};
 
-		port@27 {
+		port@1b {
 			reg = <27>;
 			label = "lan8";
 			phy-handle = <&phy27>;
@@ -416,7 +408,7 @@
 			managed = "in-band-status";
 		};
 
-		port@28 {
+		port@1c {
 			ethernet = <&ethernet0>;
 			reg = <28>;
 			phy-mode = "internal";
