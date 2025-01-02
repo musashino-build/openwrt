@@ -228,7 +228,7 @@ static inline void nec_aterm_reset_common(void)
 {
 	unsigned int reg = KSEG1ADDR(AR71XX_RESET_BASE);
 
-#ifndef LOADADDR
+#if !defined(LOADADDR) && !defined(CONFIG_FLASH_OFFS)
 	/*
 	 * This is for initramfs-factory image.
 	 * When the system was reset by power source or FULL_CHIP_RESET
