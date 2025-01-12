@@ -2119,7 +2119,8 @@ define Device/nec_wg1400hp
   IMAGE_SIZE := 16128k
   NEC_FW_TYPE := H040b
   $(Device/nec-netbsd-aterm)
-  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct \
+	kmod-dsa-qca8k kmod-phy-qca83xx -swconfig
 endef
 TARGET_DEVICES += nec_wg1400hp
 
@@ -2129,7 +2130,8 @@ define Device/nec_wg1800hp
   IMAGE_SIZE := 16128k
   NEC_FW_TYPE := H040a
   $(Device/nec-netbsd-aterm)
-  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct \
+	kmod-dsa-qca8k kmod-phy-qca83xx -swconfig
 endef
 TARGET_DEVICES += nec_wg1800hp
 
@@ -2139,7 +2141,8 @@ define Device/nec_wg1800hp2
   IMAGE_SIZE := 16128k
   NEC_FW_TYPE := H049
   $(Device/nec-netbsd-aterm)
-  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct
+  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca988x-ct \
+	kmod-dsa-qca8k kmod-phy-qca83xx -swconfig
 endef
 TARGET_DEVICES += nec_wg1800hp2
 
@@ -2149,7 +2152,8 @@ define Device/nec_wg2200hp
   IMAGE_SIZE := 16128k
   NEC_FW_TYPE := H055
   $(Device/nec-netbsd-aterm)
-  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca9984-ct
+  DEVICE_PACKAGES += kmod-ath10k-ct ath10k-firmware-qca9984-ct \
+	kmod-dsa-qca8k kmod-phy-qca83xx -swconfig
 endef
 TARGET_DEVICES += nec_wg2200hp
 

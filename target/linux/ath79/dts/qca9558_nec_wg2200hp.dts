@@ -29,7 +29,7 @@
 		reg = <0x5000 0x2f20>;
 	};
 };
-
+#if 0
 &phy0 {
 	qca,ar8327-initvals = <
 		0x04 0x80000080 /* PORT0_PAD_MODE_CTRL */
@@ -44,6 +44,27 @@
 		0x94 0x0000007e /* PORT6_STATUS */
 		0xe0 0xc74164de /* SGMII_CONTROL */
 	>;
+};
+#endif
+&switch {
+	compatible = "qca,qca8337";
+};
+
+/* MAC06_EXCHANGE_EN is enabled on stock but not on Linux Kernel */
+&switch_port0 {
+	ethernet = <&eth0>;
+	phy-connection-type = "rgmii";
+	/delete-property/ qca,sgmii-rxclk-falling-edge;
+
+	status = "disabled";
+};
+
+&switch_port6 {
+	ethernet = <&eth1>;
+	phy-connection-type = "sgmii";
+	qca,sgmii-enable-pll;
+
+	status = "okay";
 };
 
 &eth0 {

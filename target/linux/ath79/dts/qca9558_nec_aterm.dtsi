@@ -266,7 +266,7 @@
 
 &mdio0 {
 	status = "okay";
-
+#if 0
 	phy0: ethernet-phy@0 {
 		reg = <0>;
 
@@ -284,6 +284,115 @@
 			0xe0 0xc74164d0 /* SGMII_CONTROL */
 		>;
 	};
+#endif
+	external_phy_port1: ethernet-phy@0 {
+		reg = <0>;
+	};
+
+	external_phy_port2: ethernet-phy@1 {
+		reg = <1>;
+	};
+
+	external_phy_port3: ethernet-phy@2 {
+		reg = <2>;
+	};
+
+	external_phy_port4: ethernet-phy@3 {
+		reg = <3>;
+	};
+
+	external_phy_port5: ethernet-phy@4 {
+		reg = <4>;
+	};
+
+	switch: switch@10 {
+		compatible = "qca,qca8327";
+		reg = <0x10>;
+		reset-gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
+		qca,ignore-power-on-sel;
+		qca,led-open-drain;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			switch_port0: port@0 {
+				reg = <0>;
+				ethernet = <&eth1>;
+				phy-connection-type = "sgmii";
+				qca,sgmii-rxclk-falling-edge;
+
+				fixed-link {
+					speed = <1000>;
+					full-duplex;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				label = "wan";
+				phy-handle = <&external_phy_port1>;
+
+				nvmem-cells = <&macaddr_config_c>;
+				nvmem-cell-names = "mac-address";
+			};
+
+			port@2 {
+				reg = <2>;
+				label = "lan1";
+				phy-handle = <&external_phy_port2>;
+
+				nvmem-cells = <&macaddr_config_6>;
+				nvmem-cell-names = "mac-address";
+			};
+
+			port@3 {
+				reg = <3>;
+				label = "lan2";
+				phy-handle = <&external_phy_port3>;
+
+				nvmem-cells = <&macaddr_config_6>;
+				nvmem-cell-names = "mac-address";
+			};
+
+			port@4 {
+				reg = <4>;
+				label = "lan3";
+				phy-handle = <&external_phy_port4>;
+
+				nvmem-cells = <&macaddr_config_6>;
+				nvmem-cell-names = "mac-address";
+
+				/* disable to prevent crashing */
+				status = "disabled";
+			};
+
+			port@5 {
+				reg = <5>;
+				label = "lan4";
+				phy-handle = <&external_phy_port5>;
+
+				nvmem-cells = <&macaddr_config_6>;
+				nvmem-cell-names = "mac-address";
+
+				/* disable to prevent crashing */
+				status = "disabled";
+			};
+
+			switch_port6: port@6 {
+				reg = <6>;
+				ethernet = <&eth0>;
+				phy-connection-type = "rgmii";
+
+				status = "disabled";
+
+				fixed-link {
+					speed = <1000>;
+					full-duplex;
+				};
+			};
+		};
+	};
 };
 
 &eth0 {
@@ -291,8 +400,13 @@
 
 	nvmem-cells = <&macaddr_config_c>;
 	nvmem-cell-names = "mac-address";
-	phy-handle = <&phy0>;
+//	phy-handle = <&phy0>;
 	qca955x-sgmii-fixup;
+
+	fixed-link {
+		speed = <1000>;
+		full-duplex;
+	};
 
 	gmac-config {
 		device = <&gmac>;
@@ -315,7 +429,7 @@
 		full-duplex;
 	};
 };
-
+#if 0
 &gpio {
 	switch-reset {
 		gpio-hog;
@@ -323,7 +437,7 @@
 		output-high;
 	};
 };
-
+#endif
 &pcie0 {
 	status = "okay";
 
