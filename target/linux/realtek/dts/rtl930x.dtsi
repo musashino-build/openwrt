@@ -146,6 +146,26 @@
 	switchcore@1b000000 {
 		compatible = "syscon", "simple-mfd";
 		reg = <0x1b000000 0x10000>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		i2c_host0: i2c-controller@36c {
+			compatible = "realtek,rtl9301-i2c";
+			reg = <0x36c 0x14>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			status = "disabled";
+		};
+
+		i2c_host1: i2c-controller@388 {
+			compatible = "realtek,rtl9301-i2c";
+			reg = <0x388 0x14>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			status = "disabled";
+		};
 
 		mdio_aux: mdio-aux {
 			compatible = "realtek,rtl9300-aux-mdio";
