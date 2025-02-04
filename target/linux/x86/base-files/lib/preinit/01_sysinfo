@@ -30,6 +30,11 @@ do_sysinfo_x86() {
 		?*:To\ [bB]e\ [fF]illed\ [bB]y\ O\.E\.M\.)
 			continue
 			;;
+		"Lanner Electronics:NCA-2011Z-TM3J")
+			vendor="Trend Micro"
+			product="Cloud Edge 70S G2"
+			break
+			;;
 		"PC Engines:APU")
 			product="apu1"
 			break
