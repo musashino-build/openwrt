@@ -138,6 +138,11 @@ traverse-technologies-geos)
 	macaddr="$(cat /sys/class/net/eth0/address)" 2>/dev/null
 	[ -n "$macaddr" ] && ucidef_set_interface_macaddr "wan" "$macaddr"
 	;;
+trend-micro-cloud-edge-70s-g2)
+	ucidef_set_network_device_path "mgmt" "pci0000:00/0000:00:0e.0/0000:05:00.0"
+	ucidef_set_network_device_path "wan1" "pci0000:00/0000:00:0f.0/0000:06:00.0"
+	ucidef_set_interfaces_lan_wan "mgmt lan1 lan2 lan3 lan4 lan5 lan6 lan7 lan8" "wan1"
+	;;
 silicom-80500-0214-*)
         ucidef_set_network_device_path "wan0" "pci0000:00/0000:00:16.0/0000:03:00.0"
         ucidef_set_network_device_path "wan1" "pci0000:00/0000:00:16.0/0000:03:00.1"
