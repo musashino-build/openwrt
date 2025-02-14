@@ -112,6 +112,7 @@
 		q6_mem_regions: q6_mem_regions@4b000000 {
 			no-map;
 			reg = <0x0 0x4b000000 0x0 0x3000000>;
+			status = "disabled";
 		};
 	};
 };
@@ -397,8 +398,13 @@
 	status = "okay";
 };
 
+/*
+ * ath11k Wi-Fi consumes too large memory spaces and too few spaces are
+ * available for users. To prevent OOM when using LuCI or other softwares,
+ * disable Wi-Fi related peripherals at the moment.
+ */
 &q6v5_wcss {
-	status = "okay";
+	status = "disabled";
 
 	memory-region = <&q6_mem_regions>;
 	firmware-name = "ath11k/IPQ5018/hw1.0/q6_fw.mdt",
@@ -483,7 +489,7 @@
 
 	ieee80211-freq-limit = <2400000 2483000>;
 
-	status = "okay";
+	status = "disabled";
 };
 
 &wifi1 {
@@ -496,5 +502,5 @@
 
 	ieee80211-freq-limit = <5150000 5730000>;
 
-	status = "okay";
+	status = "disabled";
 };
