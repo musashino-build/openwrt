@@ -1,0 +1,21 @@
+--- a/drivers/spi/spi-qpic-snand.c
++++ b/drivers/spi/spi-qpic-snand.c
+@@ -272,7 +272,17 @@ static int qcom_spi_ecc_init_ctx_pipelin
+ 	snandc->qspi->mtd = mtd;
+ 
+ 	/* BCH8 or BCH4 */
+-	ecc_mode = mtd->oobsize > 64 ? 1 : 0;
++	switch (nand->ecc.user_conf.strength) {
++	case 4:
++	case 8:
++		ecc_mode = nand->ecc.user_conf.strength == 8 ? 1 : 0;
++		break;
++	default:
++		ecc_mode = mtd->oobsize > 64 ? 1 : 0;
++		dev_warn(snandc->dev,
++			 "invalid ECC strength detected, configured from mtd oobsize\n");
++		break;
++	}
+ 
+ 	ecc_cfg->ecc_bytes_hw = ecc_mode ? 13 : 7;
+ 	ecc_cfg->spare_bytes = ecc_mode ? 2 : 4;
