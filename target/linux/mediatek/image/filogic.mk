@@ -921,6 +921,16 @@ define Device/edgecore_eap111
 endef
 TARGET_DEVICES += edgecore_eap111
 
+define Device/elecom_wrc-x3000gs3
+  DEVICE_VENDOR := ELECOM
+  DEVICE_MODEL := WRC-X3000GS3
+  DEVICE_DTS := mt7981b-elecom-wrc-x3000gs3
+  DEVICE_DTS_DIR := ../dts
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  DEVICE_PACKAGES := kmod-mt7915e kmod-mt7981-firmware mt7981-wo-firmware
+endef
+TARGET_DEVICES += elecom_wrc-x3000gs3
+
 define Device/gatonetworks_gdsp
   DEVICE_VENDOR := GatoNetworks
   DEVICE_MODEL := gdsp
