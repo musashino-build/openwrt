@@ -286,9 +286,13 @@
 				read-only;
 			};
 
+			/* stock: "ubi" */
 			partition@5a0000 {
-				label = "ubi";
+				compatible = "mstc,boot";
+				label = "firmware1";
 				reg = <0x5a0000 0x3200000>;
+				mstc,bootnum = <1>;
+				mstc,persist = <&mtd_persist>;
 			};
 
 			partition@37a0000 {
@@ -303,9 +307,13 @@
 				read-only;
 			};
 
+			/* stock: "ubi_2" */
 			partition@3b40000 {
-				label = "ubi_2";
+				compatible = "mstc,boot";
+				label = "firmware2";
 				reg = <0x3b40000 0x3200000>;
+				mstc,bootnum = <2>;
+				mstc,persist = <&mtd_persist>;
 			};
 
 			partition@6d40000 {
@@ -314,7 +322,7 @@
 				read-only;
 			};
 
-			partition@70c0000 {
+			mtd_persist: partition@70c0000 {
 				label = "persist";
 				reg = <0x70c0000 0x100000>;
 			};
