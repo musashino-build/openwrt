@@ -145,6 +145,17 @@ platform_do_upgrade() {
 		fw_setenv sw_tryactive 0
 		nand_do_upgrade "$1"
 		;;
+	elecom,wrc-x3000gs3)
+		local bootnum="$(mstc_rw_bootnum)"
+		case "$bootnum" in
+		1|2)	CI_UBIPART="firmware$bootnum" ;;
+		*)
+			v "invalid bootnum found ($bootnum), rebooting..."
+			nand_do_upgrade_failed
+			;;
+		esac
+		nand_do_upgrade "$1"
+		;;
 	mercusys,mr80x-v3|\
 	mercusys,mr90x-v1|\
 	tplink,re6000xd)
