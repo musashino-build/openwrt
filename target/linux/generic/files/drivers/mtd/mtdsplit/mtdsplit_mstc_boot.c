@@ -94,9 +94,10 @@ mstcboot_is_active(struct mtd_info *mtd, u_char *bootnum)
  */
 static int
 mstcboot_parse_image_parts(struct mtd_info *mtd,
-			   struct mtd_partition *parts)
+			   const struct mtd_partition **pparts)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
+	struct mtd_partition *parts;
 	size_t retlen, kern_len = 0;
 	size_t rootfs_offset;
 	u32 offset = 0;
@@ -153,6 +154,7 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 	parts[index].offset = rootfs_offset;
 	parts[index].size = mtd->size - rootfs_offset;
 
+	*pparts = parts;
 	return nr_parts;
 }
 
@@ -184,11 +186,12 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
  */
 static int
 mstcboot_parse_fixed_parts(struct mtd_info *mtd,
-			   struct mtd_partition *parts,
+			   const struct mtd_partition **pparts,
 			   int active, u_char bootnum)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
 	struct device_node *child;
+	struct mtd_partition *parts;
 	int ret, nr_parts, index = 0;
 
 	nr_parts = of_get_child_count(np);
@@ -234,6 +237,8 @@ mstcboot_parse_fixed_parts(struct mtd_info *mtd,
 
 	if (ret)
 		kfree(parts);
+	else
+		*pparts = parts;
 	return ret ? ret : nr_parts;
 }
 
@@ -243,7 +248,6 @@ mtdsplit_mstcboot_parse(struct mtd_info *mtd,
 			struct mtd_part_parser_data *data)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
-	struct mtd_partition *parts;
 	u_char bootnum;
 	int ret;
 
@@ -252,13 +256,12 @@ mtdsplit_mstcboot_parse(struct mtd_info *mtd,
 		return ret;
 
 	if (of_get_child_count(np))
-		ret = mstcboot_parse_fixed_parts(mtd, parts, ret, bootnum);
+		ret = mstcboot_parse_fixed_parts(mtd, pparts, ret, bootnum);
 	else if (ret != 0)
-		ret = mstcboot_parse_image_parts(mtd, parts);
+		ret = mstcboot_parse_image_parts(mtd, pparts);
 	else
 		return -ENODEV;
 
-	*pparts = parts;
 	return ret;
 }
 
