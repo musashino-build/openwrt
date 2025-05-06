@@ -16,6 +16,7 @@
 #include "mtdsplit.h"
 
 #define PERSIST_BOOTNUM_OFFSET	0x4
+#define NR_PARTS_MAX		2
 
 /*
  * Legacy format image header,
@@ -38,12 +39,11 @@
 
 /* check whether the current mtd device is active or not */
 static int
-mstcboot_is_active(struct mtd_info *mtd)
+mstcboot_is_active(struct mtd_info *mtd, u_char *bootnum)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
 	struct device_node *persist_np;
 	size_t retlen;
-	u_char bootnum;
 	u32 bootnum_dt, persist_offset;
 	int ret;
 
@@ -62,40 +62,44 @@ mstcboot_is_active(struct mtd_info *mtd)
 	if (ret)
 		return ret;
 	ret = mtd_read(mtd->parent, persist_offset + PERSIST_BOOTNUM_OFFSET,
-		       1, &retlen, &bootnum);
+		       1, &retlen, bootnum);
 	if (ret)
 		return ret;
 	if (retlen != 1)
 		return -EIO;
 
-	if (bootnum == 1 || bootnum == 2)
-		return (bootnum == bootnum_dt) ? 1 : 0;
+	if (*bootnum == 1 || *bootnum == 2)
+		return (*bootnum == bootnum_dt) ? 1 : 0;
 
-	pr_err("invalid bootnum detected within persist! (0x%x)\n", bootnum);
+	pr_err("invalid bootnum detected within persist! (0x%x)\n", *bootnum);
 	return -EINVAL;
 }
 
+/*
+ * mainly for NOR devices that uses raw kernel and squashfs,
+ * or NAND devices using only UBI containing kernel
+ *
+ * example:
+ *
+ * partition@5a0000 {
+ * 	compatible = "mstc,boot";
+ * 	label = "firmware1";
+ * 	reg = <0x5a0000 0x3200000>;
+ * 	mstc,bootnum = <1>;
+ * 	mstc,persist = <&mtd_persist>;
+ * };
+ */
 static int
-mtdsplit_mstcboot_parse(struct mtd_info *mtd,
-			const struct mtd_partition **pparts,
-			struct mtd_part_parser_data *data)
+mstcboot_parse_image_parts(struct mtd_info *mtd,
+			   struct mtd_partition *parts)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
-	u32 offset = 0;
-	size_t retlen;
-	size_t kern_len = 0;
+	size_t retlen, kern_len = 0;
 	size_t rootfs_offset;
-	struct mtd_partition *parts;
+	u32 offset = 0;
 	enum mtdsplit_part_type type;
 	u_char buf[0x40];
 	int ret, nr_parts, index = 0;
-
-
-	ret = mstcboot_is_active(mtd);
-	if (ret < 0)
-		return ret;
-	else if (ret == 0)
-		return -ENODEV;
 
 	of_property_read_u32(np, "mstc,kernel-offset", &offset);
 
@@ -146,8 +150,113 @@ mtdsplit_mstcboot_parse(struct mtd_info *mtd,
 	parts[index].offset = rootfs_offset;
 	parts[index].size = mtd->size - rootfs_offset;
 
-	*pparts = parts;
 	return nr_parts;
+}
+
+/*
+ * mainly for NAND devices that uses raw-kernel and UBI and needs
+ * splitted kernel/ubi partitions when sysupgrade
+ *
+ * example:
+ *
+ * partition@3c0000 {
+ * 	compatible = "mstc,boot";
+ * 	reg = <0x3c0000 0x3240000>;
+ * 	label = "firmware1";
+ * 	mstc,bootnum = <1>;
+ * 	mstc,persist = <&mtd_persist>;
+ * 	#address-cells = <1>;
+ * 	#size-cells = <1>;
+ *
+ * 	partition@0 {
+ * 		reg = <0x0 0x800000>;
+ * 		label-base = "kernel";
+ * 	};
+ *
+ * 	partition@800000 {
+ * 		reg = <0x800000 0x2a40000>;
+ * 		label-base = "ubi";
+ * 	};
+};
+ */
+static int
+mstcboot_parse_fixed_parts(struct mtd_info *mtd,
+			   struct mtd_partition *parts,
+			   int active, u_char bootnum)
+{
+	struct device_node *np = mtd_get_of_node(mtd);
+	struct device_node *child;
+	int ret, nr_parts, index = 0;
+
+	nr_parts = of_get_child_count(np);
+	if (nr_parts > NR_PARTS_MAX) {
+		pr_err("too many partitions found!\n");
+		return -EINVAL;
+	}
+
+	parts = kcalloc(nr_parts, sizeof(*parts), GFP_KERNEL);
+	if (!parts)
+		return -ENOMEM;
+
+	for_each_child_of_node(np, child) {
+		u32 reg[2];
+		if (of_n_addr_cells(child) != 1 ||
+		    of_n_size_cells(child) != 1)
+		{
+			ret = -EINVAL;
+			break;
+		}
+
+		ret = of_property_read_u32_array(child, "reg", reg, 2);
+		if (ret)
+			break;
+		ret = of_property_read_string(child, "label-base",
+					      &parts[index].name);
+		if (ret)
+			break;
+
+		if (!active) {
+			parts[index].name = devm_kasprintf(&mtd->dev, GFP_KERNEL,
+						"%s%u", parts[index].name, bootnum);
+			if (!parts[index].name) {
+				ret = -ENOMEM;
+				break;
+			}
+		}
+		parts[index].offset = reg[0];
+		parts[index].size = reg[1];
+		index++;
+	}
+	of_node_put(child);
+
+	if (ret)
+		kfree(parts);
+	return ret ? ret : nr_parts;
+}
+
+static int
+mtdsplit_mstcboot_parse(struct mtd_info *mtd,
+			const struct mtd_partition **pparts,
+			struct mtd_part_parser_data *data)
+{
+	struct device_node *np = mtd_get_of_node(mtd);
+	struct mtd_partition *parts;
+	u_char bootnum;
+	int ret;
+
+	ret = mstcboot_is_active(mtd, &bootnum);
+	if (ret < 0)
+		return ret;
+
+	if (of_get_child_count(np))
+		ret = mstcboot_parse_fixed_parts(mtd, parts, ret, bootnum);
+	else if (ret != 0)
+		ret = mstcboot_parse_image_parts(mtd, parts);
+	else
+		return -ENODEV;
+
+	*pparts = parts;
+	return ret;
 }
 
 static const struct of_device_id mtdsplit_mstcboot_of_match_table[] = {
