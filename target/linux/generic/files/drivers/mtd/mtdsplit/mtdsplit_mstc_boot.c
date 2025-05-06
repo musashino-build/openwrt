@@ -39,15 +39,16 @@
 
 /* check whether the current mtd device is active or not */
 static int
-mstcboot_is_active(struct mtd_info *mtd, u_char *bootnum)
+mstcboot_is_active(struct mtd_info *mtd, u32 *bootnum_dt)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
 	struct device_node *persist_np;
 	size_t retlen;
-	u32 bootnum_dt, persist_offset;
+	u32 persist_offset;
+	u_char bootnum;
 	int ret;
 
-	ret = of_property_read_u32(np, "mstc,bootnum", &bootnum_dt);
+	ret = of_property_read_u32(np, "mstc,bootnum", bootnum_dt);
 	if (ret)
 		return ret;
 
@@ -62,18 +63,18 @@ mstcboot_is_active(struct mtd_info *mtd, u_char *bootnum)
 	if (ret)
 		return ret;
 	ret = mtd_read(mtd->parent, persist_offset + PERSIST_BOOTNUM_OFFSET,
-		       1, &retlen, bootnum);
+		       1, &retlen, &bootnum);
 	if (ret)
 		return ret;
 	if (retlen != 1)
 		return -EIO;
 
-	switch (*bootnum) {
+	switch (bootnum) {
 	case 0 ... 2:
-		return (*bootnum == bootnum_dt) ? 1 : 0;
+		return (bootnum == *bootnum_dt) ? 1 : 0;
 	default:
 		pr_err("invalid bootnum detected within persist! (0x%x)\n",
-		       *bootnum);
+		       bootnum);
 		return -EINVAL;
 	}
 }
@@ -187,7 +188,7 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 static int
 mstcboot_parse_fixed_parts(struct mtd_info *mtd,
 			   const struct mtd_partition **pparts,
-			   int active, u_char bootnum)
+			   int active, u32 bootnum_dt)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
 	struct device_node *child;
@@ -223,7 +224,8 @@ mstcboot_parse_fixed_parts(struct mtd_info *mtd,
 
 		if (!active) {
 			parts[index].name = devm_kasprintf(&mtd->dev, GFP_KERNEL,
-						"%s%u", parts[index].name, bootnum);
+						"%s%u",
+						parts[index].name, bootnum_dt);
 			if (!parts[index].name) {
 				ret = -ENOMEM;
 				break;
@@ -248,15 +250,15 @@ mtdsplit_mstcboot_parse(struct mtd_info *mtd,
 			struct mtd_part_parser_data *data)
 {
 	struct device_node *np = mtd_get_of_node(mtd);
-	u_char bootnum;
+	u32 bootnum_dt;
 	int ret;
 
-	ret = mstcboot_is_active(mtd, &bootnum);
+	ret = mstcboot_is_active(mtd, &bootnum_dt);
 	if (ret < 0)
 		return ret;
 
 	if (of_get_child_count(np))
-		ret = mstcboot_parse_fixed_parts(mtd, pparts, ret, bootnum);
+		ret = mstcboot_parse_fixed_parts(mtd, pparts, ret, bootnum_dt);
 	else if (ret != 0)
 		ret = mstcboot_parse_image_parts(mtd, pparts);
 	else
