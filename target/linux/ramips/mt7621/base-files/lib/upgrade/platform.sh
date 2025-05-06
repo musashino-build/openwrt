@@ -165,7 +165,7 @@ platform_do_upgrade() {
 	elecom,wrc-x1800gs)
 		[ "$(fw_printenv -n bootmenu_delay)" != "0" ] || \
 			fw_setenv bootmenu_delay 3
-		iodata_mstc_set_flag "bootnum" "persist" "0x4" "1,2" "1"
+		iodata_mstc_dualboot_prepare
 		nand_do_upgrade "$1"
 		;;
 	iodata,wn-ax1167gr2|\

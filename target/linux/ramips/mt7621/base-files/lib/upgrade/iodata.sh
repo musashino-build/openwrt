@@ -86,3 +86,39 @@ iodata_mstc_set_flag() {
 		echo " --> set \"$name\" flag to $setval (valid: $valid)"
 	fi
 }
+
+# setup $CI_KERNPART and $CI_UBIPART
+#
+# Note: almost devices have 1/2 as bootnum in the "persist" partition,
+#       but WN-DEAX1800GR has 0/1 in the "working" partition
+iodata_mstc_dualboot_prepare() {
+	local mtddev="$(find_mtd_part ${1:-persist})"
+	local values="${2:-1,2}"
+	local bootnum
+
+	if [ -z "$mtddev" ]; then
+		v "mtd for bootnum not found"
+		iodata_mstc_prepare_fail
+	fi
+
+	bootnum=$(iodata_mstc_rw_byte "$mtddev" 0x4)
+	case "$bootnum" in
+	${values%,*}|${values#*,}) ;;
+	*)
+		v "invalid bootnum found! ($bootnum) rebooting..."
+		iodata_mstc_prepare_fail
+		;;
+	esac
+
+	CI_KERNPART="kernel$bootnum"
+	# currently in use as "kernel" if no "kernel<bootnum>"
+	[ -z "$(find_mtd_index $CI_KERNPART)" ] &&
+		CI_KERNPART="kernel"
+
+	CI_UBIPART="ubi$bootnum"
+	# currently in use as "ubi" if no "ubi<bootnum>"
+	[ -z "$(find_mtd_index $CI_UBIPART)" ] &&
+		CI_UBIPART="ubi"
+
+	v "next: $CI_KERNPART/$CI_UBIPART (bootnum: $bootnum)"
+}
