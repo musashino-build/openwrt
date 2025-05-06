@@ -68,11 +68,14 @@ mstcboot_is_active(struct mtd_info *mtd, u_char *bootnum)
 	if (retlen != 1)
 		return -EIO;
 
-	if (*bootnum == 1 || *bootnum == 2)
+	switch (*bootnum) {
+	case 0 ... 2:
 		return (*bootnum == bootnum_dt) ? 1 : 0;
-
-	pr_err("invalid bootnum detected within persist! (0x%x)\n", *bootnum);
-	return -EINVAL;
+	default:
+		pr_err("invalid bootnum detected within persist! (0x%x)\n",
+		       *bootnum);
+		return -EINVAL;
+	}
 }
 
 /*
