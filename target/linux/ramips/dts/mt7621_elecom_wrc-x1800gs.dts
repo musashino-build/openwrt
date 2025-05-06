@@ -162,20 +162,22 @@
 
 		/* "RAS1" on stock fw */
 		partition@3c0000 {
-			compatible = "fixed-partitions";
+			compatible = "mstc,boot";
 			reg = <0x3c0000 0x3240000>;
-			label = "firmware";
+			label = "firmware1";
+			mstc,bootnum = <1>;
+			mstc,persist = <&mtd_persist>;
 			#address-cells = <1>;
 			#size-cells = <1>;
 
 			partition@0 {
 				reg = <0x0 0x800000>;
-				label = "kernel";
+				label-base = "kernel";
 			};
 
 			partition@800000 {
 				reg = <0x800000 0x2a40000>;
-				label = "ubi";
+				label-base = "ubi";
 			};
 		};
 
@@ -187,8 +189,24 @@
 
 		/* "RAS2" on stock fw */
 		partition@3700000 {
+			compatible = "mstc,boot";
 			reg = <0x3700000 0x3240000>;
 			label = "firmware2";
+			mstc,bootnum = <2>;
+			mstc,persist = <&mtd_persist>;
+
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			partition@0 {
+				reg = <0x0 0x800000>;
+				label-base = "kernel";
+			};
+
+			partition@800000 {
+				reg = <0x800000 0x2a40000>;
+				label-base = "ubi";
+			};
 		};
 
 		partition@6940000 {
@@ -197,7 +215,7 @@
 			read-only;
 		};
 
-		partition@6a40000 {
+		mtd_persist: partition@6a40000 {
 			reg = <0x6a40000 0x100000>;
 			label = "persist";
 		};
