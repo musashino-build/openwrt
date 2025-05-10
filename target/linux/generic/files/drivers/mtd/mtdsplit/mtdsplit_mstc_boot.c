@@ -101,14 +101,11 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 	struct mtd_partition *parts;
 	size_t retlen, kern_len = 0;
 	size_t rootfs_offset;
-	u32 offset = 0;
 	enum mtdsplit_part_type type;
 	u_char buf[0x40];
 	int ret, nr_parts, index = 0;
 
-	of_property_read_u32(np, "mstc,kernel-offset", &offset);
-
-	ret = mtd_read(mtd, offset, sizeof(struct uimage_header), &retlen, buf);
+	ret = mtd_read(mtd, 0, sizeof(struct uimage_header), &retlen, buf);
 	if (ret)
 		return ret;
 	if (retlen != sizeof(struct uimage_header))
@@ -118,7 +115,7 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 		/* Flattened Image Tree (FIT) */
 		struct fdt_header *fdthdr = (void *)buf;
 
-		kern_len = offset + be32_to_cpu(fdthdr->totalsize);
+		kern_len = be32_to_cpu(fdthdr->totalsize);
 	} else {
 		/* Legacy uImage */
 		struct uimage_header *uimghdr = (void *)buf;
@@ -128,8 +125,7 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 
 		if (be32_to_cpu(uimghdr->ih_magic) == IH_MAGIC ||
 		    (magic_dt && be32_to_cpu(uimghdr->ih_magic) == magic_dt))
-			kern_len = offset + sizeof(*uimghdr)
-					+ be32_to_cpu(uimghdr->ih_size);
+			kern_len = sizeof(*uimghdr) + be32_to_cpu(uimghdr->ih_size);
 	}
 
 	nr_parts = (kern_len > 0) ? 2 : 1;
