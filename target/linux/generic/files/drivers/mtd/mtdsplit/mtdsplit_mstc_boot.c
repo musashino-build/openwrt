@@ -97,7 +97,6 @@ static int
 mstcboot_parse_image_parts(struct mtd_info *mtd,
 			   const struct mtd_partition **pparts)
 {
-	struct device_node *np = mtd_get_of_node(mtd);
 	struct mtd_partition *parts;
 	size_t retlen, kern_len = 0;
 	size_t rootfs_offset;
@@ -116,16 +115,11 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 		struct fdt_header *fdthdr = (void *)buf;
 
 		kern_len = be32_to_cpu(fdthdr->totalsize);
-	} else {
+	} else if (be32_to_cpu(*(u32 *)buf) == IH_MAGIC) {
 		/* Legacy uImage */
 		struct uimage_header *uimghdr = (void *)buf;
-		u32 magic_dt;
 
-		of_property_read_u32(np, "mstc,kernel-magic", &magic_dt);
-
-		if (be32_to_cpu(uimghdr->ih_magic) == IH_MAGIC ||
-		    (magic_dt && be32_to_cpu(uimghdr->ih_magic) == magic_dt))
-			kern_len = sizeof(*uimghdr) + be32_to_cpu(uimghdr->ih_size);
+		kern_len = sizeof(*uimghdr) + be32_to_cpu(uimghdr->ih_size);
 	}
 
 	nr_parts = (kern_len > 0) ? 2 : 1;
