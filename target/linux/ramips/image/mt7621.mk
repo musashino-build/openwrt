@@ -1310,8 +1310,7 @@ define Device/elecom_wrc-x1800gs
   IMAGE_SIZE := 51456k
   IMAGES += factory.bin
   IMAGE/factory.bin := append-kernel | pad-to $$$$(KERNEL_SIZE) | \
-	append-ubi | znet-header 4.04(XVF.1)b90 COMC 0x68 | \
-	elecom-product-header WRC-X1800GS | check-size
+	append-ubi | check-size
   DEVICE_PACKAGES := kmod-mt7915-firmware
 endef
 TARGET_DEVICES += elecom_wrc-x1800gs
