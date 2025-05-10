@@ -102,7 +102,7 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 	size_t rootfs_offset;
 	enum mtdsplit_part_type type;
 	u_char buf[0x40];
-	int ret, nr_parts, index = 0;
+	int ret, nr_parts = 1, index = 0;
 
 	ret = mtd_read(mtd, 0, sizeof(struct uimage_header), &retlen, buf);
 	if (ret)
@@ -113,22 +113,21 @@ mstcboot_parse_image_parts(struct mtd_info *mtd,
 	if (be32_to_cpu(*(u32 *)buf) == OF_DT_HEADER) {
 		/* Flattened Image Tree (FIT) */
 		struct fdt_header *fdthdr = (void *)buf;
-
 		kern_len = be32_to_cpu(fdthdr->totalsize);
 	} else if (be32_to_cpu(*(u32 *)buf) == IH_MAGIC) {
 		/* Legacy uImage */
 		struct uimage_header *uimghdr = (void *)buf;
-
 		kern_len = sizeof(*uimghdr) + be32_to_cpu(uimghdr->ih_size);
 	}
 
-	nr_parts = (kern_len > 0) ? 2 : 1;
-
 	ret = mtd_find_rootfs_from(mtd, kern_len, mtd->size, &rootfs_offset, &type);
 	if (ret) {
-		pr_debug("no rootfs after kernel in \"%s\"\n", mtd->name);
+		pr_debug("no rootfs in \"%s\"\n", mtd->name);
 		return ret;
 	}
+
+	if (kern_len > 0)
+		nr_parts++;
 
 	parts = kcalloc(nr_parts, sizeof(*parts), GFP_KERNEL);
 	if (!parts)
