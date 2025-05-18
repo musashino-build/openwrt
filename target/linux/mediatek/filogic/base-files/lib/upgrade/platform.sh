@@ -149,7 +149,11 @@ platform_do_upgrade() {
 	elecom,wrc-x3000gs3)
 		local bootnum="$(mstc_rw_bootnum)"
 		case "$bootnum" in
-		1|2)	CI_UBIPART="firmware$bootnum" ;;
+		1|2)
+			CI_UBIPART="ubi$bootnum"
+			[ -z "$(find_mtd_index $CI_UBIPART)" ] &&
+				CI_UBIPART="ubi"
+			;;
 		*)
 			v "invalid bootnum found ($bootnum), rebooting..."
 			nand_do_upgrade_failed
