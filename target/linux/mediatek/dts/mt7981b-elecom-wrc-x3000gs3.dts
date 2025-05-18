@@ -297,6 +297,13 @@
 				reg = <0x5a0000 0x3200000>;
 				mstc,bootnum = <1>;
 				mstc,persist = <&mtd_persist>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				partition@0 {
+					label-base = "ubi";
+					reg = <0x0 0x3200000>;
+				};
 			};
 
 			partition@37a0000 {
@@ -318,6 +325,13 @@
 				reg = <0x3b40000 0x3200000>;
 				mstc,bootnum = <2>;
 				mstc,persist = <&mtd_persist>;
+				#address-cells = <1>;
+				#size-cells = <1>;
+
+				partition@0 {
+					label-base = "ubi";
+					reg = <0x0 0x3200000>;
+				};
 			};
 
 			partition@6d40000 {
