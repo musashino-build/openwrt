@@ -80,8 +80,7 @@ mstcboot_is_active(struct mtd_info *mtd, u32 *bootnum_dt)
 }
 
 /*
- * mainly for NOR devices that uses raw kernel and squashfs,
- * or NAND devices using only UBI containing kernel
+ * mainly for NOR devices that uses raw kernel and squashfs
  *
  * example:
  *
