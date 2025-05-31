@@ -6,7 +6,7 @@
 
 / {
 	model = "ELECOM WRC-X3000GS3";
-	compatible = "elecom,wrc-x3000gs3", "mediatek,mt7981";
+	compatible = "elecom,wrc-x3000gs3", "mediatek,mt7981b";
 
 	aliases {
 		label-mac-device = &gmac1;
