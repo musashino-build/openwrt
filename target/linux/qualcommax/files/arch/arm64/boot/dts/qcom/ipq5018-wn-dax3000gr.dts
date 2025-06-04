@@ -31,7 +31,7 @@
 		pinctrl-0 = <&button_pins>;
 		pinctrl-names = "default";
 
-		reset-button {
+		button-reset {
 			label = "reset";
 			gpios = <&tlmm 22 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
@@ -58,7 +58,7 @@
 			linux,input-type = <EV_SW>;
 		};
 
-		wps-button {
+		button-wps {
 			label = "wps";
 			gpios = <&tlmm 38 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_WPS_BUTTON>;
@@ -84,7 +84,7 @@
 
 		led_status_red: led-2 {
 			gpios = <&tlmm 16 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_RED>;
+			color = <LED_COLOR_ID_ORANGE>;
 			function = LED_FUNCTION_STATUS;
 		};
 
@@ -104,6 +104,7 @@
 			gpios = <&tlmm 26 GPIO_ACTIVE_HIGH>;
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_POWER;
+			default-state = "on";
 		};
 
 		led-6 {
