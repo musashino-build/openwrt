@@ -29,7 +29,7 @@ define Device/checkpoint_v-80
   ARTIFACTS := initramfs.dtb initramfs.scr
   ARTIFACT/initramfs.dtb := append-dtb
   ARTIFACT/initramfs.scr := boot-scr INIT | append-bootscript
-  DEVICE_PACKAGES := kmod-hwmon-nct7802 kmod-rtc-ds1307
+  DEVICE_PACKAGES := kmod-dsa-mv88e6xxx kmod-hwmon-nct7802 kmod-rtc-ds1307
 endef
 TARGET_DEVICES += checkpoint_v-80
 
