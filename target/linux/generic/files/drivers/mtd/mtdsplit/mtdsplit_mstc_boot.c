@@ -243,16 +243,19 @@ mtdsplit_mstcboot_parse(struct mtd_info *mtd,
 
 	ret = mstcboot_is_active(mtd, &bootnum_dt);
 	if (ret < 0)
-		return ret;
+		goto exit;
 
 	if (of_get_child_count(np))
 		ret = mstcboot_parse_fixed_parts(mtd, pparts, ret, bootnum_dt);
 	else if (ret != 0)
 		ret = mstcboot_parse_image_parts(mtd, pparts);
-	else
-		return -ENODEV;
 
-	return ret;
+exit:
+	/*
+	 * return 0 when ret=-ENODEV, to prevent deletion of
+	 * parent mtd partitions on Linux 6.7 and later
+	 */
+	return ret == -ENODEV ? 0 : ret;
 }
 
 static const struct of_device_id mtdsplit_mstcboot_of_match_table[] = {
