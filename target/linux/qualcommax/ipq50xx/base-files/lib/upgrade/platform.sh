@@ -103,7 +103,8 @@ platform_pre_upgrade() {
 platform_do_upgrade() {
 	case "$(board_name)" in
 	elecom,wrc-x3000gs2|\
-	iodata,wn-dax3000gr)
+	iodata,wn-dax3000gr|\
+	iodata,wn-dax5400qr)
 		local delay
 
 		delay=$(fw_printenv bootdelay)
