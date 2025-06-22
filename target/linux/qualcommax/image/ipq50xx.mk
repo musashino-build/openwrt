@@ -89,7 +89,7 @@ define Device/iodata_wn-dax5400qr
 	IMAGES += factory.bin
 	IMAGE/factory.bin := append-ubi | qsdk-ipq-factory-nand | \
 		mstc-header 4.04(XZC.1)b90 0x480
-	DEVICE_PACKAGES := ipq-wifi-iodata_wn-dax5400qr
+	DEVICE_PACKAGES := ipq-wifi-iodata_wn-dax5400qr kmod-phy-realtek
 endef
 TARGET_DEVICES += iodata_wn-dax5400qr
 
