@@ -56,8 +56,11 @@ mstcboot_is_active(struct mtd_info *mtd, u32 *bootnum_dt)
 	if (!persist_np)
 		return -ENODATA;
 	/* is "persist" under the same node? */
-	if (persist_np->parent != np->parent)
+	if (persist_np->parent != np->parent) {
+		of_node_put(persist_np);
 		return -EINVAL;
+	}
+
 	ret = of_property_read_u32(persist_np, "reg", &persist_offset);
 	of_node_put(persist_np);
 	if (ret)
@@ -69,14 +72,7 @@ mstcboot_is_active(struct mtd_info *mtd, u32 *bootnum_dt)
 	if (retlen != 1)
 		return -EIO;
 
-	switch (bootnum) {
-	case 0 ... 2:
-		return (bootnum == *bootnum_dt) ? 1 : 0;
-	default:
-		pr_err("invalid bootnum detected within persist! (0x%x)\n",
-		       bootnum);
-		return -EINVAL;
-	}
+	return (bootnum == *bootnum_dt) ? 1 : 0;
 }
 
 /*
