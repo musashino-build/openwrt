@@ -52,45 +52,51 @@
 	leds {
 		compatible = "gpio-leds";
 
-		led_power_red: led-0 {
+		led-0 {
+			function = LED_FUNCTION_WAN;
+			color = <LED_COLOR_ID_GREEN>;
+			gpios = <&pio 8 GPIO_ACTIVE_LOW>;
+		};
+
+		led_power_red: led-1 {
 			function = LED_FUNCTION_POWER;
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&pio 9 GPIO_ACTIVE_LOW>;
 		};
 
-		led_power_green: led-1 {
+		led_power_green: led-2 {
 			function = LED_FUNCTION_POWER;
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pio 10 GPIO_ACTIVE_LOW>;
 		};
 
-		led-2 {
+		led-3 {
 			function = LED_FUNCTION_WLAN_2GHZ;
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&pio 11 GPIO_ACTIVE_LOW>;
 		};
 
-		led-3 {
+		led-4 {
 			function = LED_FUNCTION_WLAN_2GHZ;
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pio 12 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "phy0tpt";
 		};
 
-		led-4 {
+		led-5 {
 			function = LED_FUNCTION_WPS;
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&pio 13 GPIO_ACTIVE_LOW>;
 		};
 
-		led-5 {
+		led-6 {
 			function = LED_FUNCTION_WLAN_5GHZ;
 			color = <LED_COLOR_ID_GREEN>;
 			gpios = <&pio 34 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "phy1tpt";
 		};
 
-		led-6 {
+		led-7 {
 			function = LED_FUNCTION_WLAN_5GHZ;
 			color = <LED_COLOR_ID_RED>;
 			gpios = <&pio 35 GPIO_ACTIVE_LOW>;
@@ -128,17 +134,6 @@
 		nvmem-cells = <&macaddr_factory_24>;
 		nvmem-cell-names = "mac-address";
 	};
-};
-
-&int_gbe_phy {
-	pinctrl-0 = <&gbe_led0_pins>;
-	pinctrl-names = "default";
-};
-
-&int_gbe_phy_led0 {
-	color = <LED_COLOR_ID_GREEN>;
-	function = LED_FUNCTION_WAN;
-	status = "okay";
 };
 
 &mdio_bus {
