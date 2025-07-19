@@ -229,7 +229,7 @@
 	status = "okay";
 
 	label = "wan";
-	phy-handle = <&qca8081>;
+	phy-handle = <&rtl8221b>;
 	nvmem-cells = <&macaddr_appsblenv_ethaddr 2>;
 	nvmem-cell-names = "mac-address";
 };
@@ -269,7 +269,7 @@
 		reg = <4>;
 	};
 
-	qca8081: ethernet-phy@5 {
+	rtl8221b: ethernet-phy@5 {
 		reg = <5>;
 	};
 
