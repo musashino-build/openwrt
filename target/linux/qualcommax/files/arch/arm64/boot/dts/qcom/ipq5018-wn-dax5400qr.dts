@@ -106,12 +106,6 @@
 			color = <LED_COLOR_ID_ORANGE>;
 			function = LED_FUNCTION_STATUS;
 		};
-
-		led-6 {
-			gpios = <&tlmm 46 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_GREEN>;
-			function = LED_FUNCTION_WAN;
-		};
 	};
 
 	reserved-memory {
@@ -340,7 +334,7 @@
 
 	led_pins: led-state {
 		pins = "gpio13", "gpio23", "gpio24", "gpio25",
-		       "gpio26", "gpio28", "gpio46";
+		       "gpio26", "gpio28";
 		function = "gpio";
 		drive-strength = <8>;
 		bias-pull-down;
