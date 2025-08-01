@@ -295,6 +295,14 @@
 	status = "okay";
 
 	perst-gpios = <&tlmm 58 GPIO_ACTIVE_LOW>;
+
+	pcie@0 {
+		/* SDX55 */
+		wwan@0,0 {
+			compatible = "pci17cb,0306";
+			reg = <0x00010000 0 0 0 0>;
+		};
+	};
 };
 
 &prng {
