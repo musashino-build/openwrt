@@ -60,6 +60,9 @@
 };
 
 &tlmm {
+	pinctrl-0 = <&rj45_led_pins>;
+	pinctrl-names = "default";
+
 	mdio_pins: mdio-state {
 		mdc-pins {
 			pins = "gpio68";
@@ -101,6 +104,22 @@
 			drive-strength = <2>;
 			bias-disable;
 		};
+	};
+
+	rj45_led_pins: rj45-led-state {
+		mux {
+			pins = "gpio17";
+			function = "gpio";
+			drive-strength = <2>;
+			bias-pull-down;
+		};
+	};
+
+	hog-rj45-leds {
+		gpio-hog;
+		output-high;
+		gpios = <17 GPIO_ACTIVE_HIGH>;
+		line-name = "enable-rj45-leds";
 	};
 };
 
