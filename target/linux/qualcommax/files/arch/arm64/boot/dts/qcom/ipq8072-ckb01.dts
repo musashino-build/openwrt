@@ -1,0 +1,170 @@
+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+
+/dts-v1/;
+
+#include "ipq8074.dtsi"
+#include "ipq8074-hk-cpu.dtsi"
+#include "ipq8074-ess.dtsi"
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
+
+/ {
+	model = "OPPO CKB01";
+	compatible = "oppo,ckb01", "qcom,ipq8074";
+
+	aliases {
+		serial0 = &blsp1_uart5;
+	};
+
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+};
+
+&tlmm {
+	mdio_pins: mdio-state {
+		mdc-pins {
+			pins = "gpio68";
+			function = "mdc";
+			drive-strength = <4>;
+			bias-pull-up;
+		};
+
+		mdio-pins {
+			pins = "gpio69";
+			function = "mdio";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	};
+};
+
+&blsp1_spi1 { /* BLSP1 QUP1 */
+	pinctrl-0 = <&spi_0_pins>;
+	pinctrl-names = "default";
+	cs-gpios = <0>;
+	status = "okay";
+
+	flash@0 {
+		reg = <0>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <50000000>;
+
+		partitions {
+			compatible = "qcom,smem-part";
+		};
+	};
+};
+
+&blsp1_uart5 {
+	status = "okay";
+};
+
+&cryptobam {
+	status = "okay";
+};
+
+&crypto {
+	status = "okay";
+};
+
+&pcie_qmp0 {
+	status = "okay";
+};
+
+&pcie0 {
+	status = "okay";
+
+	perst-gpios = <&tlmm 58 GPIO_ACTIVE_LOW>;
+};
+
+&prng {
+	status = "okay";
+};
+
+&ssphy_0 {
+	status = "okay";
+};
+
+&qusb_phy_0 {
+	status = "okay";
+};
+
+&ssphy_1 {
+	status = "okay";
+};
+
+&qusb_phy_1 {
+	status = "okay";
+};
+
+&usb_0 {
+	status = "okay";
+};
+
+&usb_1 {
+	status = "okay";
+};
+
+&mdio {
+	status = "okay";
+
+	pinctrl-0 = <&mdio_pins>;
+	pinctrl-names = "default";
+	reset-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
+
+	ethernet-phy-package@8 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "qcom,qca8075-package";
+		reg = <8>;
+
+		qcom,package-mode = "psgmii";
+
+		qca8075_8: ethernet-phy@8 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			reg = <0x8>;
+		};
+
+		qca8075_9: ethernet-phy@9 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			reg = <0x9>;
+		};
+	};
+};
+
+&switch {
+	status = "okay";
+
+	switch_lan_bmp = <(ESS_PORT1 | ESS_PORT2)>; /* lan port bitmap */
+	switch_mac_mode = <MAC_MODE_PSGMII>; /* mac mode for uniphy instance0*/
+
+	qcom,port_phyinfo {
+		port@0 {
+			port_id = <1>;
+			phy_address = <8>;
+		};
+
+		port@1 {
+			port_id = <2>;
+			phy_address = <9>;
+		};
+	};
+};
+
+&edma {
+	status = "okay";
+};
+
+&dp1 {
+	status = "okay";
+	phy-handle = <&qca8075_8>;
+	label = "lan1";
+};
+
+&dp2 {
+	status = "okay";
+	phy-handle = <&qca8075_9>;
+	label = "lan2";
+};
