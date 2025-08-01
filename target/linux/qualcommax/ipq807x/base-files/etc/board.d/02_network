@@ -61,7 +61,8 @@ ipq807x_setup_interfaces()
 		ucidef_set_interface_lan "lan" "dhcp"
 		;;
 	netgear,rbs750|\
-	netgear,wax630)
+	netgear,wax630|\
+	oppo,ckb01)
 		ucidef_set_interface_lan "lan1 lan2" "dhcp"
 		;;
 	qnap,301w)
