@@ -348,6 +348,15 @@ define Device/netgear_wax630
 endef
 TARGET_DEVICES += netgear_wax630
 
+define Device/oppo_ckb01
+	$(call Device/FitImage)
+	DEVICE_VENDOR := OPPO
+	DEVICE_MODEL := CKB01
+	DEVICE_DTS_CONFIG := config@hk09
+	SOC := ipq8072
+endef
+TARGET_DEVICES += oppo_ckb01
+
 define Device/prpl_haze
 	$(call Device/FitImage)
 	$(call Device/EmmcImage)
