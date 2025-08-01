@@ -21,6 +21,12 @@
 		stdout-path = "serial0:115200n8";
 	};
 
+	gpio-restart {
+		compatible = "gpio-restart";
+		gpios = <&tlmm 62 GPIO_ACTIVE_LOW>;
+		open-source;
+	};
+
 	reg_usb_dcdc: regulator-usb-dcdc {
 		compatible = "regulator-fixed";
 		gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
