@@ -1,6 +1,7 @@
 #!/bin/sh /etc/rc.common
 
 START=99
+STOP=80
 EXTRA_COMMANDS="enable_wol disable_wol"
 EXTRA_HELP="	enable_wol      Enable WoL on EEPROM and NIC
 	disable_wol     Disable WoL on EEPROM and NIC"
@@ -39,7 +40,7 @@ iodata_wol_set_nic() {
 	fi
 }
 
-boot() {
+shutdown() {
 	case $(board_name) in
 	iodata,hdl-ta)
 		iodata_wol_set_nic "0-00503" "wake-on-lan@1e,0" "eth0" || true
@@ -51,7 +52,6 @@ enable_wol() {
 	case $(board_name) in
 	iodata,hdl-ta)
 		iodata_wol_set_eeprom "0-00503" 0x1e 1
-		iodata_wol_set_nic "0-00503" "wake-on-lan@1e,0" "eth0"
 		;;
 	esac
 }
@@ -60,7 +60,6 @@ disable_wol() {
 	case $(board_name) in
 	iodata,hdl-ta)
 		iodata_wol_set_eeprom "0-00503" 0x1e 0
-		iodata_wol_set_nic "0-00503" "wake-on-lan@1e,0" "eth0"
 		;;
 	esac
 }
