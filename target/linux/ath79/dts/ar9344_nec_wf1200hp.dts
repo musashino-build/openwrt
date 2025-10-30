@@ -10,11 +10,6 @@
 	compatible = "nec,wf1200hp", "qca,ar9344";
 	model = "NEC Aterm WF1200HP";
 
-/*	aliases {
-		led-running = &led_power_green;
-		led-upgrade = &led_power_green;
-	};*/
-
 	chosen {
 		/*
 		 * don't specify bootargs property in DeviceTree to
@@ -57,11 +52,7 @@
 		};
 	};
 
-	ath10k-leds {
-		/* all LEDs are connected to ath10k chip (QCA9882) */
-		compatible = "gpio-leds";
-
-	};
+	/* all LEDs are connected to ath10k chip (QCA9882) */
 };
 
 &ref {
