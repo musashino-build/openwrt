@@ -130,6 +130,7 @@ define Device/nec_wf1200hp
   $(Device/nec-netbsd-aterm)
   DEVICE_PACKAGES := kmod-ath10k-ct-smallbuffers ath10k-firmware-qca988x-ct \
 	-uboot-envtools
+  UBOOT_PATH := $$(STAGING_DIR_IMAGE)/$$(SOC)_nec_aterm_fe-u-boot.bin
 endef
 TARGET_DEVICES += nec_wf1200hp
 
