@@ -7,6 +7,10 @@
 #include "ar9344.dtsi"
 
 / {
+	aliases {
+		label-mac-device = &eth0;
+	};
+
 	chosen {
 		/*
 		 * don't specify bootargs property in DeviceTree to
