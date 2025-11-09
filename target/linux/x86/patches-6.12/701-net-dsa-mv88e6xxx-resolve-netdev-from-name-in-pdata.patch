@@ -1,0 +1,48 @@
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -7297,6 +7297,7 @@ static int mv88e6xxx_probe(struct mdio_d
+ 	const struct mv88e6xxx_info *compat_info = NULL;
+ 	struct device *dev = &mdiodev->dev;
+ 	struct device_node *np = dev->of_node;
++	struct net_device *netdev;
+ 	struct mv88e6xxx_chip *chip;
+ 	int port;
+ 	int err;
+@@ -7313,12 +7314,16 @@ static int mv88e6xxx_probe(struct mdio_d
+ 		if (!pdata->netdev)
+ 			return -EINVAL;
+ 
++		netdev = dev_get_by_name(&init_net, pdata->netdev);
++		if (!netdev)
++			return -EPROBE_DEFER;
++
+ 		for (port = 0; port < DSA_MAX_PORTS; port++) {
+ 			if (!(pdata->enabled_ports & (1 << port)))
+ 				continue;
+ 			if (strcmp(pdata->cd.port_names[port], "cpu"))
+ 				continue;
+-			pdata->cd.netdev[port] = &pdata->netdev->dev;
++			pdata->cd.netdev[port] = &netdev->dev;
+ 			break;
+ 		}
+ 	}
+@@ -7438,7 +7443,7 @@ out_phy:
+ 	mv88e6xxx_phy_destroy(chip);
+ out:
+ 	if (pdata)
+-		dev_put(pdata->netdev);
++		dev_put(netdev);
+ 
+ 	return err;
+ }
+--- a/include/linux/platform_data/mv88e6xxx.h
++++ b/include/linux/platform_data/mv88e6xxx.h
+@@ -11,7 +11,7 @@ struct dsa_mv88e6xxx_pdata {
+ 	struct dsa_chip_data cd;
+ 	const char *compatible;
+ 	unsigned int enabled_ports;
+-	struct net_device *netdev;
++	const char *netdev;
+ 	u32 eeprom_len;
+ 	int irq;
+ };
