@@ -1,0 +1,12 @@
+. /lib/functions.sh
+
+preinit_setup_tty() {
+	case $(board_name) in
+	iodata,hdl2-a-sata|\
+	iodata,hdl2-a-usb)
+		stty -F /dev/ttyS1 57600
+		;;
+	esac
+}
+
+boot_hook_add preinit_main preinit_setup_tty
