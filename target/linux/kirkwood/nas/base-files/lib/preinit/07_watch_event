@@ -50,6 +50,8 @@ preinit_watch_event() {
 	local line
 
 	case $(board_name) in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		while read line; do
