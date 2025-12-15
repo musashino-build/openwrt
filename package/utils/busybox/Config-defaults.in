@@ -816,7 +816,7 @@ config BUSYBOX_DEFAULT_FEATURE_STAT_FILESYSTEM
 	default n
 config BUSYBOX_DEFAULT_STTY
 	bool
-	default n
+	default y
 config BUSYBOX_DEFAULT_SUM
 	bool
 	default n
