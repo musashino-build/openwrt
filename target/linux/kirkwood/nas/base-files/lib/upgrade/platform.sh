@@ -44,7 +44,7 @@ platform_copy_config() {
 	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
-		iodata_disk_copy_config
+		iodata_disk_copy_config 2
 		;;
 	*)
 		return 0
