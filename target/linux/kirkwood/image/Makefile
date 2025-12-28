@@ -120,6 +120,7 @@ define Device/Default
   KERNEL_SUFFIX  := -uImage
   KERNEL_IN_UBI := 1
 
+  FILESYSTEMS := squashfs
   PAGESIZE := 2048
   SUBPAGESIZE := 512
   BLOCKSIZE := 128k
