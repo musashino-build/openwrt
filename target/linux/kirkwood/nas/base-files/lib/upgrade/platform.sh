@@ -24,6 +24,8 @@ platform_pre_upgrade() {
 	local board="$(board_name)"
 
 	case "$board" in
+	iodata,hdl-a-sata|\
+	iodata,hdl-a-usb|\
 	iodata,hdl2-a-sata|\
 	iodata,hdl2-a-usb)
 		# green, blink
