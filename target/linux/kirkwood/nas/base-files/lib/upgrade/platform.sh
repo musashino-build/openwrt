@@ -1,4 +1,4 @@
-RAMFS_COPY_BIN=''
+RAMFS_COPY_BIN='head'
 RAMFS_COPY_DATA=''
 
 PART_NAME=firmware
