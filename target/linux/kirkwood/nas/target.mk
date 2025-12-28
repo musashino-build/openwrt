@@ -1,6 +1,6 @@
 SUBTARGET:=nas
 DEVICE_TYPE:=nas
-BOARDNAME:=Devices which boot from SATA (NAS)
+BOARDNAME:=NAS Devices
 FEATURES+=ext4 boot-part rootfs-part
 DEFAULT_PACKAGES+=kmod-fs-ext4 kmod-hwmon-drivetemp e2fsprogs partx-utils
 
