@@ -20,6 +20,16 @@ platform_check_image() {
 	esac
 }
 
+platform_pre_upgrade() {
+	local board="$(board_name)"
+
+	case "$board" in
+	*)
+		return 0
+		;;
+	esac
+}
+
 platform_do_upgrade() {
 	local board="$(board_name)"
 
