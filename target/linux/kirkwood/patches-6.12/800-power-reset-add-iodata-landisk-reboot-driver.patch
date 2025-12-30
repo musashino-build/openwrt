@@ -1,0 +1,27 @@
+--- a/drivers/power/reset/Kconfig
++++ b/drivers/power/reset/Kconfig
+@@ -117,6 +117,14 @@ config POWER_RESET_HISI
+ 	help
+ 	  Reboot support for Hisilicon boards.
+ 
++config POWER_RESET_IODATA_LANDISK
++	tristate "I-O DATA LAN DISK reboot/power-off driver"
++	depends on ARCH_MVEBU || COMPILE_TEST
++	depends on OF_MDIO && PHYLIB
++	help
++	  This driver supports rebooting/turning off some I-O DATA LAN DISK
++	  series NAS devices by sending commands to the MCU (Renesas R8C).
++
+ config POWER_RESET_LINKSTATION
+ 	tristate "Buffalo LinkStation power-off driver"
+ 	depends on ARCH_MVEBU || COMPILE_TEST
+--- a/drivers/power/reset/Makefile
++++ b/drivers/power/reset/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_POWER_RESET_GEMINI_POWEROFF
+ obj-$(CONFIG_POWER_RESET_GPIO) += gpio-poweroff.o
+ obj-$(CONFIG_POWER_RESET_GPIO_RESTART) += gpio-restart.o
+ obj-$(CONFIG_POWER_RESET_HISI) += hisi-reboot.o
++obj-$(CONFIG_POWER_RESET_IODATA_LANDISK) += iodata-landisk-reboot.o
+ obj-$(CONFIG_POWER_RESET_LINKSTATION) += linkstation-poweroff.o
+ obj-$(CONFIG_POWER_RESET_MSM) += msm-poweroff.o
+ obj-$(CONFIG_POWER_RESET_MT6323) += mt6323-poweroff.o
