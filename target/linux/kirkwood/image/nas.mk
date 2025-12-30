@@ -92,6 +92,5 @@ define Device/iodata_hdl2-a-usb
   DEVICE_VARIANT := (USB)
   IMAGE/disk.img.gz := boot-image-fat l2a/uImage.l2a l2a/initrd.l2a | \
 	disk-image | gzip | append-metadata
-  DEVICE_PACKAGES += kmod-fs-vfat
 endef
 TARGET_DEVICES += iodata_hdl2-a-usb
