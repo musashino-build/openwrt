@@ -51,7 +51,7 @@ endef
 
 define Device/iodata_landisk
   DEVICE_VENDOR := I-O DATA
-  DEVICE_PACKAGES := kmod-rtc-rs5c372a
+  DEVICE_PACKAGES := kmod-iodata-landisk-reboot kmod-rtc-rs5c372a
   FILESYSTEMS := ext4
   COMPILE := $$(DEVICE_NAME).initrd
   COMPILE/$$(DEVICE_NAME).initrd := pad-extra 4
