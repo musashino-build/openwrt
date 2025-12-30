@@ -28,3 +28,19 @@ define KernelPackage/mvsdio/description
 endef
 
 $(eval $(call KernelPackage,mvsdio))
+
+define KernelPackage/iodata-landisk-reboot
+  SUBMENU:=$(OTHER_MENU)
+  TITLE:=I-O DATA LAN DISK series reboot driver
+  DEPENDS:=@TARGET_kirkwood
+  KCONFIG:= CONFIG_POWER_RESET_IODATA_LANDISK
+  FILES:= \
+	$(LINUX_DIR)/drivers/power/reset/iodata-landisk-reboot.ko
+  AUTOLOAD:=$(call AutoProbe,iodata-landisk-reboot,1)
+endef
+
+define KernelPackage/iodata-landisk-reboot/description
+ Reboot/Power-off support for I-O DATA LAN DISK series NAS.
+endef
+
+$(eval $(call KernelPackage,iodata-landisk-reboot))
