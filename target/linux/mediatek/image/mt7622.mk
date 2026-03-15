@@ -248,6 +248,24 @@ define Device/elecom_wrc-x3200gst3
 endef
 TARGET_DEVICES += elecom_wrc-x3200gst3
 
+define Device/iodata_wn-dax3600qr
+  DEVICE_VENDOR := I-O DATA
+  DEVICE_MODEL := WN-DAX3600QR
+  DEVICE_DTS_DIR := ../dts
+  DEVICE_DTS := mt7622-iodata-wn-dax3600qr
+  BLOCKSIZE := 128k
+  PAGESIZE := 2048
+  KERNEL_SIZE := 8192k
+  IMAGE_SIZE := 51456k
+  UBINIZE_OPTS := -E 5
+  IMAGES += factory.bin
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
+	append-ubi | znet-header 4.04(XZB.0)b90 COMC | check-size
+  DEVICE_PACKAGES := kmod-mt7915-firmware
+endef
+TARGET_DEVICES += iodata_wn-dax3600qr
+
 define Device/linksys_e8450
   DEVICE_VENDOR := Linksys
   DEVICE_MODEL := E8450
