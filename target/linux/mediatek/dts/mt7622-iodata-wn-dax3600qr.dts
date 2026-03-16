@@ -138,13 +138,6 @@
 		};
 	};
 
-	pwm7_pins: pwm1-2-pins {
-		mux {
-			function = "pwm";
-			groups = "pwm_ch7_2";
-		};
-	};
-
 	/* Serial NAND is shared pin with SPI-NOR */
 	serial_nand_pins: serial-nand-pins {
 		mux {
@@ -485,12 +478,6 @@
 		nvmem-cells = <&eeprom_factory_20000>;
 		nvmem-cell-names = "eeprom";
 	};
-};
-
-&pwm {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pwm7_pins>;
-	//status = "okay";
 };
 
 &pwrap {
