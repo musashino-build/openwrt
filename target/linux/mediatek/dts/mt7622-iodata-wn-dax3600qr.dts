@@ -281,6 +281,8 @@
 				rtl8221b_phy: ethernet-phy@5 {
 					compatible = "ethernet-phy-ieee802.3-c45";
 					reg = <5>;
+					reset-assert-us = <100000>;
+					reset-deassert-us = <100000>;
 				};
 			};
 		};
