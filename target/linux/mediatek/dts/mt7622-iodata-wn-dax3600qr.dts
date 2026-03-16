@@ -15,10 +15,10 @@
 
 	aliases {
 		serial0 = &uart0;
-//		led-boot = &led_power_green;
-//		led-failsafe = &led_power_red;
-//		led-running = &led_power_green;
-//		led-upgrade = &led_power_green;
+		led-boot = &led_status_green;
+		led-failsafe = &led_status_orange;
+		led-running = &led_status_green;
+		led-upgrade = &led_status_green;
 		label-mac-device = &wan;
 	};
 
@@ -31,82 +31,68 @@
 		device_type = "memory";
 	};
 
-/*	leds {
+	leds {
 		compatible = "gpio-leds";
 
 		led-0 {
-			gpios = <&pio 47 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_WPS;
-		};
-
-		led_power_red: led-1 {
-			gpios = <&pio 48 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_RED>;
-			function = LED_FUNCTION_POWER;
-			function-enumerator = <1>;
-		};
-
-		led_power_green: led-2 {
-			gpios = <&pio 49 GPIO_ACTIVE_HIGH>;
+			gpios = <&pio 3 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_POWER;
-			function-enumerator = <2>;
+		};
+
+		led-1 {
+			gpios = <&pio 4 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_WLAN;
+		};
+
+		led-2 {
+			gpios = <&pio 77 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_WAN_ONLINE;
 		};
 
 		led-3 {
-			gpios = <&pio 50 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_BLUE>;
-			function = LED_FUNCTION_POWER;
-			function-enumerator = <3>;
+			gpios = <&pio 100 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_INDICATOR;
 		};
 
-		led-4 {
-			gpios = <&pio 85 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_WHITE>;
-			function = LED_FUNCTION_WLAN;
-			function-enumerator = <1>;
-			linux,default-trigger = "phy0tpt";
+		led_status_orange: led-4 {
+			gpios = <&pio 101 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_ORANGE>;
+			function = LED_FUNCTION_STATUS;
 		};
 
-		led-5 {
-			gpios = <&pio 89 GPIO_ACTIVE_HIGH>;
-			color = <LED_COLOR_ID_WHITE>;
-			function = LED_FUNCTION_WLAN;
-			function-enumerator = <2>;
-			linux,default-trigger = "phy1radio";
+		led_status_green: led-5 {
+			gpios = <&pio 102 GPIO_ACTIVE_LOW>;
+			color = <LED_COLOR_ID_GREEN>;
+			function = LED_FUNCTION_STATUS;
 		};
 	};
 
 	keys {
 		compatible = "gpio-keys";
 
-		reset {
+		button-reset {
 			label = "reset";
 			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
 		};
 
-		ap {
-			label = "ap";
-			gpios = <&pio 42 GPIO_ACTIVE_LOW>;
+		button-leds-off {
+			label = "leds-off";
+			gpios = <&pio 5 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_0>;
 			linux,input-type = <EV_SW>;
 		};
 
-		router {
-			label = "router";
-			gpios = <&pio 43 GPIO_ACTIVE_LOW>;
-			linux,code = <BTN_1>;
-			linux,input-type = <EV_SW>;
-		};
-
-		wps {
+		button-wps {
 			label = "wps";
-			gpios = <&pio 102 GPIO_ACTIVE_LOW>;
+			gpios = <&pio 22 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_WPS_BUTTON>;
 		};
-	};*/
+	};
 };
 
 &cpu0 {
