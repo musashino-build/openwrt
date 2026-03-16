@@ -17,7 +17,6 @@
 		serial0 = &uart0;
 		led-boot = &led_status_green;
 		led-failsafe = &led_status_orange;
-		led-running = &led_status_green;
 		led-upgrade = &led_status_green;
 		label-mac-device = &wan;
 	};
@@ -38,6 +37,7 @@
 			gpios = <&pio 3 GPIO_ACTIVE_LOW>;
 			color = <LED_COLOR_ID_GREEN>;
 			function = LED_FUNCTION_POWER;
+			default-state = "on";
 		};
 
 		led-1 {
