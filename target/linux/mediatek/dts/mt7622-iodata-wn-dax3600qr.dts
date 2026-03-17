@@ -401,6 +401,7 @@
 
 			/* stock: "RAS2" */
 			partition@35c0000 {
+				compatible = "mstc,boot";
 				label = "firmware2";
 				reg = <0x35c0000 0x3240000>;
 				mstc,bootnum = <2>;
