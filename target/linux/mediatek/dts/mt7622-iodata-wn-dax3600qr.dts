@@ -306,8 +306,14 @@
 		nand-ecc-engine = <&snfi>;
 		mediatek,bmt-v2;
 		mediatek,bmt-table-size = <0x1000>;
-		mediatek,bmt-remap-range = <0x0 0x8c0000>,
-					   <0x1bc0000 0x30c0000>;
+		/*
+		 * - Preloader - kernel(firmware1)
+		 * - Config    - kernel(firmware2)
+		 * - Config2   - reserved
+		 */
+		mediatek,bmt-remap-range = <0x0 0xa80000>,
+					   <0x34c0000 0x3dc0000>,
+					   <0x6800000 0x75c0000>;
 
 		partitions {
 			compatible = "fixed-partitions";
