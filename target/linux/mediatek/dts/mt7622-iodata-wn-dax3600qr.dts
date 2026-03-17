@@ -105,75 +105,6 @@
 	sram-supply = <&mt6380_vm_reg>;
 };
 
-&pio {
-	eth_pins: eth-pins {
-		mux {
-			function = "eth";
-			groups = "mdc_mdio", "rgmii_via_gmac2";
-		};
-	};
-
-	pcie0_pins: pcie0-pins {
-		mux {
-			function = "pcie";
-			groups = "pcie0_pad_perst",
-				 "pcie0_1_waken",
-				 "pcie0_1_clkreq";
-		};
-	};
-
-	pcie1_pins: pcie1-pins {
-		mux {
-			function = "pcie";
-			groups = "pcie1_pad_perst",
-				 "pcie1_0_waken",
-				 "pcie1_0_clkreq";
-		};
-	};
-
-	pmic_bus_pins: pmic-bus-pins {
-		mux {
-			function = "pmic";
-			groups = "pmic_bus";
-		};
-	};
-
-	/* Serial NAND is shared pin with SPI-NOR */
-	serial_nand_pins: serial-nand-pins {
-		mux {
-			function = "flash";
-			groups = "snfi";
-		};
-
-		conf-cmd-data {
-			pins = "SPI_WP", "SPI_HOLD", "SPI_MOSI",
-			       "SPI_MISO", "SPI_CS";
-			drive-strength = <MTK_DRIVE_16mA>;
-			bias-pull-up;
-		};
-
-		conf-clk {
-			pins = "SPI_CLK";
-			drive-strength = <MTK_DRIVE_16mA>;
-			bias-pull-down;
-		};
-	};
-
-	uart0_pins: uart0-pins {
-		mux {
-			function = "uart";
-			groups = "uart0_0_tx_rx" ;
-		};
-	};
-
-	watchdog_pins: watchdog-pins {
-		mux {
-			function = "watchdog";
-			groups = "watchdog";
-		};
-	};
-};
-
 &eth {
 	pinctrl-names = "default";
 	pinctrl-0 = <&eth_pins>;
@@ -287,6 +218,121 @@
 			};
 		};
 	};
+};
+
+&pcie0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pcie0_pins>;
+	status = "okay";
+};
+
+&slot0 {
+	status = "okay";
+
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		ieee80211-freq-limit = <2400000 2500000>;
+		nvmem-cells = <&eeprom_factory_0>;
+		nvmem-cell-names = "eeprom";
+	};
+};
+
+&pcie1 {
+	pinctrl-0 = <&pcie1_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&slot1 {
+	status = "okay";
+
+	wifi@0,0 {
+		compatible = "mediatek,mt76";
+		reg = <0x0000 0 0 0 0>;
+		ieee80211-freq-limit = <5000000 6000000>;
+		nvmem-cells = <&eeprom_factory_20000>;
+		nvmem-cell-names = "eeprom";
+	};
+};
+
+&pio {
+	eth_pins: eth-pins {
+		mux {
+			function = "eth";
+			groups = "mdc_mdio", "rgmii_via_gmac2";
+		};
+	};
+
+	pcie0_pins: pcie0-pins {
+		mux {
+			function = "pcie";
+			groups = "pcie0_pad_perst",
+				 "pcie0_1_waken",
+				 "pcie0_1_clkreq";
+		};
+	};
+
+	pcie1_pins: pcie1-pins {
+		mux {
+			function = "pcie";
+			groups = "pcie1_pad_perst",
+				 "pcie1_0_waken",
+				 "pcie1_0_clkreq";
+		};
+	};
+
+	pmic_bus_pins: pmic-bus-pins {
+		mux {
+			function = "pmic";
+			groups = "pmic_bus";
+		};
+	};
+
+	/* Serial NAND is shared pin with SPI-NOR */
+	serial_nand_pins: serial-nand-pins {
+		mux {
+			function = "flash";
+			groups = "snfi";
+		};
+
+		conf-cmd-data {
+			pins = "SPI_WP", "SPI_HOLD", "SPI_MOSI",
+			       "SPI_MISO", "SPI_CS";
+			drive-strength = <MTK_DRIVE_16mA>;
+			bias-pull-up;
+		};
+
+		conf-clk {
+			pins = "SPI_CLK";
+			drive-strength = <MTK_DRIVE_16mA>;
+			bias-pull-down;
+		};
+	};
+
+	uart0_pins: uart0-pins {
+		mux {
+			function = "uart";
+			groups = "uart0_0_tx_rx" ;
+		};
+	};
+
+	watchdog_pins: watchdog-pins {
+		mux {
+			function = "watchdog";
+			groups = "watchdog";
+		};
+	};
+};
+
+&pwrap {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pmic_bus_pins>;
+	status = "okay";
+};
+
+&rtc {
+	status = "disabled";
 };
 
 &bch {
@@ -451,52 +497,6 @@
 			};
 		};
 	};
-};
-
-&pcie0 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pcie0_pins>;
-	status = "okay";
-};
-
-&slot0 {
-	status = "okay";
-
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		ieee80211-freq-limit = <2400000 2500000>;
-		nvmem-cells = <&eeprom_factory_0>;
-		nvmem-cell-names = "eeprom";
-	};
-};
-
-&pcie1 {
-	pinctrl-0 = <&pcie1_pins>;
-	pinctrl-names = "default";
-	status = "okay";
-};
-
-&slot1 {
-	status = "okay";
-
-	wifi@0,0 {
-		compatible = "mediatek,mt76";
-		reg = <0x0000 0 0 0 0>;
-		ieee80211-freq-limit = <5000000 6000000>;
-		nvmem-cells = <&eeprom_factory_20000>;
-		nvmem-cell-names = "eeprom";
-	};
-};
-
-&pwrap {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pmic_bus_pins>;
-	status = "okay";
-};
-
-&rtc {
-	status = "disabled";
 };
 
 &uart0 {
