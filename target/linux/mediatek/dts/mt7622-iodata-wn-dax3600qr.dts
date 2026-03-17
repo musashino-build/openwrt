@@ -491,7 +491,7 @@
 			};
 
 			partition@6c00000 {
-				label = "reserved";
+				label = "Backup";
 				reg = <0x6c00000 0x9c0000>;
 				read-only;
 			};
