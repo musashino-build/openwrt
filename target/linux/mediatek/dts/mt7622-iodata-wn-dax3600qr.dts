@@ -300,13 +300,13 @@
 			pins = "SPI_WP", "SPI_HOLD", "SPI_MOSI",
 			       "SPI_MISO", "SPI_CS";
 			drive-strength = <MTK_DRIVE_16mA>;
-			bias-pull-up;
+			bias-pull-up = <MTK_PUPD_SET_R1R0_01>;
 		};
 
 		conf-clk {
 			pins = "SPI_CLK";
 			drive-strength = <MTK_DRIVE_16mA>;
-			bias-pull-down;
+			bias-pull-down = <MTK_PUPD_SET_R1R0_10>;
 		};
 	};
 
