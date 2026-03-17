@@ -22,7 +22,8 @@
 	};
 
 	chosen {
-		bootargs = "earlycon=uart8250,mmio32,0x11002000 console=ttyS0,115200n8 swiotlb=512";
+		bootargs-override = "earlycon swiotlb=512";
+		stdout-path = "serial0:115200n8";
 	};
 
 	memory@40000000 {
