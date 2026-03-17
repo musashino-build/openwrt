@@ -476,7 +476,6 @@
 			mtd_persist: partition@6900000 {
 				label = "persist";
 				reg = <0x6900000 0x100000>;
-				read-only;
 			};
 
 			partition@6a00000 {
