@@ -257,11 +257,14 @@ define Device/iodata_wn-dax3600qr
   PAGESIZE := 2048
   KERNEL_SIZE := 8192k
   IMAGE_SIZE := 51456k
+  KERNEL := kernel-bin | lzma | \
+	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
+	znet-header 4.04(XZB.0)b90 COMC
   UBINIZE_OPTS := -E 5
   IMAGES += factory.bin
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
-	append-ubi | znet-header 4.04(XZB.0)b90 COMC | check-size
+	append-ubi | check-size
   DEVICE_PACKAGES := kmod-mt7915-firmware
 endef
 TARGET_DEVICES += iodata_wn-dax3600qr
