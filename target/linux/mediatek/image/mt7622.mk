@@ -253,18 +253,19 @@ define Device/iodata_wn-dax3600qr
   DEVICE_MODEL := WN-DAX3600QR
   DEVICE_DTS_DIR := ../dts
   DEVICE_DTS := mt7622-iodata-wn-dax3600qr
-  BLOCKSIZE := 128k
-  PAGESIZE := 2048
-  KERNEL_SIZE := 8192k
-  IMAGE_SIZE := 51456k
   KERNEL := kernel-bin | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb | \
 	znet-header 4.04(XZB.0)b90 COMC
-  UBINIZE_OPTS := -E 5
-  IMAGES += factory.bin
+  KERNEL_SIZE := 8192k
+  IMAGE_SIZE := 51456k
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
-  IMAGE/factory.bin := append-kernel | pad-to $$(KERNEL_SIZE) | \
-	append-ubi | check-size
+ifeq ($(IB),)
+ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
+  ARTIFACTS := initramfs-factory.bin
+  ARTIFACT/initramfs-factory.bin := append-image initramfs-kernel.bin | \
+	znet-header 4.04(XZB.0)b90 COMC | check-size
+endif
+endif
   DEVICE_PACKAGES := kmod-mt7915-firmware
 endef
 TARGET_DEVICES += iodata_wn-dax3600qr
