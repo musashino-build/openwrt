@@ -239,8 +239,9 @@
 				read-only;
 			};
 
+			/* stock: "ubi" */
 			partition@580000 {
-				label = "ubi";
+				label = "ubi_kernel";
 				reg = <0x580000 0x1a00000>;
 			};
 
@@ -283,12 +284,14 @@
 			};
 
 			/*
+			 * stock: "WTB"
+			 *
 			 * The "WTB" partition is for "ネット脅威ブロッカー" (DiXiM Security).
 			 * By default, a UBI is created with "dpi" volume. This UBI will
 			 * be created automatically if no "dpi" volume exists when using.
 			 */
 			partition@4880000 {
-				label = "WTB";
+				label = "ubi";
 				reg = <0x4880000 0x2c00000>;
 			};
 		};
