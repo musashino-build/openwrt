@@ -286,9 +286,11 @@
 			/*
 			 * stock: "WTB"
 			 *
-			 * The "WTB" partition is for "ネット脅威ブロッカー" (DiXiM Security).
-			 * By default, a UBI is created with "dpi" volume. This UBI will
-			 * be created automatically if no "dpi" volume exists when using.
+			 * The "WTB" partition is for "ネット脅威ブロッカー"
+			 * (en: Web Threat Blocker, DiXiM Security).
+			 * By default, a UBI with "dpi" volume exists. This UBI will
+			 * be rebuilt automatically if no "dpi" volume exists while
+			 * booting with stock firmware.
 			 */
 			partition@4880000 {
 				label = "ubi";
