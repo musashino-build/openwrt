@@ -185,7 +185,7 @@
 	pinctrl-names = "default";
 	status = "okay";
 
-	spi_nand: spi_nand@0 {
+	flash@0 {
 		compatible = "spi-nand";
 		reg = <0>;
 
