@@ -197,6 +197,14 @@ platform_do_upgrade() {
 		CI_KERNPART="linux"
 		nand_do_upgrade "$1"
 		;;
+	buffalo,wsr-3000ax4p|\
+	xiaomi,mi-router-ax3000t|\
+	xiaomi,mi-router-wr30u-stock|\
+	xiaomi,redmi-router-ax6000-stock)
+		CI_KERN_UBIPART="ubi_kernel"
+		CI_ROOT_UBIPART="ubi"
+		nand_do_upgrade "$1"
+		;;
 	buffalo,wsr-6000ax8|\
 	cudy,wr3000h-v1|\
 	cudy,wr3000p-v1)
@@ -290,13 +298,6 @@ platform_do_upgrade() {
 			nand_do_upgrade "$1"
 			;;
 		esac
-		;;
-	xiaomi,mi-router-ax3000t|\
-	xiaomi,mi-router-wr30u-stock|\
-	xiaomi,redmi-router-ax6000-stock)
-		CI_KERN_UBIPART=ubi_kernel
-		CI_ROOT_UBIPART=ubi
-		nand_do_upgrade "$1"
 		;;
 	*)
 		nand_do_upgrade "$1"
@@ -432,6 +433,11 @@ platform_pre_upgrade() {
 	asus,tuf-ax6000|\
 	asus,zenwifi-bt8)
 		asus_initial_setup
+		;;
+	buffalo,wsr-3000ax4p)
+		update_oem_ubi_volume "rootfs"      "ubi_kernel" "4"
+		update_oem_ubi_volume "rootfs_data" "ubi_kernel"
+		update_oem_ubi_volume "dpi"         "ubi"
 		;;
 	buffalo,wsr-6000ax8)
 		buffalo_initial_setup
