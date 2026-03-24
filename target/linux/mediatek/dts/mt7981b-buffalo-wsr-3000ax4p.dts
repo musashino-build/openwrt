@@ -46,12 +46,14 @@
 			label = "wb";
 			gpios = <&pio 23 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_0>;
+			linux,input_type = <EV_SW>;
 		};
 
 		switch-router {
 			label = "router";
 			gpios = <&pio 24 GPIO_ACTIVE_LOW>;
 			linux,code = <BTN_1>;
+			linux,input_type = <EV_SW>;
 		};
 	};
 
