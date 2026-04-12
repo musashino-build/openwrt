@@ -101,7 +101,7 @@ elecom,wrc-x3000gs3)
 	ucidef_set_led_netdev "wan" "wan" "green:wan" "wan"
 	;;
 elecom,wrc-x6000qs)
-	ucidef_set_led_netdev "wan" "wan" "mdio-bus:05:white:wan" "eth1" "link tx rx"
+	ucidef_set_led_netdev "wan" "wan" "mdio-bus:05:white:wan" "wan" "link tx rx"
 	;;
 glinet,gl-x3000|\
 glinet,gl-xe3000)

@@ -223,6 +223,7 @@
 		phy-mode = "2500base-x";
 		phy-handle = <&ethphy5>;
 
+		label = "wan";
 		nvmem-cells = <&macaddr_factory_24>;
 		nvmem-cell-names = "mac-address";
 	};
