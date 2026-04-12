@@ -221,7 +221,7 @@
 		reg = <1>;
 		status = "okay";
 		phy-mode = "2500base-x";
-		phy-handle = <&phy5>;
+		phy-handle = <&ethphy5>;
 
 		nvmem-cells = <&macaddr_factory_24>;
 		nvmem-cell-names = "mac-address";
@@ -235,7 +235,7 @@
 		reset-delay-us = <600>;
 		reset-post-delay-us = <20000>;
 
-		phy5: phy@5 {
+		ethphy5: ethernet-phy@5 {
 			compatible = "ethernet-phy-ieee802.3-c45";
 			reg = <5>;
 			max-speed = <2500>;
