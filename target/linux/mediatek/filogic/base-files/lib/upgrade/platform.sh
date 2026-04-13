@@ -445,6 +445,12 @@ platform_pre_upgrade() {
 	buffalo,wsr-6000ax8)
 		buffalo_initial_setup
 		;;
+	elecom,wrc-x6000qs)
+		local delay=$(fw_printenv -n bootmenu_delay)
+
+		[ -z "$delay" ] || [ "$delay" -eq "0" ] && \
+			fw_setenv bootmenu_delay 3
+		;;
 	xiaomi,mi-router-ax3000t|\
 	xiaomi,mi-router-wr30u-stock|\
 	xiaomi,redmi-router-ax6000-stock)
