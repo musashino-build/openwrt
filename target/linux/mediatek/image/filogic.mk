@@ -1585,7 +1585,7 @@ define Device/elecom_wrc-x6000qs
   DEVICE_DTS_DIR := ../dts
   DEVICE_DTS_LOADADDR := 0x47000000
   IMAGES += factory.bin
-  IMAGE/factory.bin := sysupgrade-tar | mstc-header 5.04(XZQ.0)b90 COMD | \
+  IMAGE/factory.bin := sysupgrade-tar | mstc-header 5.04(XZL.0)b90 COMD | \
 	elecom-product-header WRC-X6000QS
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
   DEVICE_PACKAGES := kmod-mt7915e kmod-mt7986-firmware mt7986-wo-firmware
