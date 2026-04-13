@@ -1584,12 +1584,7 @@ define Device/elecom_wrc-x6000qs
   DEVICE_DTS := mt7986b-elecom-wrc-x6000qs
   DEVICE_DTS_DIR := ../dts
   DEVICE_DTS_LOADADDR := 0x47000000
-  BLOCKSIZE := 128k
-  PAGESIZE := 2048
-  UBINIZE_OPTS := -E 5
-  KERNEL_IN_UBI := 1
-  IMAGE_SIZE := 51200k
-  IMAGES := sysupgrade.bin factory.bin
+  IMAGES += factory.bin
   IMAGE/factory.bin := sysupgrade-tar | mstc-header 5.04(XZQ.0)b90 COMD | \
 	elecom-product-header WRC-X6000QS
   IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
