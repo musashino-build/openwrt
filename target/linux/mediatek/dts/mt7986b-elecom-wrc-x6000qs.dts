@@ -305,8 +305,8 @@
 &spi0 {
 	status = "okay";
 
-    pinctrl-names = "default";
-    pinctrl-0 = <&spi_flash_pins>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi_flash_pins>;
 	num-cs = <2>;
 	cs-gpios = <0>, <0>;
 
