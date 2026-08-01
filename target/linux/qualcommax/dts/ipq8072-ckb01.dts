@@ -341,10 +341,10 @@
 	reset-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
 
 	ethernet-phy-package@8 {
-		#address-cells = <1>;
-		#size-cells = <0>;
 		compatible = "qcom,qca8075-package";
 		reg = <8>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 
 		qcom,package-mode = "psgmii";
 
@@ -360,37 +360,46 @@
 	};
 };
 
+&uniphy0 {
+	status = "okay";
+};
+
 &switch {
 	status = "okay";
 
-	switch_lan_bmp = <(ESS_PORT1 | ESS_PORT2)>; /* lan port bitmap */
-	switch_mac_mode = <MAC_MODE_PSGMII>; /* mac mode for uniphy instance0*/
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-	qcom,port_phyinfo {
 		port@0 {
-			port_id = <1>;
-			phy_address = <8>;
+			reg = <0>;
+			ethernet = <&edma>;
+			phy-mode = "internal";
+
+			fixed-link {
+				speed = <1000>;
+				full-duplex;
+			};
 		};
 
 		port@1 {
-			port_id = <2>;
-			phy_address = <9>;
+			reg = <1>;
+			label = "lan1";
+			phy-handle = <&qca8075_8>;
+			phy-mode = "psgmii";
+			pcs-handle = <&uniphy0 0>;
+		};
+
+		port@2 {
+			reg = <2>;
+			label = "lan2";
+			phy-handle = <&qca8075_9>;
+			phy-mode = "psgmii";
+			pcs-handle = <&uniphy0 1>;
 		};
 	};
 };
 
 &edma {
 	status = "okay";
-};
-
-&dp1 {
-	status = "okay";
-	phy-handle = <&qca8075_8>;
-	label = "lan1";
-};
-
-&dp2 {
-	status = "okay";
-	phy-handle = <&qca8075_9>;
-	label = "lan2";
 };
