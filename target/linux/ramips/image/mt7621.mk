@@ -624,7 +624,7 @@ define Device/buffalo_wex-1800ax4
   $(Device/dsa-migration)
   DEVICE_VENDOR := Buffalo
   DEVICE_MODEL := WEX-1800AX4
-  KERNEL_SIZE := 24576k
+  KERNEL_SIZE := 8192k
   KERNEL_LOADADDR := 0x82000000
   KERNEL := kernel-bin | relocate-kernel $(loadaddr-y) | lzma | \
 	fit lzma $$(KDIR)/image-$$(firstword $$(DEVICE_DTS)).dtb
