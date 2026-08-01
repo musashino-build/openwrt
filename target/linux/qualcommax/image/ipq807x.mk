@@ -406,6 +406,8 @@ define Device/oppo_ckb01
 	$(call Device/FitImage)
 	DEVICE_VENDOR := OPPO
 	DEVICE_MODEL := CKB01
+	DEVICE_ALT0_VENDOR := Softbank
+	DEVICE_ALT0_MODEL := AirTerminal 5
 	DEVICE_DTS_CONFIG := config@hk09
 	SOC := ipq8072
 	DEVICE_PACKAGES := kmod-mhi-pci-generic kmod-mhi-net kmod-mhi-wwan-ctrl
