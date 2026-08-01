@@ -116,7 +116,7 @@
 	partitions {
 		compatible = "fixed-partitions";
 		#address-cells = <1>;
-		#size-cells = <0x01>;
+		#size-cells = <1>;
 
 		partition@0 {
 			label = "u-boot";
