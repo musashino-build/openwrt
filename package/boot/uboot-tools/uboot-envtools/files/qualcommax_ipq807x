@@ -30,6 +30,7 @@ case "$board" in
 aliyun,ap8220|\
 compex,wpq873|\
 edgecore,eap102|\
+oppo,ckb01|\
 zyxel,nbg7815|\
 zyxel,nwa110ax|\
 zyxel,nwa210ax)
