@@ -216,7 +216,7 @@
 
 	pcie_pins: pcie-state {
 		mux {
-			pins = "gpio58", "gpio59";
+			pins = /*"gpio58",*/ "gpio59";
 			function = "gpio";
 			drive-strength = <8>;
 			bias-pull-down;
@@ -265,6 +265,13 @@
 		gpios = <17 GPIO_ACTIVE_HIGH>;
 		line-name = "enable-rj45-leds";
 	};
+
+	hog-sdx55-reset {
+		gpio-hog;
+		output-low;
+		gpios = <58 GPIO_ACTIVE_LOW>;
+		line-name = "sdx55-reset";
+	};
 };
 
 &blsp1_spi1 { /* BLSP1 QUP1 */
@@ -305,7 +312,12 @@
 
 	pinctrl-0 = <&pcie_pins>;
 	pinctrl-names = "default";
-	perst-gpios = <&tlmm 58 GPIO_ACTIVE_LOW>;
+	/*
+	 * Disable perst-gpios and pull the pin to LOW state by gpio-hog,
+	 * to deactivate SDX55 modem that is also used as an external WDT
+	 * of the IPQ8072A SoC.
+	 */
+	/* perst-gpios = <&tlmm 58 GPIO_ACTIVE_LOW>; */
 	wake-gpios = <&tlmm 59 GPIO_ACTIVE_LOW>;
 
 	pcie@0 {
