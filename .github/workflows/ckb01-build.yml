@@ -31,3 +31,4 @@ jobs:
           echo
           echo "=== Device tree references ==="
           find target -type f \( -name "*.dts" -o -name "*.dtsi" \) | grep -i ckb || true
+
