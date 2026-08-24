@@ -1,1 +1,33 @@
+name: CKB01 Check
 
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout CKB01 branch
+        uses: actions/checkout@v4
+        with:
+          ref: devadd/ckb01
+          fetch-depth: 1
+
+      - name: Show repository information
+        run: |
+          echo "=== Git ==="
+          git branch --show-current
+          git log -1 --oneline
+
+          echo
+          echo "=== Target directories ==="
+          find target -maxdepth 3 -type d | sort | grep -E "ipq807|qualcommax"
+
+          echo
+          echo "=== CKB01 references ==="
+          grep -Rni "ckb01" target package config 2>/dev/null | head -200 || true
+
+          echo
+          echo "=== Device tree references ==="
+          find target -type f \( -name "*.dts" -o -name "*.dtsi" \) | grep -i ckb || true
