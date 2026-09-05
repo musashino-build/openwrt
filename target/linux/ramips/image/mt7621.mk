@@ -645,17 +645,20 @@ define Device/buffalo_wsr-2533dhpl
 endef
 TARGET_DEVICES += buffalo_wsr-2533dhpl
 
-define Device/buffalo_wsr-2533dhplx
+define Device/buffalo_wsr-2533dhpl2
   $(Device/dsa-migration)
   DEVICE_VENDOR := Buffalo
+  DEVICE_MODEL := WSR-2533DHPL2
   DEVICE_PACKAGES := kmod-mt7615-firmware -uboot-envtools
   BUFFALO_TAG_PLATFORM := MTK
   BUFFALO_TAG_VERSION := 9.99
   BUFFALO_TAG_MINOR := 9.99
+  BUFFALO_TRX_MAGIC := 0x324c4850
   BLOCKSIZE := 128k
   PAGESIZE := 2048
   UBINIZE_OPTS := -E 5
   KERNEL_SIZE := 6144k
+  IMAGE_SIZE := 62592k
   IMAGES += factory.bin factory-uboot.bin
   IMAGE/factory.bin = append-ubi | \
 	buffalo-trx $$$$(BUFFALO_TRX_MAGIC) $$$$@ $(KDIR)/ubi_mark |\
@@ -668,20 +671,20 @@ define Device/buffalo_wsr-2533dhplx
 	buffalo-trx $$$$(BUFFALO_TRX_MAGIC) $(KDIR)/tmp/$$(DEVICE_NAME).null | \
 	sysupgrade-tar kernel=$$$$@ | append-metadata
 endef
-
-define Device/buffalo_wsr-2533dhpl2
-  $(Device/buffalo_wsr-2533dhplx)
-  DEVICE_MODEL := WSR-2533DHPL2
-  BUFFALO_TRX_MAGIC := 0x324c4850
-  IMAGE_SIZE := 62592k
-endef
 TARGET_DEVICES += buffalo_wsr-2533dhpl2
 
 define Device/buffalo_wsr-2533dhpls
-  $(Device/buffalo_wsr-2533dhplx)
+  $(Device/dsa-migration)
+  DEVICE_VENDOR := Buffalo
   DEVICE_MODEL := WSR-2533DHPLS
-  BUFFALO_TRX_MAGIC := 0x534c4844
-  IMAGE_SIZE := 24576k
+  IMAGE/sysupgrade.bin := \
+	buffalo-trx 0x534c4844 $(KDIR)/tmp/$$(DEVICE_NAME).null | \
+	sysupgrade-tar kernel=$$$$@ | append-metadata
+  DEVICE_PACKAGES := kmod-mt7615-firmware -uboot-envtools
+  DEVICE_COMPAT_VERSION := 2.0
+  DEVICE_COMPAT_MESSAGE := Partition table has been changed due to rootfs expansion. \
+	Please re-install via initramfs image uploaded by tftp that can be triggered \
+	by AOSS button when booting (file: linux.trx-recovery, serverip: 192.168.11.2).
 endef
 TARGET_DEVICES += buffalo_wsr-2533dhpls
 

@@ -15,8 +15,7 @@ platform_check_image() {
 	[ "$#" -gt 1 ] && return 1
 
 	case "$board" in
-	buffalo,wsr-2533dhpl2|\
-	buffalo,wsr-2533dhpls)
+	buffalo,wsr-2533dhpl2)
 		buffalo_check_image "$board" "$magic" "$1" || return 1
 		;;
 	esac
@@ -83,6 +82,7 @@ platform_do_upgrade() {
 	beeline,smartbox-turbo|\
 	beeline,smartbox-turbo-plus|\
 	belkin,rt1800|\
+	buffalo,wsr-2533dhpls|\
 	dlink,covr-x1860-a1|\
 	dlink,dap-x1860-a1|\
 	dlink,dir-1360-a1|\
@@ -163,8 +163,7 @@ platform_do_upgrade() {
 	zyxel,nwa55axe)
 		nand_do_upgrade "$1"
 		;;
-	buffalo,wsr-2533dhpl2|\
-	buffalo,wsr-2533dhpls)
+	buffalo,wsr-2533dhpl2)
 		buffalo_do_upgrade "$1"
 		;;
 	dna,valokuitu-plus-ex400|\

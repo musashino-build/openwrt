@@ -8,6 +8,7 @@
 board_config_update
 
 case "$(board_name)" in
+	buffalo,wsr-2533dhpls|\
 	ubnt,edgerouter-x|\
 	ubnt,edgerouter-x-sfp|\
 	ubnt,unifi-6-lite|\

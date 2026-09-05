@@ -44,10 +44,9 @@
 		};
 	};
 
+	/* stock: "Kernel" */
 	partition@180000 {
-		compatible = "brcm,trx";
-		brcm,trx-magic = <0x534c4844>;
-		label = "firmware";
+		label = "kernel";
 		reg = <0x180000 0x1800000>;
 	};
 
@@ -74,9 +73,17 @@
 		read-only;
 	};
 
+	/*
+	 * stock: "WTB"
+	 *
+	 * The "WTB" partition is for "ネット脅威ブロッカー"
+	 * (en: Web Threat Blocker, DiXiM Security).
+	 * By default, a UBI with "dpi" volume exists. This UBI will
+	 * be rebuilt automatically if no "dpi" volume exists while
+	 * booting with stock firmware.
+	 */
 	partition@3e80000 {
-		label = "WTB";
+		label = "ubi";
 		reg = <0x3e80000 0x3600000>;
-		read-only;
 	};
 };
