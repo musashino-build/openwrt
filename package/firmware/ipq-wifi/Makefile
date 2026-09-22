@@ -5,10 +5,11 @@ PKG_NAME:=ipq-wifi
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL=$(PROJECT_GIT)/project/firmware/qca-wireless.git
+#PKG_SOURCE_URL=$(PROJECT_GIT)/project/firmware/qca-wireless.git
+PKG_SOURCE_URL=https://github.com/musashino-build/firmware_qca-wireless.git
 PKG_SOURCE_DATE:=2026-09-10
-PKG_SOURCE_VERSION:=04dff0ab979f153a4605095b5e449a9ac5494a17
-PKG_MIRROR_HASH:=b5ddee6924921861fbb20e2e46c965794e7e12908364141330ff01bc4bdbaa72
+PKG_SOURCE_VERSION:=925b93d9251deb831a2c8147718b81d238310041
+PKG_MIRROR_HASH:=1c28aa8c487c7326805b3da1fd48c2cb53cf77295ce24e4952680c3c23a223f8
 PKG_FLAGS:=nonshared
 
 include $(INCLUDE_DIR)/package.mk
@@ -49,6 +50,7 @@ ALLWIFIBOARDS:= \
 	huawei_ap4050dn \
 	ignitenet_ss-w2-ac2600 \
 	iodata_wn-dax3000gr \
+	iodata_wn-dax5400qr \
 	jdcloud_re-cs-02 \
 	jdcloud_re-ss-01 \
 	link_nn6000 \
@@ -252,6 +254,7 @@ $(eval $(call generate-ipq-wifi-package,glinet_gl-b3000,GL.iNet GL-B3000))
 $(eval $(call generate-ipq-wifi-package,huawei_ap4050dn,Huawei AP4050DN))
 $(eval $(call generate-ipq-wifi-package,ignitenet_ss-w2-ac2600,Ignitenet SS-W2-AC2600))
 $(eval $(call generate-ipq-wifi-package,iodata_wn-dax3000gr,I-O DATA WN-DAX3000GR))
+$(eval $(call generate-ipq-wifi-package,iodata_wn-dax5400qr,I-O DATA WN-DAX5400QR))
 $(eval $(call generate-ipq-wifi-package,jdcloud_re-cs-02,JDCloud RE-CS-02))
 $(eval $(call generate-ipq-wifi-package,jdcloud_re-ss-01,JDCloud RE-SS-01))
 $(eval $(call generate-ipq-wifi-package,link_nn6000,Link NN6000))
