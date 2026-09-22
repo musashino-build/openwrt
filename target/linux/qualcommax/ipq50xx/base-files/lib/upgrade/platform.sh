@@ -76,7 +76,7 @@ linksys_bootconfig_set_primaryboot() {
 		echo "failed to toggle primaryboot on 0:HLOS part"
 		return 1
 	}
-	
+
 	set_bootconfig_primaryboot "$tempfile" "rootfs" $2
 	[ $? -ne 0 ] && {
 		echo "failed to toggle primaryboot for rootfs part"
@@ -186,7 +186,7 @@ platform_do_upgrade() {
 	iodata,wn-dax3000gr)
 		local delay
 
-		delay=$(fw_printenv bootdelay)
+		delay=$(fw_printenv -n bootdelay)
 		[ -z "$delay" ] || [ "$delay" -eq "0" ] && \
 			fw_setenv bootdelay 3
 
