@@ -426,7 +426,7 @@
 			compatible = "pci17cb,1104";
 			reg = <0x00010000 0 0 0 0>;
 
-			qcom,ath11k-calibration-variant = "IODATA-WN-DAX5400QR";
+			qcom,calibration-variant = "IODATA-WN-DAX5400QR";
 
 			ieee80211-freq-limit = <5150000 5730000>;
 		};
@@ -442,7 +442,7 @@
 	status = "okay";
 
 	qcom,rproc = <&q6v5_wcss>;
-	qcom,ath11k-calibration-variant = "IODATA-WN-DAX5400QR";
+	qcom,calibration-variant = "IODATA-WN-DAX5400QR";
 	qcom,ath11k-fw-memory-mode = <1>;
 
 	ieee80211-freq-limit = <2400000 2483000>;
