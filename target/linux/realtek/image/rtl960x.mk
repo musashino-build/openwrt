@@ -23,3 +23,12 @@ define Device/buffalo_wsr-1500ax2s
   IMAGE/sysupgrade.bin := append-rootfs | pad-rootfs | sysupgrade-tar rootfs=$$$$@ | append-metadata
 endef
 TARGET_DEVICES += buffalo_wsr-1500ax2s
+
+define Device/elecom_wrc-x3000gs4
+  SOC := rtl8198d
+  DEVICE_VENDOR := ELECOM
+  DEVICE_MODEL := WRC-X3000GS4
+  $(Device/kernel-lzma)
+  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
+endef
+TARGET_DEVICES += elecom_wrc-x3000gs4

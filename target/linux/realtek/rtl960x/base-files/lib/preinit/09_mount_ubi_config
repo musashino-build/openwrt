@@ -2,7 +2,8 @@
 
 preinit_mount_ubi_config() {
 	case $(board_name) in
-	buffalo,wsr-1500ax2s)
+	buffalo,wsr-1500ax2s|\
+	elecom,wrc-x3000gs4)
 		mkdir -p /tmp/ubi_Config
 		mount -r -t ubifs ubi0:ubi_Config /tmp/ubi_Config
 		;;
