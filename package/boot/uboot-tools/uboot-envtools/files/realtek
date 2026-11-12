@@ -16,7 +16,8 @@ bt-pon,bt-g711ax)
 	ubootenv_add_mtd "u-boot-env" "0x0" "0x4000" "0x20000"
 	ubootenv_add_mtd "u-boot-env2" "0x0" "0x4000" "0x20000"
 	;;
-buffalo,wsr-1500ax2s)
+buffalo,wsr-1500ax2s|\
+elecom,wrc-x3000gs4)
 	ubootenv_add_mtd "u-boot-env" "0x0" "0x20000" "0x20000"
 	ubootenv_add_mtd "u-boot-env2" "0x0" "0x20000" "0x20000"
 	;;
